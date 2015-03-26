@@ -1,0 +1,81 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="#36DCDC">
+
+    <TableLayout
+        android:id="@+id/InicioXML"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50sp"
+            android:layout_marginBottom="70sp"
+            android:gravity="center|center_horizontal" >
+
+            <TextView
+                android:id="@+id/TituloOpenPuff"
+                android:text="@string/app_name"
+                android:textColor="#ffe3e5ff"
+                android:textStyle="bold"
+                android:textSize="70sp" />
+
+        </TableRow>
+
+        <TableRow >
+
+            <ImageButton
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:id="@+id/ImagenOcultar"
+                android:src="@drawable/ocultar"
+                android:background="#36DCDC"
+                android:contentDescription="@string/ocultar"/>
+
+            <ImageButton
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:id="@+id/ImagenDescubrir"
+                android:src="@drawable/descubrir"
+                android:background="#36DCDC"
+                android:contentDescription="@string/descubrir" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_marginTop="10sp"
+            android:layout_marginBottom="70sp"
+            android:gravity="center|center_horizontal">
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:id="@+id/TextOcultar"
+                android:text="@string/ocultar"
+                android:textColor="#ffe3e5ff"
+                android:textStyle="bold"
+                android:textSize="30sp"
+                android:gravity="center|center_horizontal" />
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:id="@+id/TextDescubrir"
+                android:text="@string/descubrir"
+                android:textColor="#ffe3e5ff"
+                android:textStyle="bold"
+                android:textSize="30sp"
+                android:gravity="center|center_horizontal" />
+
+        </TableRow>
+
+    </TableLayout>
+
+</ScrollView>

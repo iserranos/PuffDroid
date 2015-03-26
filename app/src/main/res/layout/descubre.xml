@@ -1,0 +1,74 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="#36DCDC">
+
+    <LinearLayout
+        android:id="@+id/DescubreXML"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/ImagenOriginal"
+            android:contentDescription="@string/imagenSeleccionada"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="20dip"
+            android:layout_marginBottom="20dip"
+            android:layout_marginRight="20dip"
+            android:layout_marginLeft="20dip"/>
+
+        <EditText
+            android:id="@+id/Pass1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/pass1"
+            android:textColorHint="#ffe3e5ff"
+            android:textStyle="bold"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/Pass2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/pass2"
+            android:textColorHint="#ffe3e5ff"
+            android:textStyle="bold"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/Pass3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/pass3"
+            android:textColorHint="#ffe3e5ff"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_marginBottom="10dip"/>
+
+        <TextView
+            android:id="@+id/TextoOculto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColorHint="#ffe3e5ff"
+            android:textStyle="bold"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/BotonDescubrir"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="@string/botonDescubrir"
+            android:clickable="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dip"
+            android:textSize="20sp"
+            android:textColor="#ffe3e5ff"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+</ScrollView>
