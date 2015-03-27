@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,12 +17,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -31,9 +34,11 @@ public class Oculta extends Main implements View.OnClickListener {
     EditText TextoAOcultar, Pass1, Pass2, Pass3;
     Button BotonOcultar, BotonGuardar;
     ImageView ImagenOriginal;
+    LinearLayout linearLayout;
     Bitmap bitmap = null;
     Menu menu;
     int menuOpcion = R.menu.menugaleria;
+    private Uri u;
 
     private static final int GALERIA = 1;
     private static final int CAMARA = 2;
@@ -58,6 +63,7 @@ public class Oculta extends Main implements View.OnClickListener {
         BotonOcultar = (Button) findViewById(R.id.BotonOcultar);
         BotonGuardar = (Button) findViewById(R.id.BotonGuardar);
         ImagenOriginal = (ImageView) findViewById(R.id.ImagenOriginal);
+        linearLayout = (LinearLayout) findViewById(R.id.OcultaXML);
 
         BotonOcultar.setOnClickListener(this);
         try {
@@ -140,11 +146,8 @@ public class Oculta extends Main implements View.OnClickListener {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                // 1. on Upload click call ACTION_GET_CONTENT intent
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                // 2. pick image only
                 intent.setType("image/*");
-                // 3. start activity
                 startActivityForResult(intent, GALERIA);
 
                 dialog.cancel();
@@ -154,10 +157,12 @@ public class Oculta extends Main implements View.OnClickListener {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                // create Intent to take a picture and return control to the calling application
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                // start the image capture Intent
+                Intent intent = new Intent();
+                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                u = Uri.fromFile(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"myFile.jpg"));
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, u);
                 startActivityForResult(intent, CAMARA);
 
                 dialog.cancel();
@@ -193,19 +198,32 @@ public class Oculta extends Main implements View.OnClickListener {
     protected void onActivityResult(int reqCode, int resCode, Intent data) {
         super.onActivityResult(reqCode, resCode, data);
         if (resCode == RESULT_OK) {
-            if (reqCode == CAMARA) {
-                bitmap = (Bitmap) data.getExtras().get("data");
-                ImagenOriginal.setImageBitmap(bitmap);
-            } else {
-                Uri selectedimg = data.getData();
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
-                    ImagenOriginal.setImageBitmap(bitmap);
-                } catch (FileNotFoundException e) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_SHORT).show();
-                } catch (IOException e) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_SHORT).show();
-                }
+            switch (reqCode){
+                case CAMARA:
+                    //bitmap = (Bitmap) data.getExtras().get("data");
+
+                    InputStream is = null;
+                    try {
+                        is = getContentResolver().openInputStream(u);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    Bitmap bmp= BitmapFactory.decodeStream(is);
+                    ImagenOriginal.setImageBitmap(bmp);
+                    break;
+
+                case GALERIA:
+                    Uri selectedimg = data.getData();
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
+                        ImagenOriginal.setImageBitmap(bitmap);
+                    } catch (FileNotFoundException e) {
+                        Toast.makeText(getApplicationContext(), getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        Toast.makeText(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_SHORT).show();
+                    }
+
+                    break;
             }
         } else {
             Toast.makeText(getApplicationContext(), getString(R.string.algunError), Toast.LENGTH_SHORT).show();
@@ -268,7 +286,7 @@ public class Oculta extends Main implements View.OnClickListener {
 
         //String textoFinal = Seguridad.generarMensaje(texto, pass1, pass2, pass3);
         //String textoInicio = Seguridad.descubrirMensaje(textoFinal, pass1, pass2, pass3);
-        ocultarMensaje(texto);
+        ocultarMensaje(texto.length()+texto);
     }
 
     private void mostrarAlertaPass(String mensaje) {

@@ -14,8 +14,8 @@
         <ImageView
             android:id="@+id/ImagenOriginal"
             android:contentDescription="@string/imagenSeleccionada"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
             android:layout_marginBottom="10dip"
             android:layout_marginRight="10dip"

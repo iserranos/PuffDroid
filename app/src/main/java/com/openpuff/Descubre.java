@@ -157,6 +157,7 @@ public class Descubre extends Main implements View.OnClickListener {
             }
         }else{
             Toast.makeText(getApplicationContext(), R.string.necesitasImagen, Toast.LENGTH_SHORT).show();
+            finish();
         }
     }
 
@@ -166,8 +167,8 @@ public class Descubre extends Main implements View.OnClickListener {
 
         if (bitmap != null) {
             String mensaje = descubrirMensaje(bitmap);
+            TextoOculto.setVisibility(View.VISIBLE);
             TextoOculto.setText(getString(R.string.textoOcultoEra) + mensaje);
-            Toast.makeText(getApplicationContext(), getString(R.string.fileNotFoundExcepcion) + ": " + mensaje, Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(getApplicationContext(), getString(R.string.necesitasImagen), Toast.LENGTH_SHORT).show();
         }
