@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -59,11 +60,9 @@ public class Descubre extends Main implements View.OnClickListener {
     }
 
 
-    public void onSaveInstanceState(Bundle savedInstanceState) {
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        // Save UI state changes to the savedInstanceState.
-        // This bundle will be passed to onCreate if the process is
-        // killed and restarted.
+
         if(bitmap == null){
             savedInstanceState.putParcelable("bitmap", null);
         }else{
@@ -91,10 +90,9 @@ public class Descubre extends Main implements View.OnClickListener {
     }
 
 
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        // Restore UI state from the savedInstanceState.
-        // This bundle has also been passed to onCreate.
+
         bitmap = savedInstanceState.getParcelable("bitmap");
         if(bitmap != null){
             ImagenOriginal.setImageBitmap(bitmap);
@@ -158,8 +156,7 @@ public class Descubre extends Main implements View.OnClickListener {
                 Toast.makeText(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_SHORT).show();
             }
         }else{
-
-            Toast.makeText(getApplicationContext(), "No se ha seleccionado ninguna imagen", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.necesitasImagen, Toast.LENGTH_SHORT).show();
         }
     }
 

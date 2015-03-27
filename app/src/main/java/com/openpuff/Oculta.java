@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -66,9 +67,7 @@ public class Oculta extends Main implements View.OnClickListener {
         }
     }
 
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
         if(bitmap == null){
@@ -103,9 +102,7 @@ public class Oculta extends Main implements View.OnClickListener {
 
     }
 
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         // Restore UI state from the savedInstanceState.
         // This bundle has also been passed to onCreate.
@@ -328,7 +325,6 @@ public class Oculta extends Main implements View.OnClickListener {
             }
         }
         ImagenOriginal.setImageBitmap(bitmap);
-        menuOpcion = R.menu.menucompartir;
         BotonOcultar.setVisibility(View.GONE);
         BotonGuardar.setVisibility(View.VISIBLE);
         BotonGuardar.setOnClickListener(this);

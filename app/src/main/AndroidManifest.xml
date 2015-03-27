@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.openpuff"
-    android:versionCode="1"
-    android:versionName="1.0">
-
-    <uses-sdk
-        android:minSdkVersion="11"
-        android:targetSdkVersion="20" />
+    package="com.openpuff">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -32,9 +26,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Oculta"></activity>
-        <activity android:name=".Descubre"></activity>
-        <activity android:name=".Comparte"></activity>
+        <activity android:name=".Oculta"/>
+        <activity android:name=".Descubre"/>
     </application>
 
 </manifest>
