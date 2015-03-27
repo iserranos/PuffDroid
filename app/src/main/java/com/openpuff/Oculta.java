@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,7 +28,7 @@ import java.util.Locale;
 public class Oculta extends Main implements View.OnClickListener {
 
     EditText TextoAOcultar, Pass1, Pass2, Pass3;
-    Button BotonOcultar;
+    Button BotonOcultar, BotonGuardar;
     ImageView ImagenOriginal;
     Bitmap bitmap = null;
     Menu menu;
@@ -39,7 +38,6 @@ public class Oculta extends Main implements View.OnClickListener {
     private static final int CAMARA = 2;
     private static final int ACEPTAR = 1;
     private static final int CANCELAR = 2;
-    public static String path = "";
     public int opcion = 0;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +55,9 @@ public class Oculta extends Main implements View.OnClickListener {
         Pass2 = (EditText) findViewById(R.id.Pass2);
         Pass3 = (EditText) findViewById(R.id.Pass3);
         BotonOcultar = (Button) findViewById(R.id.BotonOcultar);
+        BotonGuardar = (Button) findViewById(R.id.BotonGuardar);
         ImagenOriginal = (ImageView) findViewById(R.id.ImagenOriginal);
 
-        // add click listener to button
         BotonOcultar.setOnClickListener(this);
         try {
             //noinspection ConstantConditions
@@ -68,11 +66,11 @@ public class Oculta extends Main implements View.OnClickListener {
         }
     }
 
+
+    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        // Save UI state changes to the savedInstanceState.
-        // This bundle will be passed to onCreate if the process is
-        // killed and restarted.
+
         if(bitmap == null){
             savedInstanceState.putParcelable("bitmap", null);
         }else{
@@ -106,6 +104,7 @@ public class Oculta extends Main implements View.OnClickListener {
     }
 
 
+    @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         // Restore UI state from the savedInstanceState.
@@ -173,7 +172,6 @@ public class Oculta extends Main implements View.OnClickListener {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
@@ -181,14 +179,6 @@ public class Oculta extends Main implements View.OnClickListener {
                 return true;
             case R.id.ItemGaleria:
                 mostrarAlerta();
-                return true;
-            case R.id.ItemAjustes:
-                intent = new Intent(this, Ajustes.class);
-                startActivity(intent);
-                return true;
-            case R.id.ItemCompartir:
-                intent = new Intent(this, Comparte.class);
-                startActivity(intent);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -228,17 +218,17 @@ public class Oculta extends Main implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         super.onClick(view);
-        String texto = BotonOcultar.getText().toString();
 
-        if(texto.equals(getResources().getString(R.string.botonOcultar))){
-            if (bitmap != null) {
-                recuperarDatos();
-            }
-            Toast.makeText(getApplicationContext(), getString(R.string.necesitasImagen), Toast.LENGTH_SHORT).show();
-        }
-
-        if(texto.equals(getResources().getString(R.string.botonOcultar))){
-            storeImage(bitmap);
+        switch (view.getId()){
+            case R.id.BotonOcultar:
+                if (bitmap != null) {
+                    recuperarDatos();
+                }
+                break;
+            case R.id.BotonGuardar:
+                storeImage(bitmap);
+                finish();
+                break;
         }
     }
 
@@ -256,23 +246,32 @@ public class Oculta extends Main implements View.OnClickListener {
             Toast.makeText(getApplicationContext(), getString(R.string.pass1NoVacia), Toast.LENGTH_SHORT).show();
             return;
         }
-        if (pass2.equals("") || pass2.length() == 0) {
-            mostrarAlertaPass(getString(R.string.mensajeAlertaPass2));
+        if((pass2.equals("") || pass2.length() == 0) && (pass3.equals("") || pass3.length() == 0)){
+            mostrarAlertaPass(getString(R.string.mensajeAlertaPass2y3));
             if (opcion == CANCELAR) {
                 opcion = 0;
                 return;
             }
-        }
-        if (pass3.equals("") || pass3.length() == 0) {
-            mostrarAlertaPass(getString(R.string.mensajeAlertaPass3));
-            if (opcion == CANCELAR) {
-                opcion = 0;
-                return;
+        }else{
+            if (pass2.equals("") || pass2.length() == 0) {
+                mostrarAlertaPass(getString(R.string.mensajeAlertaPass2));
+                if (opcion == CANCELAR) {
+                    opcion = 0;
+                    return;
+                }
+            }
+            if (pass3.equals("") || pass3.length() == 0) {
+                mostrarAlertaPass(getString(R.string.mensajeAlertaPass3));
+                if (opcion == CANCELAR) {
+                    opcion = 0;
+                    return;
+                }
             }
         }
-        String textoFinal = Seguridad.generarMensaje(texto, pass1, pass2, pass3);
+
+        //String textoFinal = Seguridad.generarMensaje(texto, pass1, pass2, pass3);
         //String textoInicio = Seguridad.descubrirMensaje(textoFinal, pass1, pass2, pass3);
-        ocultarMensaje(textoFinal);
+        ocultarMensaje(texto);
     }
 
     private void mostrarAlertaPass(String mensaje) {
@@ -329,27 +328,38 @@ public class Oculta extends Main implements View.OnClickListener {
             }
         }
         ImagenOriginal.setImageBitmap(bitmap);
-        BotonOcultar.setText(R.string.botonGuardar);
         menuOpcion = R.menu.menucompartir;
-        onCreateOptionsMenu(menu);
+        BotonOcultar.setVisibility(View.GONE);
+        BotonGuardar.setVisibility(View.VISIBLE);
+        BotonGuardar.setOnClickListener(this);
     }
 
     private void storeImage(Bitmap image) {
-        File pictureFile = getOutputMediaFile();
-        if (pictureFile == null) {
-            Log.d("Error",
-                    "Error creating media file, check storage permissions: ");// e.getMessage());
-            return;
+
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "OpenPuff");
+
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                return;
+            }
         }
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        File mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                "IMG_" + timeStamp + ".jpg");
+
         try {
-            FileOutputStream fos = new FileOutputStream(pictureFile);
+            FileOutputStream fos = new FileOutputStream(mediaFile);
             image.compress(Bitmap.CompressFormat.PNG, 90, fos);
+            fos.flush();
             fos.close();
-        } catch (FileNotFoundException e) {
-            Log.d("Error", "File not found: " + e.getMessage());
-        } catch (IOException e) {
-            Log.d("Error", "Error accessing file: " + e.getMessage());
-        }
+        } catch (IOException ignored) {}
+
+        Uri contentUri = Uri.fromFile(mediaFile);
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        mediaScanIntent.setData(contentUri);
+        sendBroadcast(mediaScanIntent);
+
         Toast.makeText(getApplicationContext(), getString(R.string.imagenguardadaOK), Toast.LENGTH_SHORT).show();
     }
 
@@ -375,36 +385,5 @@ public class Oculta extends Main implements View.OnClickListener {
         }
         return binary;
     }
-
-    /**
-     * Create a File for saving an image or video
-     */
-    private static File getOutputMediaFile() {
-        // To be safe, you should check that the SDCard is mounted
-        // using Environment.getExternalStorageState() before doing this.
-
-        File mediaStorageDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "OpenPuff");
-        // This location works best if you want the created images to be shared
-        // between applications and persist after your app has been uninstalled.
-
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                return null;
-            }
-        }
-
-        // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        File mediaFile;
-
-        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                "IMG_" + timeStamp + ".jpg");
-
-        path = mediaFile.toString();
-
-        return mediaFile;
-    }
-
 
 }

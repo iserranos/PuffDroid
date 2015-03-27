@@ -14,8 +14,12 @@
         <ImageView
             android:id="@+id/ImagenOriginal"
             android:contentDescription="@string/imagenSeleccionada"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="10dip"
+            android:layout_marginBottom="10dip"
+            android:layout_marginRight="10dip"
+            android:layout_marginLeft="10dip"/>
 
 
         <EditText
@@ -66,6 +70,16 @@
             android:clickable="true"
             android:layout_gravity="center_horizontal"
             android:textSize="20sp"/>
+
+        <Button
+            android:id="@+id/BotonGuardar"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="@string/botonGuardar"
+            android:clickable="true"
+            android:layout_gravity="center_horizontal"
+            android:textSize="20sp"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

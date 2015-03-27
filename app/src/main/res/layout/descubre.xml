@@ -8,17 +8,18 @@
         android:id="@+id/DescubreXML"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:textColor="#ffe3e5ff">
 
         <ImageView
             android:id="@+id/ImagenOriginal"
             android:contentDescription="@string/imagenSeleccionada"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_marginTop="20dip"
-            android:layout_marginBottom="20dip"
-            android:layout_marginRight="20dip"
-            android:layout_marginLeft="20dip"/>
+            android:layout_marginTop="10dip"
+            android:layout_marginBottom="10dip"
+            android:layout_marginRight="10dip"
+            android:layout_marginLeft="10dip"/>
 
         <EditText
             android:id="@+id/Pass1"

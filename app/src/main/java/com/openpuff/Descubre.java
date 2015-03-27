@@ -25,10 +25,23 @@ public class Descubre extends Main implements View.OnClickListener {
     ImageView ImagenOriginal;
     Button BotonDescubrir;
     Bitmap bitmap;
+    Menu menu;
+    int menuOpcion = R.menu.menugaleria;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.descubre);
+
+        if(savedInstanceState == null){
+            // 1. on Upload click call ACTION_GET_CONTENT intent
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            // 2. pick image only
+            intent.setType("image/*");
+            // 3. start activity
+            startActivityForResult(intent, 1);
+        }
+
 
         TextoOculto = (TextView) findViewById(R.id.TextoOculto);
         Pass1 = (EditText) findViewById(R.id.Pass1);
@@ -39,17 +52,68 @@ public class Descubre extends Main implements View.OnClickListener {
 
         BotonDescubrir.setOnClickListener(this);
 
-
-        // 1. on Upload click call ACTION_GET_CONTENT intent
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        // 2. pick image only
-        intent.setType("image/*");
-        // 3. start activity
-        startActivityForResult(intent, 1);
         try{
             //noinspection ConstantConditions
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }catch(NullPointerException ignored){}
+    }
+
+
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        // Save UI state changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is
+        // killed and restarted.
+        if(bitmap == null){
+            savedInstanceState.putParcelable("bitmap", null);
+        }else{
+            savedInstanceState.putParcelable("bitmap", bitmap);
+        }
+
+        if(Pass1.getText().toString().equals("")){
+            savedInstanceState.putString("pass1", "");
+        }else{
+            savedInstanceState.putString("pass1", Pass1.getText().toString());
+        }
+
+        if(Pass2.getText().toString().equals("")){
+            savedInstanceState.putString("pass2", "");
+        }else{
+            savedInstanceState.putString("pass2", Pass2.getText().toString());
+        }
+
+        if(Pass3.getText().toString().equals("")){
+            savedInstanceState.putString("pass3", "");
+        }else{
+            savedInstanceState.putString("pass3", Pass3.getText().toString());
+        }
+
+    }
+
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // Restore UI state from the savedInstanceState.
+        // This bundle has also been passed to onCreate.
+        bitmap = savedInstanceState.getParcelable("bitmap");
+        if(bitmap != null){
+            ImagenOriginal.setImageBitmap(bitmap);
+        }
+
+        String pass1 = savedInstanceState.getString("pass1");
+        if(!pass1.equals("")){
+            Pass1.setText(pass1);
+        }
+
+        String pass2 = savedInstanceState.getString("pass2");
+        if(!pass2.equals("")){
+            Pass2.setText(pass2);
+        }
+
+        String pass3 = savedInstanceState.getString("pass3");
+        if(!pass3.equals("")){
+            Pass3.setText(pass3);
+        }
     }
 
     @Override
@@ -67,22 +131,18 @@ public class Descubre extends Main implements View.OnClickListener {
                 // 3. start activity
                 startActivityForResult(intent, 1);
                 return true;
-            case R.id.ItemAjustes:
-
-                return true;
-            case R.id.ItemCompartir:
-
-                return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
+        this.menu = menu;
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.accionesmenu, menu);
+        inflater.inflate(menuOpcion, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
 
     @Override
     protected void onActivityResult(int reqCode, int resCode, Intent data) {
@@ -98,10 +158,8 @@ public class Descubre extends Main implements View.OnClickListener {
                 Toast.makeText(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_SHORT).show();
             }
         }else{
-            ImagenOriginal.setImageBitmap(bitmap);
 
             Toast.makeText(getApplicationContext(), "No se ha seleccionado ninguna imagen", Toast.LENGTH_SHORT).show();
-            setContentView(R.layout.descubre);
         }
     }
 
