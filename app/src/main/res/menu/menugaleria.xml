@@ -4,7 +4,7 @@
     <item
         android:id="@+id/ItemGaleria"
         android:icon="@drawable/ic_menu_gallery"
-        android:title="@string/opcion2"
-        android:showAsAction="ifRoom" />
+        android:showAsAction="ifRoom"
+        android:title="@string/opcion2" />
 
 </menu>

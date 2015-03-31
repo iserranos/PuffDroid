@@ -34,7 +34,7 @@ public class Descubre extends Main implements View.OnClickListener {
 
         setContentView(R.layout.descubre);
 
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             // 1. on Upload click call ACTION_GET_CONTENT intent
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             // 2. pick image only
@@ -53,37 +53,38 @@ public class Descubre extends Main implements View.OnClickListener {
 
         BotonDescubrir.setOnClickListener(this);
 
-        try{
+        try {
             //noinspection ConstantConditions
             getActionBar().setDisplayHomeAsUpEnabled(true);
-        }catch(NullPointerException ignored){}
+        } catch (NullPointerException ignored) {
+        }
     }
 
 
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
-        if(bitmap == null){
+        if (bitmap == null) {
             savedInstanceState.putParcelable("bitmap", null);
-        }else{
+        } else {
             savedInstanceState.putParcelable("bitmap", bitmap);
         }
 
-        if(Pass1.getText().toString().equals("")){
+        if (Pass1.getText().toString().equals("")) {
             savedInstanceState.putString("pass1", "");
-        }else{
+        } else {
             savedInstanceState.putString("pass1", Pass1.getText().toString());
         }
 
-        if(Pass2.getText().toString().equals("")){
+        if (Pass2.getText().toString().equals("")) {
             savedInstanceState.putString("pass2", "");
-        }else{
+        } else {
             savedInstanceState.putString("pass2", Pass2.getText().toString());
         }
 
-        if(Pass3.getText().toString().equals("")){
+        if (Pass3.getText().toString().equals("")) {
             savedInstanceState.putString("pass3", "");
-        }else{
+        } else {
             savedInstanceState.putString("pass3", Pass3.getText().toString());
         }
 
@@ -94,22 +95,22 @@ public class Descubre extends Main implements View.OnClickListener {
         super.onRestoreInstanceState(savedInstanceState);
 
         bitmap = savedInstanceState.getParcelable("bitmap");
-        if(bitmap != null){
+        if (bitmap != null) {
             ImagenOriginal.setImageBitmap(bitmap);
         }
 
         String pass1 = savedInstanceState.getString("pass1");
-        if(!pass1.equals("")){
+        if (!pass1.equals("")) {
             Pass1.setText(pass1);
         }
 
         String pass2 = savedInstanceState.getString("pass2");
-        if(!pass2.equals("")){
+        if (!pass2.equals("")) {
             Pass2.setText(pass2);
         }
 
         String pass3 = savedInstanceState.getString("pass3");
-        if(!pass3.equals("")){
+        if (!pass3.equals("")) {
             Pass3.setText(pass3);
         }
     }
@@ -125,7 +126,7 @@ public class Descubre extends Main implements View.OnClickListener {
                 // 1. on Upload click call ACTION_GET_CONTENT intent
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 // 2. pick image only
-                intent.setType("image/*");
+                intent.setType("image/jpeg");
                 // 3. start activity
                 startActivityForResult(intent, 1);
                 return true;
@@ -155,7 +156,7 @@ public class Descubre extends Main implements View.OnClickListener {
             } catch (IOException e) {
                 Toast.makeText(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_SHORT).show();
             }
-        }else{
+        } else {
             Toast.makeText(getApplicationContext(), R.string.necesitasImagen, Toast.LENGTH_SHORT).show();
             finish();
         }

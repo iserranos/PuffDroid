@@ -27,8 +27,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Oculta"/>
-        <activity android:name=".Descubre"/>
+        <activity android:name=".Oculta" />
+        <activity android:name=".Descubre" />
     </application>
 
 </manifest>

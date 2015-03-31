@@ -1,35 +1,34 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="#36DCDC">
 
     <LinearLayout
         android:id="@+id/OcultaXML"
-        android:layout_height="wrap_content"
         android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:textColor="#ffe3e5ff">
 
         <ImageView
             android:id="@+id/ImagenOriginal"
-            android:contentDescription="@string/imagenSeleccionada"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dip"
             android:layout_marginBottom="10dip"
+            android:layout_marginLeft="10dip"
             android:layout_marginRight="10dip"
-            android:layout_marginLeft="10dip"/>
+            android:layout_marginTop="10dip"
+            android:contentDescription="@string/imagenSeleccionada" />
 
 
         <EditText
+            android:id="@+id/Pass1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/Pass1"
             android:hint="@string/pass1"
             android:textColorHint="#ffe3e5ff"
-            android:textStyle="bold"
-            android:textSize="20sp"/>
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
 
         <EditText
@@ -38,8 +37,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/pass2"
             android:textColorHint="#ffe3e5ff"
-            android:textStyle="bold"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/Pass3"
@@ -47,39 +46,39 @@
             android:layout_height="wrap_content"
             android:hint="@string/pass3"
             android:textColorHint="#ffe3e5ff"
-            android:textStyle="bold"
-            android:textSize="20sp"/>
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/TextoAOcultar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dip"
+            android:layout_marginTop="10dip"
+            android:gravity="center"
             android:hint="@string/textoAOcultar"
             android:textColorHint="#ffe3e5ff"
-            android:textStyle="bold"
             android:textSize="20sp"
-            android:layout_marginTop="10dip"
-            android:layout_marginBottom="10dip"
-            android:gravity="center"/>
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/BotonOcultar"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:text="@string/botonOcultar"
-            android:clickable="true"
             android:layout_gravity="center_horizontal"
-            android:textSize="20sp"/>
+            android:clickable="true"
+            android:text="@string/botonOcultar"
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/BotonGuardar"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:text="@string/botonGuardar"
-            android:clickable="true"
             android:layout_gravity="center_horizontal"
+            android:clickable="true"
+            android:text="@string/botonGuardar"
             android:textSize="20sp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
     </LinearLayout>
 

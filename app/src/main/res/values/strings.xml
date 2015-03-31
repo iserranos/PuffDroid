@@ -25,7 +25,7 @@
     <string name="textoOcultoEra">El texto oculto era: </string>
     <string name="imagenSeleccionada">Imagen seleccionada</string>
     <string name="necesitasImagen">Selecciona una imagen</string>
-    <string name="tituloAlertaPass">Cuidado</string>
+    <string name="tituloAlertaPass">Cuidado…</string>
     <string name="mensajeAlertaPass2">El campo de la contraseña 2 pasará a ser el de la contraseña 1. ¿Desea continuar?</string>
     <string name="mensajeAlertaPass3">El campo de la contraseña 3 pasará a ser el de la contraseña 1. ¿Desea continuar?</string>
     <string name="mensajeAlertaPass2y3">Los campos de las contraseñas 2 y 3 pasarán a ser el de la contraseña 1. ¿Desea continuar?</string>

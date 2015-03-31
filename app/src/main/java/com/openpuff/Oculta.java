@@ -3,6 +3,7 @@ package com.openpuff;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -24,13 +25,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 public class Oculta extends Main implements View.OnClickListener {
 
+    private static final int GALERIA = 1;
+    private static final int CAMARA = 2;
+    private static final int ACEPTAR = 1;
+    private static final int CANCELAR = 2;
+    public int opcion = 0;
     EditText TextoAOcultar, Pass1, Pass2, Pass3;
     Button BotonOcultar, BotonGuardar;
     ImageView ImagenOriginal;
@@ -38,20 +44,17 @@ public class Oculta extends Main implements View.OnClickListener {
     Bitmap bitmap = null;
     Menu menu;
     int menuOpcion = R.menu.menugaleria;
-    private Uri u;
-
-    private static final int GALERIA = 1;
-    private static final int CAMARA = 2;
-    private static final int ACEPTAR = 1;
-    private static final int CANCELAR = 2;
-    public int opcion = 0;
+    private Uri uri;
+    String mCurrentPhotoPath;
+    String path = "";
+    String profile_Path = "";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
             mostrarAlerta();
-        }else{
+        } else {
             onRestoreInstanceState(savedInstanceState);
         }
         setContentView(R.layout.oculta);
@@ -76,33 +79,33 @@ public class Oculta extends Main implements View.OnClickListener {
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
-        if(bitmap == null){
+        if (bitmap == null) {
             savedInstanceState.putParcelable("bitmap", null);
-        }else{
+        } else {
             savedInstanceState.putParcelable("bitmap", bitmap);
         }
 
-        if(TextoAOcultar.getText().toString().equals("")){
+        if (TextoAOcultar.getText().toString().equals("")) {
             savedInstanceState.putString("textoAOcultar", "");
-        }else{
+        } else {
             savedInstanceState.putString("textoAOcultar", TextoAOcultar.getText().toString());
         }
 
-        if(Pass1.getText().toString().equals("")){
+        if (Pass1.getText().toString().equals("")) {
             savedInstanceState.putString("pass1", "");
-        }else{
+        } else {
             savedInstanceState.putString("pass1", Pass1.getText().toString());
         }
 
-        if(Pass2.getText().toString().equals("")){
+        if (Pass2.getText().toString().equals("")) {
             savedInstanceState.putString("pass2", "");
-        }else{
+        } else {
             savedInstanceState.putString("pass2", Pass2.getText().toString());
         }
 
-        if(Pass3.getText().toString().equals("")){
+        if (Pass3.getText().toString().equals("")) {
             savedInstanceState.putString("pass3", "");
-        }else{
+        } else {
             savedInstanceState.putString("pass3", Pass3.getText().toString());
         }
 
@@ -113,27 +116,27 @@ public class Oculta extends Main implements View.OnClickListener {
         // Restore UI state from the savedInstanceState.
         // This bundle has also been passed to onCreate.
         bitmap = savedInstanceState.getParcelable("bitmap");
-        if(bitmap != null){
+        if (bitmap != null) {
             ImagenOriginal.setImageBitmap(bitmap);
         }
 
         String textoAOcultar = savedInstanceState.getString("textoAOcultar");
-        if(!textoAOcultar.equals("")){
+        if (!textoAOcultar.equals("")) {
             TextoAOcultar.setText(textoAOcultar);
         }
 
         String pass1 = savedInstanceState.getString("pass1");
-        if(!pass1.equals("")){
+        if (!pass1.equals("")) {
             Pass1.setText(pass1);
         }
 
         String pass2 = savedInstanceState.getString("pass2");
-        if(!pass2.equals("")){
+        if (!pass2.equals("")) {
             Pass2.setText(pass2);
         }
 
         String pass3 = savedInstanceState.getString("pass3");
-        if(!pass3.equals("")){
+        if (!pass3.equals("")) {
             Pass3.setText(pass3);
         }
     }
@@ -147,7 +150,7 @@ public class Oculta extends Main implements View.OnClickListener {
             public void onClick(DialogInterface dialog, int which) {
 
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/*");
+                intent.setType("image/jpeg");
                 startActivityForResult(intent, GALERIA);
 
                 dialog.cancel();
@@ -157,20 +160,80 @@ public class Oculta extends Main implements View.OnClickListener {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
+                path = "";
+                Intent intent = new Intent(
+                        "android.media.action.IMAGE_CAPTURE");
+                File folder = new File(Environment
+                        .getExternalStorageDirectory() + "/LoadImg");
 
-                Intent intent = new Intent();
-                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (!folder.exists()) {
+                    folder.mkdir();
+                }
+                final Calendar c = Calendar.getInstance();
+                String new_Date = c.get(Calendar.DAY_OF_MONTH) + "-"
+                        + ((c.get(Calendar.MONTH)) + 1) + "-"
+                        + c.get(Calendar.YEAR) + " " + c.get(Calendar.HOUR)
+                        + "-" + c.get(Calendar.MINUTE) + "-"
+                        + c.get(Calendar.SECOND);
 
-                u = Uri.fromFile(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"myFile.jpg"));
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, u);
+                path = String.format(
+                        Environment.getExternalStorageDirectory()
+                                + "/LoadImg/%s.png", "LoadImg(" + new_Date
+                                + ")");
+                File photo = new File(path);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        Uri.fromFile(photo));
                 startActivityForResult(intent, CAMARA);
 
+                /*Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                // Ensure that there's a camera activity to handle the intent
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    // Create the File where the photo should go
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException ex) {
+                        // Error occurred while creating the File
+
+                    }
+                    // Continue only if the File was successfully created
+                    if (photoFile != null) {
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                                Uri.fromFile(photoFile));
+                        startActivityForResult(takePictureIntent, CAMARA);
+                    }
+                }*/
+
+                /*Intent camera = new Intent();
+                camera.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+                camera.putExtra("crop", "true");
+                File f=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                uri = Uri.fromFile(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"myFile.jpg"));
+                camera.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                startActivityForResult(camera, CAMARA);*/
                 dialog.cancel();
             }
         });
 
         alerta.show();
     }
+
+    /*private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  // prefix
+                ".jpg",         // suffix
+                storageDir      // directory
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -198,18 +261,52 @@ public class Oculta extends Main implements View.OnClickListener {
     protected void onActivityResult(int reqCode, int resCode, Intent data) {
         super.onActivityResult(reqCode, resCode, data);
         if (resCode == RESULT_OK) {
-            switch (reqCode){
+            switch (reqCode) {
                 case CAMARA:
+
+                    this.imageFromGallery(resCode, data);
+
+                    ImagenOriginal.setImageBitmap(null);
+
+                    ImagenOriginal.setImageBitmap(bitmap);
+
+                    // Get the dimensions of the View
+                    /*int targetW = ImagenOriginal.getWidth();
+                    int targetH = ImagenOriginal.getHeight();
+
+                    // Get the dimensions of the bitmap
+                    BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                    bmOptions.inJustDecodeBounds = true;
+                    BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+                    int photoW = bmOptions.outWidth;
+                    int photoH = bmOptions.outHeight;
+
+                    // Determine how much to scale down the image
+                    int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+                    // Decode the image file into a Bitmap sized to fill the View
+                    bmOptions.inJustDecodeBounds = false;
+                    bmOptions.inSampleSize = scaleFactor;
+                    bmOptions.inPurgeable = true;
+
+                    Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+                    ImagenOriginal.setImageBitmap(bitmap);*/
+
+
                     //bitmap = (Bitmap) data.getExtras().get("data");
 
-                    InputStream is = null;
+                    /*Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, GALERIA);*/
+
+                    /*InputStream is=null;
                     try {
-                        is = getContentResolver().openInputStream(u);
+                        is = this.getContentResolver().openInputStream(uri);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-                    Bitmap bmp= BitmapFactory.decodeStream(is);
-                    ImagenOriginal.setImageBitmap(bmp);
+                    Bitmap bmp=BitmapFactory.decodeStream(is);
+                    ImagenOriginal.setImageBitmap(bmp);*/
                     break;
 
                 case GALERIA:
@@ -230,11 +327,45 @@ public class Oculta extends Main implements View.OnClickListener {
         }
     }
 
+    private void imageFromGallery(int resultCode, Intent data) {
+        Uri selectedImage = data.getData();
+        String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+        Cursor cursor = getContentResolver().query(selectedImage,
+                filePathColumn, null, null, null);
+        cursor.moveToFirst();
+
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+
+        profile_Path = cursor.getString(columnIndex);
+        cursor.close();
+
+        bitmap = BitmapFactory.decodeFile(profile_Path);
+
+    }
+
+    private void imageFromCamera(int resultCode, Intent data) {
+        updateImageView((Bitmap) data.getExtras().get("data"));
+    }
+
+    private void updateImageView(Bitmap newImage) {
+        bitmap = newImage.copy(Bitmap.Config.ARGB_8888, true);
+    }
+
+    public String getPath(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+
     @Override
     public void onClick(View view) {
         super.onClick(view);
 
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.BotonOcultar:
                 if (bitmap != null) {
                     recuperarDatos();
@@ -261,13 +392,13 @@ public class Oculta extends Main implements View.OnClickListener {
             Toast.makeText(getApplicationContext(), getString(R.string.pass1NoVacia), Toast.LENGTH_SHORT).show();
             return;
         }
-        if((pass2.equals("") || pass2.length() == 0) && (pass3.equals("") || pass3.length() == 0)){
+        if ((pass2.equals("") || pass2.length() == 0) && (pass3.equals("") || pass3.length() == 0)) {
             mostrarAlertaPass(getString(R.string.mensajeAlertaPass2y3));
             if (opcion == CANCELAR) {
                 opcion = 0;
                 return;
             }
-        }else{
+        } else {
             if (pass2.equals("") || pass2.length() == 0) {
                 mostrarAlertaPass(getString(R.string.mensajeAlertaPass2));
                 if (opcion == CANCELAR) {
@@ -286,7 +417,7 @@ public class Oculta extends Main implements View.OnClickListener {
 
         //String textoFinal = Seguridad.generarMensaje(texto, pass1, pass2, pass3);
         //String textoInicio = Seguridad.descubrirMensaje(textoFinal, pass1, pass2, pass3);
-        ocultarMensaje(texto.length()+texto);
+        ocultarMensaje(texto.length() + texto);
     }
 
     private void mostrarAlertaPass(String mensaje) {
@@ -367,7 +498,8 @@ public class Oculta extends Main implements View.OnClickListener {
             image.compress(Bitmap.CompressFormat.PNG, 90, fos);
             fos.flush();
             fos.close();
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
 
         Uri contentUri = Uri.fromFile(mediaFile);
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);

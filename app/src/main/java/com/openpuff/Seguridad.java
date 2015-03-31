@@ -33,13 +33,13 @@ public class Seguridad {
     }
 
     protected static String generarMensaje(String mensaje, String pass1, String pass2, String pass3) {
-        ArrayList<byte []> submensaje = new ArrayList<byte[]>();
+        ArrayList<byte[]> submensaje = new ArrayList<byte[]>();
 
         int contador = 0;
-        while(mensaje.length() > 16){
-            submensaje.add(mensaje.substring(contador, contador+16).getBytes());
-            contador +=16;
-            mensaje = mensaje.substring(contador, contador+16);
+        while (mensaje.length() > 16) {
+            submensaje.add(mensaje.substring(contador, contador + 16).getBytes());
+            contador += 16;
+            mensaje = mensaje.substring(contador, contador + 16);
         }
         String pass1KDF = generarKDF(pass1);
         String pass2KDF = generarKDF(pass2);
@@ -55,13 +55,13 @@ public class Seguridad {
         return "";
     }
 
-    protected static String descubrirMensaje(String oculto, String pass1, String pass2, String pass3){
-        ArrayList<byte []> submensaje = new ArrayList<byte[]>();
+    protected static String descubrirMensaje(String oculto, String pass1, String pass2, String pass3) {
+        ArrayList<byte[]> submensaje = new ArrayList<byte[]>();
 
         int contador = 0;
-        while(oculto.length() > 16){
-            submensaje.add(oculto.substring(contador, contador+16).getBytes());
-            contador +=16;
+        while (oculto.length() > 16) {
+            submensaje.add(oculto.substring(contador, contador + 16).getBytes());
+            contador += 16;
         }
 
         String pass1KDF = generarKDF(pass1);
@@ -97,7 +97,7 @@ public class Seguridad {
         aes.init(false, ivAndKey);
         Iterator<byte[]> iterador = cipher.iterator();
         String resultado = "";
-        while(iterador.hasNext()){
+        while (iterador.hasNext()) {
             resultado += cipherData(aes, iterador.next());
         }
         return resultado;
@@ -110,7 +110,7 @@ public class Seguridad {
         aes.init(true, ivAndKey);
         Iterator<byte[]> iterador = plain.iterator();
         String resultado = "";
-        while(iterador.hasNext()){
+        while (iterador.hasNext()) {
             resultado += cipherData(aes, iterador.next());
         }
         return resultado;
