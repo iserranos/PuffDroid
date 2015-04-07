@@ -22,7 +22,7 @@
     <string name="pass2NoVacia">La segunda contraseña no puede estar vacía</string>
     <string name="pass3NoVacia">La tercera contraseña no puede estar vacía</string>
     <string name="imagenguardadaOK">Imagen guardada correctamente</string>
-    <string name="textoOcultoEra">El texto oculto era: </string>
+    <string name="textoOcultoEra">El texto oculto era:&#160;</string>
     <string name="imagenSeleccionada">Imagen seleccionada</string>
     <string name="necesitasImagen">Selecciona una imagen</string>
     <string name="tituloAlertaPass">Cuidado…</string>

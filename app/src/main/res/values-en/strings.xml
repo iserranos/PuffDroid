@@ -22,7 +22,7 @@
     <string name="pass2NoVacia">The second password can not be empty</string>
     <string name="pass3NoVacia">The third password can not be empty</string>
     <string name="imagenguardadaOK">Image stored properly</string>
-    <string name="textoOcultoEra">The hidden text was: </string>
+    <string name="textoOcultoEra">The hidden text was:&#160;</string>
     <string name="imagenSeleccionada">Selected image</string>
     <string name="necesitasImagen">Choose an image</string>
     <string name="tituloAlertaPass">Warning…</string>

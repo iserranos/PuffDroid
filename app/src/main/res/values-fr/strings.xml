@@ -6,7 +6,7 @@
     <string name="botonOcultar">Cacher message</string>
     <string name="ocultar">Cacher</string>
     <string name="descubrir">Afficher</string>
-    <string name="botonGuardar">Garder l'image</string>
+    <string name="botonGuardar">Garder l\'image</string>
     <string name="pass1">Premier passe</string>
     <string name="pass2">Deuxième passe</string>
     <string name="pass3">Troisième passe</string>
@@ -14,15 +14,15 @@
     <string name="botonDescubrir">Afficher le message</string>
     <string name="tituloAlerta">Choisir une option</string>
     <string name="mensajeAlerta">Obtenir une image de:</string>
-    <string name="fileNotFoundExcepcion">Le fichier n'a pas pu être trouvé</string>
+    <string name="fileNotFoundExcepcion">Le fichier n\'a pas pu être trouvé</string>
     <string name="ioException">Erreur</string>
     <string name="algunError">Une erreur est survenue</string>
-    <string name="textoNoVacio">Vous avez besoin d' écrire un texte pour le cacher</string>
+    <string name="textoNoVacio">Vous avez besoin d\'écrire un texte pour le cacher</string>
     <string name="pass1NoVacia">Il faut remplir le premier mot de passe</string>
     <string name="pass2NoVacia">Il faut remplir le deuxième mot de passe</string>
     <string name="pass3NoVacia">Il faut remplir le troisième mot de passe</string>
     <string name="imagenguardadaOK">Image sauvegardée correctement</string>
-    <string name="textoOcultoEra">Le text caché était: </string>
+    <string name="textoOcultoEra">Le text caché était:&#160;</string>
     <string name="imagenSeleccionada">Image sélectionnée</string>
     <string name="necesitasImagen">Sélectionner image</string>
     <string name="tituloAlertaPass">Attention…</string>

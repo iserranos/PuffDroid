@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -364,6 +365,10 @@ public class Oculta extends Main implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         super.onClick(view);
+
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+        );
 
         switch (view.getId()) {
             case R.id.BotonOcultar:
