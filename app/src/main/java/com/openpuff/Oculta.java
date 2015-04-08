@@ -1,25 +1,26 @@
 package com.openpuff;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.File;
@@ -27,7 +28,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -37,18 +37,14 @@ public class Oculta extends Main implements View.OnClickListener {
     private static final int CAMARA = 2;
     private static final int ACEPTAR = 1;
     private static final int CANCELAR = 2;
-    public int opcion = 0;
+    private static final int maxPass = 16;
+    private int opcion = 0, maxTexto = 0;
     EditText TextoAOcultar, Pass1, Pass2, Pass3;
     Button BotonOcultar, BotonGuardar;
     ImageView ImagenOriginal;
-    LinearLayout linearLayout;
     Bitmap bitmap = null;
     Menu menu;
     int menuOpcion = R.menu.menugaleria;
-    private Uri uri;
-    String mCurrentPhotoPath;
-    String path = "";
-    String profile_Path = "";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,13 +57,19 @@ public class Oculta extends Main implements View.OnClickListener {
         setContentView(R.layout.oculta);
 
         TextoAOcultar = (EditText) findViewById(R.id.TextoAOcultar);
+        TextoAOcultar.addTextChangedListener(controlTextoAOcultar);
+
         Pass1 = (EditText) findViewById(R.id.Pass1);
+        Pass1.addTextChangedListener(controlPassAOcultar);
         Pass2 = (EditText) findViewById(R.id.Pass2);
+        Pass2.addTextChangedListener(controlPassAOcultar);
         Pass3 = (EditText) findViewById(R.id.Pass3);
+        Pass3.addTextChangedListener(controlPassAOcultar);
+
         BotonOcultar = (Button) findViewById(R.id.BotonOcultar);
         BotonGuardar = (Button) findViewById(R.id.BotonGuardar);
+
         ImagenOriginal = (ImageView) findViewById(R.id.ImagenOriginal);
-        linearLayout = (LinearLayout) findViewById(R.id.OcultaXML);
 
         BotonOcultar.setOnClickListener(this);
         try {
@@ -76,6 +78,32 @@ public class Oculta extends Main implements View.OnClickListener {
         } catch (NullPointerException ignored) {
         }
     }
+
+    private TextWatcher controlTextoAOcultar = new TextWatcher() {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            if(s.length() == maxTexto && maxTexto != 0){
+                Toast.makeText(getApplicationContext(), "No se admiten más caracteres", Toast.LENGTH_LONG).show();
+            }
+        }
+        @Override
+        public void afterTextChanged(Editable s) {}
+    };
+
+    private TextWatcher controlPassAOcultar = new TextWatcher() {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            if(s.length() == maxPass){
+                Toast.makeText(getApplicationContext(), "No se admiten más caracteres", Toast.LENGTH_LONG).show();
+            }
+        }
+        @Override
+        public void afterTextChanged(Editable s) {}
+    };
 
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
@@ -161,57 +189,10 @@ public class Oculta extends Main implements View.OnClickListener {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                path = "";
-                Intent intent = new Intent(
-                        "android.media.action.IMAGE_CAPTURE");
-                File folder = new File(Environment
-                        .getExternalStorageDirectory() + "/LoadImg");
-
-                if (!folder.exists()) {
-                    folder.mkdir();
-                }
-                final Calendar c = Calendar.getInstance();
-                String new_Date = c.get(Calendar.DAY_OF_MONTH) + "-"
-                        + ((c.get(Calendar.MONTH)) + 1) + "-"
-                        + c.get(Calendar.YEAR) + " " + c.get(Calendar.HOUR)
-                        + "-" + c.get(Calendar.MINUTE) + "-"
-                        + c.get(Calendar.SECOND);
-
-                path = String.format(
-                        Environment.getExternalStorageDirectory()
-                                + "/LoadImg/%s.png", "LoadImg(" + new_Date
-                                + ")");
-                File photo = new File(path);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        Uri.fromFile(photo));
-                startActivityForResult(intent, CAMARA);
-
-                /*Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                // Ensure that there's a camera activity to handle the intent
-                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                    // Create the File where the photo should go
-                    File photoFile = null;
-                    try {
-                        photoFile = createImageFile();
-                    } catch (IOException ex) {
-                        // Error occurred while creating the File
-
-                    }
-                    // Continue only if the File was successfully created
-                    if (photoFile != null) {
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                                Uri.fromFile(photoFile));
-                        startActivityForResult(takePictureIntent, CAMARA);
-                    }
-                }*/
-
-                /*Intent camera = new Intent();
+                Intent camera = new Intent();
                 camera.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                camera.putExtra("crop", "true");
-                File f=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-                uri = Uri.fromFile(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"myFile.jpg"));
-                camera.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                startActivityForResult(camera, CAMARA);*/
+                startActivityForResult(camera, CAMARA);
+
                 dialog.cancel();
             }
         });
@@ -219,25 +200,9 @@ public class Oculta extends Main implements View.OnClickListener {
         alerta.show();
     }
 
-    /*private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  // prefix
-                ".jpg",         // suffix
-                storageDir      // directory
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        return image;
-    }*/
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        hideKeyboard();
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
@@ -265,56 +230,24 @@ public class Oculta extends Main implements View.OnClickListener {
             switch (reqCode) {
                 case CAMARA:
 
-                    this.imageFromGallery(resCode, data);
-
-                    ImagenOriginal.setImageBitmap(null);
-
-                    ImagenOriginal.setImageBitmap(bitmap);
-
-                    // Get the dimensions of the View
-                    /*int targetW = ImagenOriginal.getWidth();
-                    int targetH = ImagenOriginal.getHeight();
-
-                    // Get the dimensions of the bitmap
-                    BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                    bmOptions.inJustDecodeBounds = true;
-                    BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-                    int photoW = bmOptions.outWidth;
-                    int photoH = bmOptions.outHeight;
-
-                    // Determine how much to scale down the image
-                    int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-                    // Decode the image file into a Bitmap sized to fill the View
-                    bmOptions.inJustDecodeBounds = false;
-                    bmOptions.inSampleSize = scaleFactor;
-                    bmOptions.inPurgeable = true;
-
-                    Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-                    ImagenOriginal.setImageBitmap(bitmap);*/
-
-
-                    //bitmap = (Bitmap) data.getExtras().get("data");
-
-                    /*Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.setType("image/*");
-                    startActivityForResult(intent, GALERIA);*/
-
-                    /*InputStream is=null;
-                    try {
-                        is = this.getContentResolver().openInputStream(uri);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    Bitmap bmp=BitmapFactory.decodeStream(is);
-                    ImagenOriginal.setImageBitmap(bmp);*/
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("image/jpeg");
+                    startActivityForResult(intent, GALERIA);
+                    Toast.makeText(getApplicationContext(), "Elige tu foto", Toast.LENGTH_LONG).show();
                     break;
 
                 case GALERIA:
                     Uri selectedimg = data.getData();
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
-                        ImagenOriginal.setImageBitmap(bitmap);
+                        maxTexto = (bitmap.getWidth()/16)-4;
+                        if(maxTexto >= 16){
+                            ImagenOriginal.setImageBitmap(bitmap);
+                            TextoAOcultar.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxTexto)});
+                        }else{
+                            Toast.makeText(getApplicationContext(), "Necesitas una imagen más ancha", Toast.LENGTH_LONG).show();
+                        }
+                        Toast.makeText(getApplicationContext(), String.valueOf(maxTexto), Toast.LENGTH_LONG).show();
                     } catch (FileNotFoundException e) {
                         Toast.makeText(getApplicationContext(), getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_SHORT).show();
                     } catch (IOException e) {
@@ -324,56 +257,22 @@ public class Oculta extends Main implements View.OnClickListener {
                     break;
             }
         } else {
-            Toast.makeText(getApplicationContext(), getString(R.string.algunError), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.algunError), Toast.LENGTH_LONG).show();
         }
-    }
-
-    private void imageFromGallery(int resultCode, Intent data) {
-        Uri selectedImage = data.getData();
-        String[] filePathColumn = { MediaStore.Images.Media.DATA };
-
-        Cursor cursor = getContentResolver().query(selectedImage,
-                filePathColumn, null, null, null);
-        cursor.moveToFirst();
-
-        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-
-        profile_Path = cursor.getString(columnIndex);
-        cursor.close();
-
-        bitmap = BitmapFactory.decodeFile(profile_Path);
-
-    }
-
-    private void imageFromCamera(int resultCode, Intent data) {
-        updateImageView((Bitmap) data.getExtras().get("data"));
-    }
-
-    private void updateImageView(Bitmap newImage) {
-        bitmap = newImage.copy(Bitmap.Config.ARGB_8888, true);
-    }
-
-    public String getPath(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        int column_index = cursor
-                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
     }
 
     @Override
     public void onClick(View view) {
         super.onClick(view);
 
-        getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
-        );
+        hideKeyboard();
 
         switch (view.getId()) {
             case R.id.BotonOcultar:
                 if (bitmap != null) {
                     recuperarDatos();
+                }else{
+                    Toast.makeText(getApplicationContext(), getString(R.string.necesitasImagen) ,Toast.LENGTH_LONG).show();
                 }
                 break;
             case R.id.BotonGuardar:
@@ -390,11 +289,11 @@ public class Oculta extends Main implements View.OnClickListener {
         String pass2 = Pass2.getText().toString().trim();
         String pass3 = Pass3.getText().toString().trim();
         if (texto.equals("0") || texto.length() == 0) {
-            Toast.makeText(getApplicationContext(), getString(R.string.textoNoVacio), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.textoNoVacio), Toast.LENGTH_LONG).show();
             return;
         }
         if (pass1.equals("") || pass1.length() == 0) {
-            Toast.makeText(getApplicationContext(), getString(R.string.pass1NoVacia), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.pass1NoVacia), Toast.LENGTH_LONG).show();
             return;
         }
         if ((pass2.equals("") || pass2.length() == 0) && (pass3.equals("") || pass3.length() == 0)) {
@@ -511,10 +410,10 @@ public class Oculta extends Main implements View.OnClickListener {
         mediaScanIntent.setData(contentUri);
         sendBroadcast(mediaScanIntent);
 
-        Toast.makeText(getApplicationContext(), getString(R.string.imagenguardadaOK), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), getString(R.string.imagenguardadaOK), Toast.LENGTH_LONG).show();
     }
 
-    public String binaryToString(String input) {
+    private String binaryToString(String input) {
         String output = "";
         for (int i = 0; i <= input.length() - 8; i += 8) {
             int k = Integer.parseInt(input.substring(i, i + 8), 2);
@@ -523,8 +422,7 @@ public class Oculta extends Main implements View.OnClickListener {
         return output;
     }
 
-
-    protected StringBuilder stringToBinary(String textoOculto) {
+    private StringBuilder stringToBinary(String textoOculto) {
         byte[] bytes = textoOculto.getBytes();
         StringBuilder binary = new StringBuilder();
         for (byte b : bytes) {
@@ -537,4 +435,12 @@ public class Oculta extends Main implements View.OnClickListener {
         return binary;
     }
 
+    private void hideKeyboard() {
+        // Check if no view has focus:
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
 }

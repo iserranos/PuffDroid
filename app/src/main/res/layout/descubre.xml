@@ -27,7 +27,8 @@
             android:hint="@string/pass1"
             android:textColorHint="#ffe3e5ff"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:maxLength="16" />
 
         <EditText
             android:id="@+id/Pass2"
@@ -36,7 +37,8 @@
             android:hint="@string/pass2"
             android:textColorHint="#ffe3e5ff"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:maxLength="16" />
 
         <EditText
             android:id="@+id/Pass3"
@@ -46,7 +48,8 @@
             android:hint="@string/pass3"
             android:textColorHint="#ffe3e5ff"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:maxLength="16" />
 
         <TextView
             android:id="@+id/TextoOculto"

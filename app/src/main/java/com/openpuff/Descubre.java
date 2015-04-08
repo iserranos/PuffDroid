@@ -1,16 +1,19 @@
 package com.openpuff;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,6 +25,7 @@ import java.io.IOException;
 
 public class Descubre extends Main implements View.OnClickListener {
 
+    private static final int maxPass = 16;
     TextView TextoOculto;
     EditText Pass1, Pass2, Pass3;
     ImageView ImagenOriginal;
@@ -46,12 +50,17 @@ public class Descubre extends Main implements View.OnClickListener {
 
 
         TextoOculto = (TextView) findViewById(R.id.TextoOculto);
-        Pass1 = (EditText) findViewById(R.id.Pass1);
-        Pass2 = (EditText) findViewById(R.id.Pass2);
-        Pass3 = (EditText) findViewById(R.id.Pass3);
-        ImagenOriginal = (ImageView) findViewById(R.id.ImagenOriginal);
-        BotonDescubrir = (Button) findViewById(R.id.BotonDescubrir);
 
+        Pass1 = (EditText) findViewById(R.id.Pass1);
+        Pass1.addTextChangedListener(controlPassAOcultar);
+        Pass2 = (EditText) findViewById(R.id.Pass2);
+        Pass2.addTextChangedListener(controlPassAOcultar);
+        Pass3 = (EditText) findViewById(R.id.Pass3);
+        Pass3.addTextChangedListener(controlPassAOcultar);
+
+        ImagenOriginal = (ImageView) findViewById(R.id.ImagenOriginal);
+
+        BotonDescubrir = (Button) findViewById(R.id.BotonDescubrir);
         BotonDescubrir.setOnClickListener(this);
 
         try {
@@ -61,6 +70,18 @@ public class Descubre extends Main implements View.OnClickListener {
         }
     }
 
+    private TextWatcher controlPassAOcultar = new TextWatcher() {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            if(s.length() == maxPass){
+                Toast.makeText(getApplicationContext(), "No se admiten más caracteres", Toast.LENGTH_LONG).show();
+            }
+        }
+        @Override
+        public void afterTextChanged(Editable s) {}
+    };
 
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
@@ -91,7 +112,6 @@ public class Descubre extends Main implements View.OnClickListener {
 
     }
 
-
     public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
@@ -118,6 +138,8 @@ public class Descubre extends Main implements View.OnClickListener {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        hideKeyboard();
+
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
@@ -143,7 +165,6 @@ public class Descubre extends Main implements View.OnClickListener {
         return super.onCreateOptionsMenu(menu);
     }
 
-
     @Override
     protected void onActivityResult(int reqCode, int resCode, Intent data) {
 
@@ -158,7 +179,7 @@ public class Descubre extends Main implements View.OnClickListener {
                 Toast.makeText(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(getApplicationContext(), R.string.necesitasImagen, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.necesitasImagen, Toast.LENGTH_LONG).show();
             finish();
         }
     }
@@ -167,22 +188,19 @@ public class Descubre extends Main implements View.OnClickListener {
     public void onClick(View view) {
         super.onClick(view);
 
-        getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
-        );
+        hideKeyboard();
 
         if (bitmap != null) {
             String mensaje = descubrirMensaje(bitmap);
             TextoOculto.setVisibility(View.VISIBLE);
             TextoOculto.setText(getString(R.string.textoOcultoEra) + mensaje);
         } else {
-            Toast.makeText(getApplicationContext(), getString(R.string.necesitasImagen), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.necesitasImagen), Toast.LENGTH_LONG).show();
         }
     }
 
-
     public String descubrirMensaje(Bitmap bitmap) {
-        int tamanioI;
+        int tamanioI = 0;
         StringBuilder binario;
         int color;
         String cadenaNueva;
@@ -216,7 +234,13 @@ public class Descubre extends Main implements View.OnClickListener {
             }
         }
 
-        tamanioI = Integer.parseInt(caracter) - 1;
+        try{
+            tamanioI = Integer.parseInt(caracter) - 1;
+        }catch (NumberFormatException ignored){
+            Toast.makeText(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
         mensaje += cadenaNueva;
         j++;
         cadenaNueva = "";
@@ -250,7 +274,6 @@ public class Descubre extends Main implements View.OnClickListener {
         return output;
     }
 
-
     protected StringBuilder stringToBinary(String textoOculto) {
         byte[] bytes = textoOculto.getBytes();
         StringBuilder binary = new StringBuilder();
@@ -262,6 +285,15 @@ public class Descubre extends Main implements View.OnClickListener {
             }
         }
         return binary;
+    }
+
+    private void hideKeyboard() {
+        // Check if no view has focus:
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
 }
