@@ -16,7 +16,6 @@ public class Main extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inicio);
 
-
         ImagenOcultar = (ImageButton) findViewById(R.id.ImagenOcultar);
         ImagenDescubrir = (ImageButton) findViewById(R.id.ImagenDescubrir);
 
@@ -37,13 +36,6 @@ public class Main extends Activity implements OnClickListener {
                 intent = new Intent(this, Descubre.class);
                 startActivity(intent);
                 break;
-
-            /*case R.id.ImagenContacto:
-
-                intent = new Intent(this, Oculta.class);
-                startActivity(intent);
-
-                break;*/
 
             default:
                 break;

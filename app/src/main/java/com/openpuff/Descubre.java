@@ -26,6 +26,22 @@ import java.io.IOException;
 public class Descubre extends Main implements View.OnClickListener {
 
     private static final int maxPass = 16;
+    private TextWatcher controlPassAOcultar = new TextWatcher() {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            if (s.length() == maxPass) {
+                Toast.makeText(getApplicationContext(), "No se admiten más caracteres", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+        }
+    };
     TextView TextoOculto;
     EditText Pass1, Pass2, Pass3;
     ImageView ImagenOriginal;
@@ -40,11 +56,8 @@ public class Descubre extends Main implements View.OnClickListener {
         setContentView(R.layout.descubre);
 
         if (savedInstanceState == null) {
-            // 1. on Upload click call ACTION_GET_CONTENT intent
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            // 2. pick image only
-            intent.setType("image/*");
-            // 3. start activity
+            intent.setType("image/jpeg");
             startActivityForResult(intent, 1);
         }
 
@@ -69,19 +82,6 @@ public class Descubre extends Main implements View.OnClickListener {
         } catch (NullPointerException ignored) {
         }
     }
-
-    private TextWatcher controlPassAOcultar = new TextWatcher() {
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            if(s.length() == maxPass){
-                Toast.makeText(getApplicationContext(), "No se admiten más caracteres", Toast.LENGTH_LONG).show();
-            }
-        }
-        @Override
-        public void afterTextChanged(Editable s) {}
-    };
 
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
@@ -141,16 +141,12 @@ public class Descubre extends Main implements View.OnClickListener {
         hideKeyboard();
 
         switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 finish();
                 return true;
             case R.id.ItemGaleria:
-                // 1. on Upload click call ACTION_GET_CONTENT intent
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                // 2. pick image only
                 intent.setType("image/jpeg");
-                // 3. start activity
                 startActivityForResult(intent, 1);
                 return true;
         }
@@ -158,7 +154,6 @@ public class Descubre extends Main implements View.OnClickListener {
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
         this.menu = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(menuOpcion, menu);
@@ -187,7 +182,6 @@ public class Descubre extends Main implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         super.onClick(view);
-
         hideKeyboard();
 
         if (bitmap != null) {
@@ -234,10 +228,10 @@ public class Descubre extends Main implements View.OnClickListener {
             }
         }
 
-        try{
+        try {
             tamanioI = Integer.parseInt(caracter) - 1;
-        }catch (NumberFormatException ignored){
-            Toast.makeText(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_SHORT).show();
+        } catch (NumberFormatException ignored) {
+            Toast.makeText(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_LONG).show();
             finish();
         }
 
@@ -288,7 +282,6 @@ public class Descubre extends Main implements View.OnClickListener {
     }
 
     private void hideKeyboard() {
-        // Check if no view has focus:
         View view = this.getCurrentFocus();
         if (view != null) {
             InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);

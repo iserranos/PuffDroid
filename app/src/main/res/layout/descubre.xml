@@ -25,20 +25,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/pass1"
+            android:maxLength="16"
             android:textColorHint="#ffe3e5ff"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:maxLength="16" />
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/Pass2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/pass2"
+            android:maxLength="16"
             android:textColorHint="#ffe3e5ff"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:maxLength="16" />
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/Pass3"
@@ -46,10 +46,10 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dip"
             android:hint="@string/pass3"
+            android:maxLength="16"
             android:textColorHint="#ffe3e5ff"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:maxLength="16" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/TextoOculto"

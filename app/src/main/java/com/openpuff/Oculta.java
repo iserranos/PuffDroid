@@ -38,13 +38,45 @@ public class Oculta extends Main implements View.OnClickListener {
     private static final int ACEPTAR = 1;
     private static final int CANCELAR = 2;
     private static final int maxPass = 16;
-    private int opcion = 0, maxTexto = 0;
+    private TextWatcher controlPassAOcultar = new TextWatcher() {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            if (s.length() == maxPass) {
+                Toast.makeText(getApplicationContext(), "No se admiten más caracteres", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+        }
+    };
     EditText TextoAOcultar, Pass1, Pass2, Pass3;
     Button BotonOcultar, BotonGuardar;
     ImageView ImagenOriginal;
     Bitmap bitmap = null;
     Menu menu;
     int menuOpcion = R.menu.menugaleria;
+    private int opcion = 0, maxTexto = 0;
+    private TextWatcher controlTextoAOcultar = new TextWatcher() {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            if (s.length() == maxTexto && maxTexto != 0) {
+                Toast.makeText(getApplicationContext(), "No se admiten más caracteres", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+        }
+    };
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,32 +110,6 @@ public class Oculta extends Main implements View.OnClickListener {
         } catch (NullPointerException ignored) {
         }
     }
-
-    private TextWatcher controlTextoAOcultar = new TextWatcher() {
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            if(s.length() == maxTexto && maxTexto != 0){
-                Toast.makeText(getApplicationContext(), "No se admiten más caracteres", Toast.LENGTH_LONG).show();
-            }
-        }
-        @Override
-        public void afterTextChanged(Editable s) {}
-    };
-
-    private TextWatcher controlPassAOcultar = new TextWatcher() {
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            if(s.length() == maxPass){
-                Toast.makeText(getApplicationContext(), "No se admiten más caracteres", Toast.LENGTH_LONG).show();
-            }
-        }
-        @Override
-        public void afterTextChanged(Editable s) {}
-    };
 
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
@@ -240,11 +246,11 @@ public class Oculta extends Main implements View.OnClickListener {
                     Uri selectedimg = data.getData();
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
-                        maxTexto = (bitmap.getWidth()/16)-4;
-                        if(maxTexto >= 16){
+                        maxTexto = (bitmap.getWidth() / 16) - 4;
+                        if (maxTexto >= 16) {
                             ImagenOriginal.setImageBitmap(bitmap);
-                            TextoAOcultar.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxTexto)});
-                        }else{
+                            TextoAOcultar.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxTexto)});
+                        } else {
                             Toast.makeText(getApplicationContext(), "Necesitas una imagen más ancha", Toast.LENGTH_LONG).show();
                         }
                         Toast.makeText(getApplicationContext(), String.valueOf(maxTexto), Toast.LENGTH_LONG).show();
@@ -271,8 +277,8 @@ public class Oculta extends Main implements View.OnClickListener {
             case R.id.BotonOcultar:
                 if (bitmap != null) {
                     recuperarDatos();
-                }else{
-                    Toast.makeText(getApplicationContext(), getString(R.string.necesitasImagen) ,Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.necesitasImagen), Toast.LENGTH_LONG).show();
                 }
                 break;
             case R.id.BotonGuardar:
