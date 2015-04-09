@@ -1,6 +1,7 @@
 package com.openpuff;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -258,7 +259,6 @@ public class Oculta extends Main implements View.OnClickListener {
         super.onClick(view);
 
         hideKeyboard();
-
         switch (view.getId()) {
             case R.id.BotonOcultar:
                 if (bitmap != null) {
@@ -359,10 +359,11 @@ public class Oculta extends Main implements View.OnClickListener {
                 }
             }
         }
-
+        ProgressDialog dialog = ProgressDialog.show(this, "Loading", "Please wait...", true);
         //String textoFinal = Seguridad.generarMensaje(texto, pass1, pass2, pass3);
         //String textoInicio = Seguridad.descubrirMensaje(textoFinal, pass1, pass2, pass3);
         ocultarMensaje(texto.length() + texto);
+        dialog.dismiss();
     }
 
     private void mostrarAlertaPass2() {
