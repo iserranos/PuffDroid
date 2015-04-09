@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,8 +36,6 @@ public class Oculta extends Main implements View.OnClickListener {
 
     private static final int GALERIA = 1;
     private static final int CAMARA = 2;
-    private static final int ACEPTAR = 1;
-    private static final int CANCELAR = 2;
     private static final int maxPass = 16;
     private TextWatcher controlPassAOcultar = new TextWatcher() {
         @Override
@@ -60,7 +59,7 @@ public class Oculta extends Main implements View.OnClickListener {
     Bitmap bitmap = null;
     Menu menu;
     int menuOpcion = R.menu.menugaleria;
-    private int opcion = 0, maxTexto = 0;
+    private int maxTexto = 0;
     private TextWatcher controlTextoAOcultar = new TextWatcher() {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -88,6 +87,9 @@ public class Oculta extends Main implements View.OnClickListener {
         }
         setContentView(R.layout.oculta);
 
+        BotonOcultar = (Button) findViewById(R.id.BotonOcultar);
+        BotonGuardar = (Button) findViewById(R.id.BotonGuardar);
+
         TextoAOcultar = (EditText) findViewById(R.id.TextoAOcultar);
         TextoAOcultar.addTextChangedListener(controlTextoAOcultar);
 
@@ -97,9 +99,6 @@ public class Oculta extends Main implements View.OnClickListener {
         Pass2.addTextChangedListener(controlPassAOcultar);
         Pass3 = (EditText) findViewById(R.id.Pass3);
         Pass3.addTextChangedListener(controlPassAOcultar);
-
-        BotonOcultar = (Button) findViewById(R.id.BotonOcultar);
-        BotonGuardar = (Button) findViewById(R.id.BotonGuardar);
 
         ImagenOriginal = (ImageView) findViewById(R.id.ImagenOriginal);
 
@@ -176,6 +175,127 @@ public class Oculta extends Main implements View.OnClickListener {
         }
     }
 
+    public boolean onOptionsItemSelected(MenuItem item) {
+        hideKeyboard();
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+
+                if (BotonOcultar.getVisibility() == View.GONE && BotonGuardar.getVisibility() == View.VISIBLE) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("No has guardado la imagen. ¿Estás seguro de que quieres salir?")
+                            .setCancelable(false)
+                            .setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    finish();
+                                }
+                            })
+                            .setNegativeButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+
+                                }
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                } else {
+                    finish();
+                }
+                return true;
+            case R.id.ItemGaleria:
+
+                mostrarAlerta();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        this.menu = menu;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(menuOpcion, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    protected void onActivityResult(int reqCode, int resCode, Intent data) {
+        super.onActivityResult(reqCode, resCode, data);
+        if (resCode == RESULT_OK) {
+            switch (reqCode) {
+                case CAMARA:
+
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("image/jpeg");
+                    startActivityForResult(intent, GALERIA);
+                    Toast.makeText(getApplicationContext(), "Elige tu foto", Toast.LENGTH_LONG).show();
+                    break;
+
+                case GALERIA:
+                    Uri selectedimg = data.getData();
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
+                        maxTexto = (bitmap.getWidth() / 16) - 4;
+                        if (maxTexto >= 16) {
+                            ImagenOriginal.setImageBitmap(bitmap);
+                            TextoAOcultar.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxTexto)});
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Necesitas una imagen más ancha", Toast.LENGTH_LONG).show();
+                        }
+
+                    } catch (FileNotFoundException e) {
+                        Toast.makeText(getApplicationContext(), getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        Toast.makeText(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_SHORT).show();
+                    }
+
+                    break;
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), getString(R.string.necesitasImagen), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void onClick(View view) {
+        super.onClick(view);
+
+        hideKeyboard();
+
+        switch (view.getId()) {
+            case R.id.BotonOcultar:
+                if (bitmap != null) {
+                    recuperarDatos();
+                } else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.necesitasImagen), Toast.LENGTH_LONG).show();
+                }
+                break;
+            case R.id.BotonGuardar:
+                storeImage(bitmap);
+                finish();
+                break;
+        }
+    }
+
+    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && BotonOcultar.getVisibility() == View.GONE && BotonGuardar.getVisibility() == View.VISIBLE) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("No has guardado la imagen. ¿Estás seguro de que quieres salir?")
+                    .setCancelable(false)
+                    .setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
     private void mostrarAlerta() {
         AlertDialog.Builder alerta = new AlertDialog.Builder(this);
         alerta.setTitle(getString(R.string.tituloAlerta));
@@ -206,88 +326,6 @@ public class Oculta extends Main implements View.OnClickListener {
         alerta.show();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        hideKeyboard();
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.ItemGaleria:
-                mostrarAlerta();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
-        this.menu = menu;
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(menuOpcion, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    protected void onActivityResult(int reqCode, int resCode, Intent data) {
-        super.onActivityResult(reqCode, resCode, data);
-        if (resCode == RESULT_OK) {
-            switch (reqCode) {
-                case CAMARA:
-
-                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.setType("image/jpeg");
-                    startActivityForResult(intent, GALERIA);
-                    Toast.makeText(getApplicationContext(), "Elige tu foto", Toast.LENGTH_LONG).show();
-                    break;
-
-                case GALERIA:
-                    Uri selectedimg = data.getData();
-                    try {
-                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
-                        maxTexto = (bitmap.getWidth() / 16) - 4;
-                        if (maxTexto >= 16) {
-                            ImagenOriginal.setImageBitmap(bitmap);
-                            TextoAOcultar.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxTexto)});
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Necesitas una imagen más ancha", Toast.LENGTH_LONG).show();
-                        }
-                        Toast.makeText(getApplicationContext(), String.valueOf(maxTexto), Toast.LENGTH_LONG).show();
-                    } catch (FileNotFoundException e) {
-                        Toast.makeText(getApplicationContext(), getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_SHORT).show();
-                    } catch (IOException e) {
-                        Toast.makeText(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_SHORT).show();
-                    }
-
-                    break;
-            }
-        } else {
-            Toast.makeText(getApplicationContext(), getString(R.string.algunError), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    public void onClick(View view) {
-        super.onClick(view);
-
-        hideKeyboard();
-
-        switch (view.getId()) {
-            case R.id.BotonOcultar:
-                if (bitmap != null) {
-                    recuperarDatos();
-                } else {
-                    Toast.makeText(getApplicationContext(), getString(R.string.necesitasImagen), Toast.LENGTH_LONG).show();
-                }
-                break;
-            case R.id.BotonGuardar:
-                storeImage(bitmap);
-                finish();
-                break;
-        }
-    }
-
     private void recuperarDatos() {
         this.bitmap = bitmap.copy(bitmap.getConfig(), true);
         String texto = TextoAOcultar.getText().toString().trim();
@@ -303,23 +341,20 @@ public class Oculta extends Main implements View.OnClickListener {
             return;
         }
         if ((pass2.equals("") || pass2.length() == 0) && (pass3.equals("") || pass3.length() == 0)) {
-            mostrarAlertaPass(getString(R.string.mensajeAlertaPass2y3));
-            if (opcion == CANCELAR) {
-                opcion = 0;
+            mostrarAlertaPass2y3();
+            if (!Pass2.getText().equals(Pass1.getText()) && !Pass3.getText().equals(Pass1.getText())) {
                 return;
             }
         } else {
             if (pass2.equals("") || pass2.length() == 0) {
-                mostrarAlertaPass(getString(R.string.mensajeAlertaPass2));
-                if (opcion == CANCELAR) {
-                    opcion = 0;
+                mostrarAlertaPass2();
+                if (!Pass2.getText().equals(Pass1.getText())) {
                     return;
                 }
             }
             if (pass3.equals("") || pass3.length() == 0) {
-                mostrarAlertaPass(getString(R.string.mensajeAlertaPass3));
-                if (opcion == CANCELAR) {
-                    opcion = 0;
+                mostrarAlertaPass3();
+                if (!Pass3.getText().equals(Pass1.getText())) {
                     return;
                 }
             }
@@ -330,22 +365,66 @@ public class Oculta extends Main implements View.OnClickListener {
         ocultarMensaje(texto.length() + texto);
     }
 
-    private void mostrarAlertaPass(String mensaje) {
+    private void mostrarAlertaPass2() {
         AlertDialog.Builder alerta = new AlertDialog.Builder(this);
         alerta.setTitle(getString(R.string.tituloAlertaPass));
-        alerta.setMessage(mensaje);
-        alerta.setPositiveButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
+        alerta.setMessage(getString(R.string.mensajeAlertaPass2));
+        alerta.setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                opcion = CANCELAR;
+                Pass2.setText(Pass1.getText());
                 dialog.cancel();
             }
 
         });
-        alerta.setNegativeButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
+        alerta.setNegativeButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                opcion = ACEPTAR;
+                dialog.cancel();
+            }
+        });
+
+        alerta.show();
+    }
+
+    private void mostrarAlertaPass3() {
+        AlertDialog.Builder alerta = new AlertDialog.Builder(this);
+        alerta.setTitle(getString(R.string.tituloAlertaPass));
+        alerta.setMessage(getString(R.string.mensajeAlertaPass3));
+        alerta.setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Pass3.setText(Pass1.getText());
+                dialog.cancel();
+            }
+
+        });
+        alerta.setNegativeButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        alerta.show();
+    }
+
+    private void mostrarAlertaPass2y3() {
+        AlertDialog.Builder alerta = new AlertDialog.Builder(this);
+        alerta.setTitle(getString(R.string.tituloAlertaPass));
+        alerta.setMessage(getString(R.string.mensajeAlertaPass2y3));
+        alerta.setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Pass2.setText(Pass1.getText());
+                Pass3.setText(Pass1.getText());
+                dialog.cancel();
+            }
+
+        });
+        alerta.setNegativeButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
         });
