@@ -11,8 +11,8 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="70sp"
-            android:layout_marginTop="50sp"
+            android:layout_marginBottom="70dp"
+            android:layout_marginTop="50dp"
             android:gravity="center|center_horizontal">
 
             <TextView
