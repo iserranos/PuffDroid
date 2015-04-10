@@ -20,11 +20,23 @@
             android:layout_marginTop="10dip"
             android:contentDescription="@string/imagenSeleccionada" />
 
+        <EditText
+            android:id="@+id/TextoAOcultar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dip"
+            android:layout_marginTop="10dip"
+            android:gravity="center"
+            android:hint="@string/textoAOcultar"
+            android:textColorHint="#ffe3e5ff"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/Pass1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:hint="@string/pass1"
             android:maxLength="16"
             android:textColorHint="#ffe3e5ff"
@@ -40,7 +52,8 @@
             android:maxLength="16"
             android:textColorHint="#ffe3e5ff"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="gone" />
 
         <EditText
             android:id="@+id/Pass3"
@@ -50,19 +63,8 @@
             android:maxLength="16"
             android:textColorHint="#ffe3e5ff"
             android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/TextoAOcultar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dip"
-            android:layout_marginTop="10dip"
-            android:gravity="center"
-            android:hint="@string/textoAOcultar"
-            android:textColorHint="#ffe3e5ff"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/BotonOcultar"

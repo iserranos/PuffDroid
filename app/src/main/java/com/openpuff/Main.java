@@ -9,18 +9,16 @@ import android.widget.ImageButton;
 
 public class Main extends Activity implements OnClickListener {
 
-    ImageButton ImagenOcultar, ImagenDescubrir;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inicio);
 
-        ImagenOcultar = (ImageButton) findViewById(R.id.ImagenOcultar);
-        ImagenDescubrir = (ImageButton) findViewById(R.id.ImagenDescubrir);
+        ImageButton imagenOcultar = (ImageButton) findViewById(R.id.ImagenOcultar);
+        ImageButton imagenDescubrir = (ImageButton) findViewById(R.id.ImagenDescubrir);
 
-        ImagenOcultar.setOnClickListener(this);
-        ImagenDescubrir.setOnClickListener(this);
+        imagenOcultar.setOnClickListener(this);
+        imagenDescubrir.setOnClickListener(this);
     }
 
     @Override

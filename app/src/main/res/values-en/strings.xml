@@ -7,7 +7,7 @@
     <string name="ocultar">Hide</string>
     <string name="descubrir">Discover</string>
     <string name="botonGuardar">Save image</string>
-    <string name="pass1">Enter the first password</string>
+    <string name="pass1">Password</string>
     <string name="pass2">Enter the second password</string>
     <string name="pass3">Enter the third password</string>
     <string name="textoAOcultar">Type text to hide</string>
