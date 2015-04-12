@@ -1,14 +1,11 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#36DCDC">
+    style="@style/AppTheme">
 
     <LinearLayout
         android:id="@+id/DescubreXML"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:textColor="#ffe3e5ff">
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/ImagenOriginal"
@@ -26,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dip"
             android:layout_marginRight="10dip"
-            android:textColorHint="#ffe3e5ff"
+            android:textColorHint="@color/letraNormal"
             android:textSize="20sp"
             android:textStyle="bold"
             android:visibility="gone" />
@@ -38,17 +35,18 @@
             android:gravity="center"
             android:hint="@string/pass1"
             android:maxLength="16"
-            android:textColorHint="#ffe3e5ff"
+            android:textColorHint="@color/letraNormal"
             android:textSize="20sp"
             android:textStyle="bold" />
 
+        <!--
         <EditText
             android:id="@+id/Pass2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/pass2"
             android:maxLength="16"
-            android:textColorHint="#ffe3e5ff"
+            android:textColorHint="@color/letraNormal"
             android:textSize="20sp"
             android:textStyle="bold"
             android:visibility="gone" />
@@ -60,10 +58,11 @@
             android:layout_marginBottom="10dip"
             android:hint="@string/pass3"
             android:maxLength="16"
-            android:textColorHint="#ffe3e5ff"
+            android:textColorHint="@color/letraNormal"
             android:textSize="20sp"
             android:textStyle="bold"
             android:visibility="gone" />
+        -->
 
         <Button
             android:id="@+id/BotonDescubrir"
@@ -73,7 +72,7 @@
             android:layout_marginTop="10dip"
             android:clickable="true"
             android:text="@string/botonDescubrir"
-            android:textColor="#ffe3e5ff"
+            android:textColor="@color/letraBoton"
             android:textSize="20sp"
             android:textStyle="bold" />
 

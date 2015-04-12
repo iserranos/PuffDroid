@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -33,9 +34,9 @@ public class Descubre extends Main implements View.OnClickListener {
         }
 
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
             if (s.length() == maxPass) {
-                Toast.makeText(getApplicationContext(), "No se admiten más caracteres", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.noMasCaracteres), Toast.LENGTH_LONG).show();
             }
         }
 
@@ -49,7 +50,7 @@ public class Descubre extends Main implements View.OnClickListener {
     private ImageView ImagenOriginal;
     private Bitmap bitmap;
 
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.descubre);
@@ -136,7 +137,7 @@ public class Descubre extends Main implements View.OnClickListener {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         hideKeyboard();
 
         switch (item.getItemId()) {
@@ -160,7 +161,7 @@ public class Descubre extends Main implements View.OnClickListener {
     }
 
     @Override
-    protected void onActivityResult(int reqCode, int resCode, Intent data) {
+    protected void onActivityResult(int reqCode, int resCode, @Nullable Intent data) {
 
         if (resCode == RESULT_OK && data != null) {
             Uri selectedimg = data.getData();
@@ -179,12 +180,12 @@ public class Descubre extends Main implements View.OnClickListener {
     }
 
     @Override
-    public void onClick(View view) {
+    public void onClick(@NonNull View view) {
         super.onClick(view);
         hideKeyboard();
 
         if (bitmap != null) {
-            ProgressDialog dialog = ProgressDialog.show(this, "Loading", "Please wait...", true);
+            ProgressDialog dialog = ProgressDialog.show(this, getString(R.string.cargando), getString(R.string.espere), true);
             String mensaje = descubrirMensaje(bitmap);
             try {
                 String mensajeFinal = seguridad.decrypt(mensaje, Pass1.getText().toString().trim());
@@ -199,7 +200,7 @@ public class Descubre extends Main implements View.OnClickListener {
         }
     }
 
-    String descubrirMensaje(Bitmap bitmap) {
+    String descubrirMensaje(@NonNull Bitmap bitmap) {
         int tamanioI = 0;
         StringBuilder binario;
         int color = 0;
@@ -259,7 +260,8 @@ public class Descubre extends Main implements View.OnClickListener {
         return mensaje;
     }
 
-    String binaryToString(String input) {
+    @NonNull
+    String binaryToString(@NonNull String input) {
         String output = "";
         for (int i = 0; i <= input.length() - 8; i += 8) {
             int k = Integer.parseInt(input.substring(i, i + 8), 2);
@@ -268,7 +270,8 @@ public class Descubre extends Main implements View.OnClickListener {
         return output;
     }
 
-    StringBuilder stringToBinary(String textoOculto) {
+    @NonNull
+    StringBuilder stringToBinary(@NonNull String textoOculto) {
         byte[] bytes = textoOculto.getBytes();
         StringBuilder binary = new StringBuilder();
         for (byte b : bytes) {

@@ -13,23 +13,31 @@
     <string name="textoAOcultar">Type text to hide</string>
     <string name="botonDescubrir">Discover the message</string>
     <string name="tituloAlerta">Choose option</string>
-    <string name="mensajeAlerta">Get image</string>
+    <string name="mensajeAlerta">Get image:</string>
     <string name="fileNotFoundExcepcion">File not found</string>
     <string name="ioException">Error</string>
-    <string name="algunError">An error has occurred</string>
     <string name="textoNoVacio">Need to write text to hide</string>
     <string name="pass1NoVacia">The first password can not be empty</string>
+    <!--
+    <string name="algunError">An error has occurred</string>
     <string name="pass2NoVacia">The second password can not be empty</string>
     <string name="pass3NoVacia">The third password can not be empty</string>
+    <string name="tituloAlertaPass">Warning…</string>
+    <string name="mensajeAlertaPass2">The password field 2 becomes the password 1.\nContinue?</string>
+    <string name="mensajeAlertaPass3">The password field 3 becomes the password 1.\nContinue?</string>
+    <string name="mensajeAlertaPass2y3">Fields passwords 2 and 3 become the password 1.\nContinue?</string>
+    -->
     <string name="imagenguardadaOK">Image stored properly</string>
     <string name="textoOcultoEra">The hidden text was:&#160;</string>
     <string name="imagenSeleccionada">Selected image</string>
     <string name="necesitasImagen">Choose an image</string>
-    <string name="tituloAlertaPass">Warning…</string>
-    <string name="mensajeAlertaPass2">The password field 2 becomes the password 1. Continue?</string>
     <string name="cancelar">Cancel</string>
     <string name="aceptar">Accept</string>
-    <string name="mensajeAlertaPass3">The password field 3 becomes the password 1. Continue?</string>
-    <string name="mensajeAlertaPass2y3">Fields passwords 2 and 3 become the password 1. Continue?</string>
+    <string name="noMasCaracteres">More characters are not allowed</string>
+    <string name="cargando">Loading</string>
+    <string name="espere">Please, wait…</string>
+    <string name="confirmación">Image is not saved. Quit?</string>
+    <string name="eligeFoto">Choose image</string>
+    <string name="imagenGrande">Need a larger image</string>
 
 </resources>

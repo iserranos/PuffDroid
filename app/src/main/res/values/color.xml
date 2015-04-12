@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="fondo" type="color">#E0F8F1</item>
+    <item name="letraTitulo" type="color">#0A122A</item>
+    <item name="letraNormal" type="color">#0A122A</item>
+    <item name="letraBoton" type="color">#000</item>
+</resources>

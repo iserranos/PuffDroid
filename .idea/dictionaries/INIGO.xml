@@ -8,6 +8,7 @@
       <w>algun</w>
       <w>algún</w>
       <w>ancha</w>
+      <w>androidcolors</w>
       <w>arraycopy</w>
       <w>binario</w>
       <w>boton</w>
@@ -17,10 +18,12 @@
       <w>cancelar</w>
       <w>caracter</w>
       <w>caracteres</w>
+      <w>cargando</w>
       <w>cfec</w>
       <w>cifrado</w>
       <w>cifrar</w>
       <w>ciphertext</w>
+      <w>confirmación</w>
       <w>contador</w>
       <w>continuar</w>
       <w>contraseña</w>
@@ -40,14 +43,17 @@
       <w>elige</w>
       <w>encypted</w>
       <w>escribir</w>
+      <w>espere</w>
       <w>estar</w>
       <w>estás</w>
       <w>excepcion</w>
       <w>fdab</w>
+      <w>fondo</w>
       <w>foto</w>
       <w>galeria</w>
       <w>galería</w>
       <w>generar</w>
+      <w>grande</w>
       <w>guardada</w>
       <w>guardado</w>
       <w>guardar</w>
@@ -59,6 +65,7 @@
       <w>inicio</w>
       <w>iterador</w>
       <w>kgen</w>
+      <w>letra</w>
       <w>mensaje</w>
       <w>mostrar</w>
       <w>necesitas</w>

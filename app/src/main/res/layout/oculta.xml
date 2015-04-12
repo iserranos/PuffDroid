@@ -1,14 +1,11 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#36DCDC">
+    style="@style/AppTheme">
 
     <LinearLayout
         android:id="@+id/OcultaXML"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:textColor="#ffe3e5ff">
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/ImagenOriginal"
@@ -28,7 +25,7 @@
             android:layout_marginTop="10dip"
             android:gravity="center"
             android:hint="@string/textoAOcultar"
-            android:textColorHint="#ffe3e5ff"
+            android:textColorHint="@color/letraNormal"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -39,18 +36,18 @@
             android:gravity="center"
             android:hint="@string/pass1"
             android:maxLength="16"
-            android:textColorHint="#ffe3e5ff"
+            android:textColorHint="@color/letraNormal"
             android:textSize="20sp"
             android:textStyle="bold" />
 
-
+        <!--
         <EditText
             android:id="@+id/Pass2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/pass2"
             android:maxLength="16"
-            android:textColorHint="#ffe3e5ff"
+            android:textColorHint="@color/letraNormal"
             android:textSize="20sp"
             android:textStyle="bold"
             android:visibility="gone" />
@@ -61,10 +58,11 @@
             android:layout_height="wrap_content"
             android:hint="@string/pass3"
             android:maxLength="16"
-            android:textColorHint="#ffe3e5ff"
+            android:textColorHint="@color/letraNormal"
             android:textSize="20sp"
             android:textStyle="bold"
             android:visibility="gone" />
+        -->
 
         <Button
             android:id="@+id/BotonOcultar"
@@ -73,7 +71,9 @@
             android:layout_gravity="center_horizontal"
             android:clickable="true"
             android:text="@string/botonOcultar"
-            android:textSize="20sp" />
+            android:textColor="@color/letraBoton"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/BotonGuardar"
@@ -82,7 +82,9 @@
             android:layout_gravity="center_horizontal"
             android:clickable="true"
             android:text="@string/botonGuardar"
+            android:textColor="@color/letraBoton"
             android:textSize="20sp"
+            android:textStyle="bold"
             android:visibility="gone" />
 
     </LinearLayout>

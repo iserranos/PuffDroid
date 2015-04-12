@@ -3,6 +3,7 @@ package com.openpuff;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
@@ -22,7 +23,7 @@ public class Main extends Activity implements OnClickListener {
     }
 
     @Override
-    public void onClick(View view) {
+    public void onClick(@NonNull View view) {
         Intent intent;
         switch (view.getId()) {
             case R.id.ImagenOcultar:

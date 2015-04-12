@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -44,9 +45,9 @@ public class Oculta extends Main implements View.OnClickListener {
         }
 
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
             if (s.length() == maxPass) {
-                Toast.makeText(getApplicationContext(), "No se admiten más caracteres", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.noMasCaracteres), Toast.LENGTH_LONG).show();
             }
         }
 
@@ -60,6 +61,7 @@ public class Oculta extends Main implements View.OnClickListener {
     private Button BotonOcultar;
     private Button BotonGuardar;
     private ImageView ImagenOriginal;
+    @Nullable
     private Bitmap bitmap = null;
     private int maxTexto = 0;
     private final TextWatcher controlTextoAOcultar = new TextWatcher() {
@@ -68,9 +70,9 @@ public class Oculta extends Main implements View.OnClickListener {
         }
 
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
             if (s.length() == maxTexto && maxTexto != 0) {
-                Toast.makeText(getApplicationContext(), "No se admiten más caracteres", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.noMasCaracteres), Toast.LENGTH_LONG).show();
             }
         }
 
@@ -79,7 +81,7 @@ public class Oculta extends Main implements View.OnClickListener {
         }
     };
 
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
@@ -177,7 +179,7 @@ public class Oculta extends Main implements View.OnClickListener {
         }*/
     }
 
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         hideKeyboard();
         switch (item.getItemId()) {
 
@@ -185,7 +187,7 @@ public class Oculta extends Main implements View.OnClickListener {
 
                 if (BotonOcultar.getVisibility() == View.GONE && BotonGuardar.getVisibility() == View.VISIBLE) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setMessage("No has guardado la imagen. ¿Estás seguro de que quieres salir?")
+                    builder.setMessage(getString(R.string.confirmación))
                             .setCancelable(false)
                             .setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
@@ -219,7 +221,7 @@ public class Oculta extends Main implements View.OnClickListener {
         return super.onCreateOptionsMenu(menu);
     }
 
-    protected void onActivityResult(int reqCode, int resCode, Intent data) {
+    protected void onActivityResult(int reqCode, int resCode, @NonNull Intent data) {
         super.onActivityResult(reqCode, resCode, data);
         if (resCode == RESULT_OK) {
             switch (reqCode) {
@@ -228,7 +230,7 @@ public class Oculta extends Main implements View.OnClickListener {
                     Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                     intent.setType("image/jpeg");
                     startActivityForResult(intent, GALERIA);
-                    Toast.makeText(getApplicationContext(), "Elige tu foto", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.eligeFoto), Toast.LENGTH_LONG).show();
                     break;
 
                 case GALERIA:
@@ -240,7 +242,7 @@ public class Oculta extends Main implements View.OnClickListener {
                             ImagenOriginal.setImageBitmap(bitmap);
                             TextoAOcultar.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxTexto)});
                         } else {
-                            Toast.makeText(getApplicationContext(), "Necesitas una imagen más ancha", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), getString(R.string.imagenGrande), Toast.LENGTH_LONG).show();
                         }
 
                     } catch (FileNotFoundException e) {
@@ -256,7 +258,7 @@ public class Oculta extends Main implements View.OnClickListener {
         }
     }
 
-    public void onClick(View view) {
+    public void onClick(@NonNull View view) {
         super.onClick(view);
 
         hideKeyboard();
@@ -269,6 +271,7 @@ public class Oculta extends Main implements View.OnClickListener {
                 }
                 break;
             case R.id.BotonGuardar:
+                assert bitmap != null;
                 storeImage(bitmap);
                 finish();
                 break;
@@ -279,7 +282,7 @@ public class Oculta extends Main implements View.OnClickListener {
         if (keyCode == KeyEvent.KEYCODE_BACK && BotonOcultar.getVisibility() == View.GONE && BotonGuardar.getVisibility() == View.VISIBLE) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("No has guardado la imagen. ¿Estás seguro de que quieres salir?")
+            builder.setMessage(getString(R.string.confirmación))
                     .setCancelable(false)
                     .setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -303,7 +306,7 @@ public class Oculta extends Main implements View.OnClickListener {
         alerta.setMessage(getString(R.string.mensajeAlerta));
         alerta.setPositiveButton(getString(R.string.opcion2), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(@NonNull DialogInterface dialog, int which) {
 
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/jpeg");
@@ -314,7 +317,7 @@ public class Oculta extends Main implements View.OnClickListener {
         });
         alerta.setNegativeButton(getString(R.string.opcion1), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(@NonNull DialogInterface dialog, int which) {
 
                 Intent camera = new Intent();
                 camera.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -328,6 +331,7 @@ public class Oculta extends Main implements View.OnClickListener {
     }
 
     private void recuperarDatos() {
+        assert bitmap != null;
         this.bitmap = bitmap.copy(bitmap.getConfig(), true);
 
         String texto = TextoAOcultar.getText().toString().trim();
@@ -363,7 +367,7 @@ public class Oculta extends Main implements View.OnClickListener {
                 }
             }
         }*/
-        ProgressDialog dialog = ProgressDialog.show(this, "Loading", "Please wait...", true);
+        ProgressDialog dialog = ProgressDialog.show(this, getString(R.string.cargando), getString(R.string.espere), true);
         try {
             String textoFinal = seguridad.encrypt(texto, pass1);
             ocultarMensaje(textoFinal.length() + "-" + textoFinal);
@@ -373,7 +377,7 @@ public class Oculta extends Main implements View.OnClickListener {
         dialog.dismiss();
     }
 
-    private void ocultarMensaje(String texto) {
+    private void ocultarMensaje(@NonNull String texto) {
         StringBuilder dato = stringToBinary(texto);
 
         StringBuilder binario;
@@ -382,6 +386,7 @@ public class Oculta extends Main implements View.OnClickListener {
 
         for (int i = 0; i != dato.length(); i++, color = 0) {
 
+            assert bitmap != null;
             color += bitmap.getPixel(0, i);
 
             binario = stringToBinary(Integer.toString(color));
@@ -403,7 +408,7 @@ public class Oculta extends Main implements View.OnClickListener {
         BotonGuardar.setOnClickListener(this);
     }
 
-    private void storeImage(Bitmap image) {
+    private void storeImage(@NonNull Bitmap image) {
 
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "OpenPuff");
 
@@ -433,7 +438,8 @@ public class Oculta extends Main implements View.OnClickListener {
         Toast.makeText(getApplicationContext(), getString(R.string.imagenguardadaOK), Toast.LENGTH_LONG).show();
     }
 
-    private String binaryToString(String input) {
+    @NonNull
+    private String binaryToString(@NonNull String input) {
         String output = "";
         for (int i = 0; i <= input.length() - 8; i += 8) {
             int k = Integer.parseInt(input.substring(i, i + 8), 2);
@@ -442,7 +448,8 @@ public class Oculta extends Main implements View.OnClickListener {
         return output;
     }
 
-    private StringBuilder stringToBinary(String textoOculto) {
+    @NonNull
+    private StringBuilder stringToBinary(@NonNull String textoOculto) {
         byte[] bytes = textoOculto.getBytes();
         StringBuilder binary = new StringBuilder();
         for (byte b : bytes) {

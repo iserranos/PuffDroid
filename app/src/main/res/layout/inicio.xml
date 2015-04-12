@@ -1,7 +1,5 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#36DCDC">
+    style="@style/AppTheme">
 
     <TableLayout
         android:id="@+id/InicioXML"
@@ -18,7 +16,7 @@
             <TextView
                 android:id="@+id/TituloOpenPuff"
                 android:text="@string/app_name"
-                android:textColor="#ffe3e5ff"
+                android:textColor="@color/letraTitulo"
                 android:textSize="70sp"
                 android:textStyle="bold" />
 
@@ -31,7 +29,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="#36DCDC"
+                android:background="@color/fondo"
                 android:contentDescription="@string/ocultar"
                 android:src="@drawable/ocultar" />
 
@@ -40,7 +38,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="#36DCDC"
+                android:background="@color/fondo"
                 android:contentDescription="@string/descubrir"
                 android:src="@drawable/descubrir" />
 
@@ -58,7 +56,7 @@
                 android:layout_weight="1"
                 android:gravity="center|center_horizontal"
                 android:text="@string/ocultar"
-                android:textColor="#ffe3e5ff"
+                android:textColor="@color/letraNormal"
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
@@ -69,7 +67,7 @@
                 android:layout_weight="1"
                 android:gravity="center|center_horizontal"
                 android:text="@string/descubrir"
-                android:textColor="#ffe3e5ff"
+                android:textColor="@color/letraNormal"
                 android:textSize="30sp"
                 android:textStyle="bold" />
 

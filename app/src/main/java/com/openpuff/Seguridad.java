@@ -1,5 +1,7 @@
 package com.openpuff;
 
+import android.support.annotation.NonNull;
+
 import org.spongycastle.util.encoders.Base64;
 
 import java.security.SecureRandom;
@@ -33,7 +35,7 @@ class Seguridad {
         Security.addProvider(new org.spongycastle.jce.provider.BouncyCastleProvider());
     }
 
-    String encrypt(String plaintext, String pass) throws Exception {
+    String encrypt(@NonNull String plaintext, @NonNull String pass) throws Exception {
         try {
             Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM, "BC");
             byte[] salt = generateSalt();
@@ -45,24 +47,20 @@ class Seguridad {
             cipher.init(Cipher.ENCRYPT_MODE, key, ivParams);
             byte[] cipherText = cipher.doFinal(plaintext.getBytes("UTF-8"));
 
-            if (salt != null) {
-                return String.format("%s%s%s%s%s",
-                        new String(Base64.encode(salt)), DELIMITER, new String(
-                                Base64.encode(iv)), DELIMITER, new String(
-                                Base64.encode(cipherText)));
-            }
-
-            return String.format("%s%s%s", new String(Base64.encode(iv)),
-                    DELIMITER, new String(Base64.encode(cipherText)));
+            return String.format("%s%s%s%s%s",
+                    new String(Base64.encode(salt)), DELIMITER, new String(
+                            Base64.encode(iv)), DELIMITER, new String(
+                            Base64.encode(cipherText)));
         } catch (Throwable e) {
             throw new Exception("Error while encryption", e);
         }
     }
 
-    String decrypt(String ciphertext, String password) throws Exception {
+    @NonNull
+    String decrypt(@NonNull String ciphertext, @NonNull String password) throws Exception {
         String[] fields = ciphertext.split(DELIMITER);
         if (fields.length != 3) {
-            throw new IllegalArgumentException("Invalid encypted text format");
+            throw new IllegalArgumentException("Invalid encrypted text format");
         }
         try {
             byte[] salt = Base64.decode(fields[0]);
@@ -81,7 +79,8 @@ class Seguridad {
         }
     }
 
-    private SecretKey getKey(byte[] salt, String password)
+    @NonNull
+    private SecretKey getKey(byte[] salt, @NonNull String password)
             throws Exception {
         try {
             KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt,
@@ -95,6 +94,7 @@ class Seguridad {
         }
     }
 
+    @NonNull
     private byte[] generateIv(int length) {
         byte[] b = new byte[length];
         random.nextBytes(b);
@@ -102,6 +102,7 @@ class Seguridad {
         return b;
     }
 
+    @NonNull
     private byte[] generateSalt() {
         byte[] b = new byte[SALT_LENGTH];
         random.nextBytes(b);
