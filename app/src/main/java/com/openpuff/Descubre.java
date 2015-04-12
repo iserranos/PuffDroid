@@ -35,8 +35,8 @@ public class Descubre extends Main implements View.OnClickListener {
 
         @Override
         public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
-            if (s.length() == maxPass) {
-                Toast.makeText(getApplicationContext(), getString(R.string.noMasCaracteres), Toast.LENGTH_LONG).show();
+            if (s.length() == maxPass && !toast.getView().isShown()) {
+                showAToast(getString(R.string.noMasCaracteres));
             }
         }
 
@@ -45,6 +45,7 @@ public class Descubre extends Main implements View.OnClickListener {
         }
     };
     private final Seguridad seguridad = new Seguridad();
+    private Toast toast;
     private TextView TextoOculto;
     private EditText Pass1/*, Pass2, Pass3*/;
     private ImageView ImagenOriginal;
@@ -54,7 +55,7 @@ public class Descubre extends Main implements View.OnClickListener {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.descubre);
-
+        showAToast(getString(R.string.necesitasImagen));
         if (savedInstanceState == null) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/jpeg");
@@ -169,12 +170,12 @@ public class Descubre extends Main implements View.OnClickListener {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
                 ImagenOriginal.setImageBitmap(bitmap);
             } catch (FileNotFoundException e) {
-                Toast.makeText(getApplicationContext(), getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_SHORT).show();
+                showAToast(getString(R.string.fileNotFoundExcepcion));
             } catch (IOException e) {
-                Toast.makeText(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_SHORT).show();
+                showAToast(getString(R.string.ioException));
             }
         } else {
-            Toast.makeText(getApplicationContext(), R.string.necesitasImagen, Toast.LENGTH_LONG).show();
+            showAToast(getString(R.string.necesitasImagen));
             finish();
         }
     }
@@ -196,7 +197,7 @@ public class Descubre extends Main implements View.OnClickListener {
             }
             dialog.dismiss();
         } else {
-            Toast.makeText(getApplicationContext(), getString(R.string.necesitasImagen), Toast.LENGTH_LONG).show();
+            showAToast(getString(R.string.necesitasImagen));
         }
     }
 
@@ -233,7 +234,7 @@ public class Descubre extends Main implements View.OnClickListener {
         try {
             tamanioI = Integer.parseInt(caracter);
         } catch (NumberFormatException ignored) {
-            Toast.makeText(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_LONG).show();
+            showAToast(getString(R.string.ioException));
             finish();
         }
 
@@ -292,4 +293,13 @@ public class Descubre extends Main implements View.OnClickListener {
         }
     }
 
+    void showAToast(String st) { //"Toast toast" is declared in the class
+        try {
+            toast.getView().isShown();     // true if visible
+            toast.setText(st);
+        } catch (Exception e) {         // invisible if exception
+            toast = Toast.makeText(getApplicationContext(), st, Toast.LENGTH_LONG);
+        }
+        toast.show();  //finally display it
+    }
 }

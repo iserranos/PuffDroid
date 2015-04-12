@@ -46,8 +46,8 @@ public class Oculta extends Main implements View.OnClickListener {
 
         @Override
         public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
-            if (s.length() == maxPass) {
-                Toast.makeText(getApplicationContext(), getString(R.string.noMasCaracteres), Toast.LENGTH_LONG).show();
+            if (s.length() == maxPass && !toast.getView().isShown()) {
+                showAToast(getString(R.string.noMasCaracteres));
             }
         }
 
@@ -56,6 +56,7 @@ public class Oculta extends Main implements View.OnClickListener {
         }
     };
     private final Seguridad seguridad = new Seguridad();
+    private Toast toast;
     private EditText TextoAOcultar;
     private EditText Pass1/*, Pass2, Pass3*/;
     private Button BotonOcultar;
@@ -71,8 +72,8 @@ public class Oculta extends Main implements View.OnClickListener {
 
         @Override
         public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
-            if (s.length() == maxTexto && maxTexto != 0) {
-                Toast.makeText(getApplicationContext(), getString(R.string.noMasCaracteres), Toast.LENGTH_LONG).show();
+            if (s.length() == maxTexto && maxTexto != 0 && !toast.getView().isShown()) {
+                showAToast(getString(R.string.noMasCaracteres));
             }
         }
 
@@ -230,7 +231,7 @@ public class Oculta extends Main implements View.OnClickListener {
                     Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                     intent.setType("image/jpeg");
                     startActivityForResult(intent, GALERIA);
-                    Toast.makeText(getApplicationContext(), getString(R.string.eligeFoto), Toast.LENGTH_LONG).show();
+                    showAToast(getString(R.string.eligeFoto));
                     break;
 
                 case GALERIA:
@@ -242,19 +243,19 @@ public class Oculta extends Main implements View.OnClickListener {
                             ImagenOriginal.setImageBitmap(bitmap);
                             TextoAOcultar.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxTexto)});
                         } else {
-                            Toast.makeText(getApplicationContext(), getString(R.string.imagenGrande), Toast.LENGTH_LONG).show();
+                            showAToast(getString(R.string.imagenGrande));
                         }
 
                     } catch (FileNotFoundException e) {
-                        Toast.makeText(getApplicationContext(), getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_SHORT).show();
+                        showAToast(getString(R.string.fileNotFoundExcepcion));
                     } catch (IOException e) {
-                        Toast.makeText(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_SHORT).show();
+                        showAToast(getString(R.string.ioException));
                     }
 
                     break;
             }
         } else {
-            Toast.makeText(getApplicationContext(), getString(R.string.necesitasImagen), Toast.LENGTH_LONG).show();
+            showAToast(getString(R.string.necesitasImagen));
         }
     }
 
@@ -267,7 +268,7 @@ public class Oculta extends Main implements View.OnClickListener {
                 if (bitmap != null) {
                     recuperarDatos();
                 } else {
-                    Toast.makeText(getApplicationContext(), getString(R.string.necesitasImagen), Toast.LENGTH_LONG).show();
+                    showAToast(getString(R.string.necesitasImagen));
                 }
                 break;
             case R.id.BotonGuardar:
@@ -336,13 +337,13 @@ public class Oculta extends Main implements View.OnClickListener {
 
         String texto = TextoAOcultar.getText().toString().trim();
         if (texto.equals("0") || texto.length() == 0) {
-            Toast.makeText(getApplicationContext(), getString(R.string.textoNoVacio), Toast.LENGTH_LONG).show();
+            showAToast(getString(R.string.textoNoVacio));
             return;
         }
 
         String pass1 = Pass1.getText().toString().trim();
         if (pass1.equals("") || pass1.length() == 0) {
-            Toast.makeText(getApplicationContext(), getString(R.string.pass1NoVacia), Toast.LENGTH_LONG).show();
+            showAToast(getString(R.string.pass1NoVacia));
             return;
         }
 
@@ -434,8 +435,7 @@ public class Oculta extends Main implements View.OnClickListener {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         mediaScanIntent.setData(contentUri);
         sendBroadcast(mediaScanIntent);
-
-        Toast.makeText(getApplicationContext(), getString(R.string.imagenguardadaOK), Toast.LENGTH_LONG).show();
+        showAToast(getString(R.string.imagenguardadaOK));
     }
 
     @NonNull
@@ -469,6 +469,16 @@ public class Oculta extends Main implements View.OnClickListener {
             InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
+    }
+
+    void showAToast(String st) { //"Toast toast" is declared in the class
+        try {
+            toast.getView().isShown();     // true if visible
+            toast.setText(st);
+        } catch (Exception e) {         // invisible if exception
+            toast = Toast.makeText(getApplicationContext(), st, Toast.LENGTH_LONG);
+        }
+        toast.show();  //finally display it
     }
 
         /*private void mostrarAlertaPass2() {

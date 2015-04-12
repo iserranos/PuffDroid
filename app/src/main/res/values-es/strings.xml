@@ -8,8 +8,6 @@
     <string name="descubrir">Descubrir</string>
     <string name="botonGuardar">Guardar imagen</string>
     <string name="pass1">Contraseña</string>
-    <string name="pass2">Segunda contraseña</string>
-    <string name="pass3">Tercera contraseña</string>
     <string name="textoAOcultar">Texto a ocultar</string>
     <string name="botonDescubrir">Descubrir mensaje</string>
     <string name="tituloAlerta">Elegir opción</string>
@@ -19,6 +17,8 @@
     <string name="textoNoVacio">Necesitas escribir un texto para ocultarlo</string>
     <string name="pass1NoVacia">La primera contraseña no puede estar vacía</string>
     <!--
+    <string name="pass2">Segunda contraseña</string>
+    <string name="pass3">Tercera contraseña</string>
     <string name="algunError">Ha ocurrido un error</string>
     <string name="pass2NoVacia">La segunda contraseña no puede estar vacía</string>
     <string name="pass3NoVacia">La tercera contraseña no puede estar vacía</string>

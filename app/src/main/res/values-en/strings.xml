@@ -8,8 +8,6 @@
     <string name="descubrir">Discover</string>
     <string name="botonGuardar">Save image</string>
     <string name="pass1">Password</string>
-    <string name="pass2">Enter the second password</string>
-    <string name="pass3">Enter the third password</string>
     <string name="textoAOcultar">Type text to hide</string>
     <string name="botonDescubrir">Discover the message</string>
     <string name="tituloAlerta">Choose option</string>
@@ -19,6 +17,8 @@
     <string name="textoNoVacio">Need to write text to hide</string>
     <string name="pass1NoVacia">The first password can not be empty</string>
     <!--
+    <string name="pass2">Second password</string>
+    <string name="pass3">Third password</string>
     <string name="algunError">An error has occurred</string>
     <string name="pass2NoVacia">The second password can not be empty</string>
     <string name="pass3NoVacia">The third password can not be empty</string>
