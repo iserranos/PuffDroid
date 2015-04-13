@@ -27,7 +27,7 @@ import java.io.IOException;
 
 public class Descubre extends Main implements View.OnClickListener {
 
-    private static final int maxPass = 16;
+    private static final int maxPass = 8;
     private final TextWatcher controlPassAOcultar = new TextWatcher() {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -35,7 +35,7 @@ public class Descubre extends Main implements View.OnClickListener {
 
         @Override
         public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
-            if (s.length() == maxPass && !toast.getView().isShown()) {
+            if (s.length() == maxPass) {
                 showAToast(getString(R.string.noMasCaracteres));
             }
         }
@@ -47,7 +47,7 @@ public class Descubre extends Main implements View.OnClickListener {
     private final Seguridad seguridad = new Seguridad();
     private Toast toast;
     private TextView TextoOculto;
-    private EditText Pass1/*, Pass2, Pass3*/;
+    private EditText Pass1;
     private ImageView ImagenOriginal;
     private Bitmap bitmap;
 
@@ -67,10 +67,6 @@ public class Descubre extends Main implements View.OnClickListener {
 
         Pass1 = (EditText) findViewById(R.id.Pass1);
         Pass1.addTextChangedListener(controlPassAOcultar);
-        /*Pass2 = (EditText) findViewById(R.id.Pass2);
-        Pass2.addTextChangedListener(controlPassAOcultar);
-        Pass3 = (EditText) findViewById(R.id.Pass3);
-        Pass3.addTextChangedListener(controlPassAOcultar);*/
 
         ImagenOriginal = (ImageView) findViewById(R.id.ImagenOriginal);
 
@@ -82,6 +78,7 @@ public class Descubre extends Main implements View.OnClickListener {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         } catch (NullPointerException ignored) {
         }
+        toast = new Toast(getApplicationContext());
     }
 
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
@@ -162,7 +159,7 @@ public class Descubre extends Main implements View.OnClickListener {
     }
 
     @Override
-    protected void onActivityResult(int reqCode, int resCode, @Nullable Intent data) {
+    protected void onActivityResult(int reqCode, int resCode, Intent data) {
 
         if (resCode == RESULT_OK && data != null) {
             Uri selectedimg = data.getData();
@@ -184,25 +181,48 @@ public class Descubre extends Main implements View.OnClickListener {
     public void onClick(@NonNull View view) {
         super.onClick(view);
         hideKeyboard();
-
         if (bitmap != null) {
-            ProgressDialog dialog = ProgressDialog.show(this, getString(R.string.cargando), getString(R.string.espere), true);
-            String mensaje = descubrirMensaje(bitmap);
-            try {
-                String mensajeFinal = seguridad.decrypt(mensaje, Pass1.getText().toString().trim());
-                TextoOculto.setVisibility(View.VISIBLE);
-                TextoOculto.setText(getString(R.string.textoOcultoEra) + mensajeFinal);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            dialog.dismiss();
+            recuperarDatos();
         } else {
             showAToast(getString(R.string.necesitasImagen));
         }
     }
 
-    String descubrirMensaje(@NonNull Bitmap bitmap) {
-        int tamanioI = 0;
+    void recuperarDatos() {
+
+        String pass1 = Pass1.getText().toString().trim();
+        if (pass1.equals("") || pass1.length() == 0) {
+            showAToast(getString(R.string.pass1NoVacia));
+            return;
+        }
+
+        final ProgressDialog pd = new ProgressDialog(this);
+        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pd.setMessage(getString(R.string.cargando));
+        pd.setTitle(getString(R.string.espere));
+        pd.setIndeterminate(true);
+        pd.setCancelable(false);
+        pd.show();
+        final String[] mensajeFinal = {""};
+        Thread mThread = new Thread() {
+            @Override
+            public void run() {
+                String mensaje = descubrirMensaje(bitmap);
+                try {
+                    mensajeFinal[0] = seguridad.decrypt(mensaje, Pass1.getText().toString().trim());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                pd.dismiss();
+            }
+        };
+        mThread.start();
+        TextoOculto.setVisibility(View.VISIBLE);
+        TextoOculto.setText(getString(R.string.textoOcultoEra) + mensajeFinal[0]);
+    }
+
+    String descubrirMensaje(Bitmap bitmap) {
+        int tamanioI;
         StringBuilder binario;
         int color = 0;
         String cadenaNueva;
@@ -230,12 +250,10 @@ public class Descubre extends Main implements View.OnClickListener {
 
         }
 
-
         try {
             tamanioI = Integer.parseInt(caracter);
         } catch (NumberFormatException ignored) {
-            showAToast(getString(R.string.ioException));
-            finish();
+            return "";
         }
 
         i++;
@@ -255,7 +273,6 @@ public class Descubre extends Main implements View.OnClickListener {
                 mensaje += cadenaNueva;
                 cadenaNueva = "";
             }
-
         }
 
         return mensaje;
@@ -293,13 +310,14 @@ public class Descubre extends Main implements View.OnClickListener {
         }
     }
 
-    void showAToast(String st) { //"Toast toast" is declared in the class
+    void showAToast(String st) {
         try {
-            toast.getView().isShown();     // true if visible
+            toast.getView().isShown();
             toast.setText(st);
-        } catch (Exception e) {         // invisible if exception
+        } catch (Exception e) {
             toast = Toast.makeText(getApplicationContext(), st, Toast.LENGTH_LONG);
         }
-        toast.show();  //finally display it
+        toast.show();
     }
+
 }

@@ -1,5 +1,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/AppTheme">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo">
 
     <LinearLayout
         android:id="@+id/OcultaXML"
@@ -25,6 +27,7 @@
             android:layout_marginTop="10dip"
             android:gravity="center"
             android:hint="@string/textoAOcultar"
+            android:textColor="@color/letraNormal"
             android:textColorHint="@color/letraNormal"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -35,34 +38,11 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:hint="@string/pass1"
-            android:maxLength="16"
+            android:maxLength="8"
+            android:textColor="@color/letraNormal"
             android:textColorHint="@color/letraNormal"
             android:textSize="20sp"
             android:textStyle="bold" />
-
-        <!--
-        <EditText
-            android:id="@+id/Pass2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/pass2"
-            android:maxLength="16"
-            android:textColorHint="@color/letraNormal"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
-
-        <EditText
-            android:id="@+id/Pass3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/pass3"
-            android:maxLength="16"
-            android:textColorHint="@color/letraNormal"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
-        -->
 
         <Button
             android:id="@+id/BotonOcultar"

@@ -37,6 +37,6 @@
     <string name="cargando">Cargando</string>
     <string name="espere">Por favor, espere…</string>
     <string name="confirmación">Imagen no guardada. ¿Salir?</string>
-    <string name="eligeFoto">Elige la imagen</string>
+    <string name="eligeFoto">Elige la imagen que acabas de hacer</string>
     <string name="imagenGrande">Necesitas una imagen más grande</string>
 </resources>

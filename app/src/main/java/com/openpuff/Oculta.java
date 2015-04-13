@@ -38,15 +38,15 @@ public class Oculta extends Main implements View.OnClickListener {
 
     private static final int GALERIA = 1;
     private static final int CAMARA = 2;
-    private static final int maxPass = 16;
+    private static final int maxPass = 8;
     private final TextWatcher controlPassAOcultar = new TextWatcher() {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
         }
 
         @Override
-        public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
-            if (s.length() == maxPass && !toast.getView().isShown()) {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            if (s.length() == maxPass) {
                 showAToast(getString(R.string.noMasCaracteres));
             }
         }
@@ -58,7 +58,7 @@ public class Oculta extends Main implements View.OnClickListener {
     private final Seguridad seguridad = new Seguridad();
     private Toast toast;
     private EditText TextoAOcultar;
-    private EditText Pass1/*, Pass2, Pass3*/;
+    private EditText Pass1;
     private Button BotonOcultar;
     private Button BotonGuardar;
     private ImageView ImagenOriginal;
@@ -71,8 +71,8 @@ public class Oculta extends Main implements View.OnClickListener {
         }
 
         @Override
-        public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
-            if (s.length() == maxTexto && maxTexto != 0 && !toast.getView().isShown()) {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            if (s.length() == maxTexto && maxTexto != 0) {
                 showAToast(getString(R.string.noMasCaracteres));
             }
         }
@@ -100,10 +100,6 @@ public class Oculta extends Main implements View.OnClickListener {
 
         Pass1 = (EditText) findViewById(R.id.Pass1);
         Pass1.addTextChangedListener(controlPassAOcultar);
-        /*Pass2 = (EditText) findViewById(R.id.Pass2);
-        Pass2.addTextChangedListener(controlPassAOcultar);
-        Pass3 = (EditText) findViewById(R.id.Pass3);
-        Pass3.addTextChangedListener(controlPassAOcultar);*/
 
         ImagenOriginal = (ImageView) findViewById(R.id.ImagenOriginal);
 
@@ -113,6 +109,7 @@ public class Oculta extends Main implements View.OnClickListener {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         } catch (NullPointerException ignored) {
         }
+        toast = new Toast(this);
     }
 
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
@@ -208,7 +205,9 @@ public class Oculta extends Main implements View.OnClickListener {
                 return true;
             case R.id.ItemGaleria:
 
-                mostrarAlerta();
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/jpeg");
+                startActivityForResult(intent, GALERIA);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -239,7 +238,9 @@ public class Oculta extends Main implements View.OnClickListener {
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
                         maxTexto = (bitmap.getWidth() / 8) - 5;
-                        if (maxTexto >= 16) {
+                        if (bitmap.getRowBytes() * bitmap.getHeight() > 16588800) {
+                            showAToast("Imagen demasiado pesada");
+                        } else if (maxTexto >= 16) {
                             ImagenOriginal.setImageBitmap(bitmap);
                             TextoAOcultar.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxTexto)});
                         } else {
@@ -274,7 +275,6 @@ public class Oculta extends Main implements View.OnClickListener {
             case R.id.BotonGuardar:
                 assert bitmap != null;
                 storeImage(bitmap);
-                finish();
                 break;
         }
     }
@@ -332,8 +332,9 @@ public class Oculta extends Main implements View.OnClickListener {
     }
 
     private void recuperarDatos() {
-        assert bitmap != null;
-        this.bitmap = bitmap.copy(bitmap.getConfig(), true);
+        if (bitmap != null) {
+            this.bitmap = bitmap.copy(bitmap.getConfig(), true);
+        }
 
         String texto = TextoAOcultar.getText().toString().trim();
         if (texto.equals("0") || texto.length() == 0) {
@@ -368,14 +369,30 @@ public class Oculta extends Main implements View.OnClickListener {
                 }
             }
         }*/
-        ProgressDialog dialog = ProgressDialog.show(this, getString(R.string.cargando), getString(R.string.espere), true);
-        try {
-            String textoFinal = seguridad.encrypt(texto, pass1);
-            ocultarMensaje(textoFinal.length() + "-" + textoFinal);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        dialog.dismiss();
+        final ProgressDialog pd = new ProgressDialog(this);
+        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pd.setMessage(getString(R.string.cargando));
+        pd.setTitle(getString(R.string.espere));
+        pd.setIndeterminate(true);
+        pd.setCancelable(false);
+        pd.show();
+        Thread mThread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    String textoFinal = seguridad.encrypt(TextoAOcultar.getText().toString().trim(), Pass1.getText().toString().trim());
+                    ocultarMensaje(textoFinal.length() + "-" + textoFinal);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                pd.dismiss();
+            }
+        };
+        mThread.start();
+        ImagenOriginal.setImageBitmap(bitmap);
+        BotonOcultar.setVisibility(View.GONE);
+        BotonGuardar.setVisibility(View.VISIBLE);
+        BotonGuardar.setOnClickListener(this);
     }
 
     private void ocultarMensaje(@NonNull String texto) {
@@ -385,9 +402,8 @@ public class Oculta extends Main implements View.OnClickListener {
         int color = 0;
         String cadenaNueva;
 
-        for (int i = 0; i != dato.length(); i++, color = 0) {
+        for (int i = 0; i != dato.length() && bitmap != null; i++, color = 0) {
 
-            assert bitmap != null;
             color += bitmap.getPixel(0, i);
 
             binario = stringToBinary(Integer.toString(color));
@@ -402,11 +418,6 @@ public class Oculta extends Main implements View.OnClickListener {
 
             bitmap.setPixel(0, i, color);
         }
-
-        ImagenOriginal.setImageBitmap(bitmap);
-        BotonOcultar.setVisibility(View.GONE);
-        BotonGuardar.setVisibility(View.VISIBLE);
-        BotonGuardar.setOnClickListener(this);
     }
 
     private void storeImage(@NonNull Bitmap image) {
@@ -471,80 +482,14 @@ public class Oculta extends Main implements View.OnClickListener {
         }
     }
 
-    void showAToast(String st) { //"Toast toast" is declared in the class
+    void showAToast(String st) {
         try {
-            toast.getView().isShown();     // true if visible
+            toast.getView().isShown();
             toast.setText(st);
-        } catch (Exception e) {         // invisible if exception
+        } catch (Exception e) {
             toast = Toast.makeText(getApplicationContext(), st, Toast.LENGTH_LONG);
         }
-        toast.show();  //finally display it
+        toast.show();
     }
 
-        /*private void mostrarAlertaPass2() {
-        AlertDialog.Builder alerta = new AlertDialog.Builder(this);
-        alerta.setTitle(getString(R.string.tituloAlertaPass));
-        alerta.setMessage(getString(R.string.mensajeAlertaPass2));
-        alerta.setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Pass2.setText(Pass1.getText());
-                dialog.cancel();
-            }
-
-        });
-        alerta.setNegativeButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        alerta.show();
-    }*/
-
-    /*private void mostrarAlertaPass3() {
-        AlertDialog.Builder alerta = new AlertDialog.Builder(this);
-        alerta.setTitle(getString(R.string.tituloAlertaPass));
-        alerta.setMessage(getString(R.string.mensajeAlertaPass3));
-        alerta.setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Pass3.setText(Pass1.getText());
-                dialog.cancel();
-            }
-
-        });
-        alerta.setNegativeButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        alerta.show();
-    }*/
-
-    /*private void mostrarAlertaPass2y3() {
-        AlertDialog.Builder alerta = new AlertDialog.Builder(this);
-        alerta.setTitle(getString(R.string.tituloAlertaPass));
-        alerta.setMessage(getString(R.string.mensajeAlertaPass2y3));
-        alerta.setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Pass2.setText(Pass1.getText());
-                Pass3.setText(Pass1.getText());
-                dialog.cancel();
-            }
-
-        });
-        alerta.setNegativeButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        alerta.show();
-    }*/
 }
