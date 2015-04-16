@@ -62,9 +62,6 @@ public class Descubre extends Main implements View.OnClickListener {
             startActivityForResult(intent, 1);
         }
 
-
-        TextoOculto = (TextView) findViewById(R.id.TextoOculto);
-
         Pass1 = (EditText) findViewById(R.id.Pass1);
         Pass1.addTextChangedListener(controlPassAOcultar);
 
@@ -95,19 +92,6 @@ public class Descubre extends Main implements View.OnClickListener {
         } else {
             savedInstanceState.putString("pass1", Pass1.getText().toString());
         }
-
-        /*if (Pass2.getText().toString().equals("")) {
-            savedInstanceState.putString("pass2", "");
-        } else {
-            savedInstanceState.putString("pass2", Pass2.getText().toString());
-        }
-
-        if (Pass3.getText().toString().equals("")) {
-            savedInstanceState.putString("pass3", "");
-        } else {
-            savedInstanceState.putString("pass3", Pass3.getText().toString());
-        }*/
-
     }
 
     public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
@@ -122,16 +106,6 @@ public class Descubre extends Main implements View.OnClickListener {
         if (!pass1.equals("")) {
             Pass1.setText(pass1);
         }
-
-        /*String pass2 = savedInstanceState.getString("pass2");
-        if (!pass2.equals("")) {
-            Pass2.setText(pass2);
-        }
-
-        String pass3 = savedInstanceState.getString("pass3");
-        if (!pass3.equals("")) {
-            Pass3.setText(pass3);
-        }*/
     }
 
     @Override
@@ -203,13 +177,15 @@ public class Descubre extends Main implements View.OnClickListener {
         pd.setIndeterminate(true);
         pd.setCancelable(false);
         pd.show();
-        final String[] mensajeFinal = {""};
         Thread mThread = new Thread() {
             @Override
             public void run() {
                 String mensaje = descubrirMensaje(bitmap);
                 try {
-                    mensajeFinal[0] = seguridad.decrypt(mensaje, Pass1.getText().toString().trim());
+                    String mensajeFinal = seguridad.decrypt(mensaje, Pass1.getText().toString().trim());
+                    TextoOculto = (TextView) findViewById(R.id.TextoOculto);
+                    TextoOculto.setVisibility(View.VISIBLE);
+                    TextoOculto.setText(getString(R.string.textoOcultoEra) + mensajeFinal);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -217,8 +193,6 @@ public class Descubre extends Main implements View.OnClickListener {
             }
         };
         mThread.start();
-        TextoOculto.setVisibility(View.VISIBLE);
-        TextoOculto.setText(getString(R.string.textoOcultoEra) + mensajeFinal[0]);
     }
 
     String descubrirMensaje(Bitmap bitmap) {

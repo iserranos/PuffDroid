@@ -273,8 +273,10 @@ public class Oculta extends Main implements View.OnClickListener {
                 }
                 break;
             case R.id.BotonGuardar:
-                assert bitmap != null;
-                storeImage(bitmap);
+                if (bitmap != null) {
+                    storeImage(bitmap);
+                    finish();
+                }
                 break;
         }
     }

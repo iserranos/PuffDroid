@@ -39,4 +39,5 @@
     <string name="confirmación">Imagen no guardada. ¿Salir?</string>
     <string name="eligeFoto">Elige la imagen que acabas de hacer</string>
     <string name="imagenGrande">Necesitas una imagen más grande</string>
+    <string name="imagenPesada">Imagen demasiado pesada</string>
 </resources>

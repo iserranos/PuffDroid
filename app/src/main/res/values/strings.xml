@@ -39,5 +39,6 @@
     <string name="confirmación">Image is not saved. Quit?</string>
     <string name="eligeFoto">Select the image you just made</string>
     <string name="imagenGrande">Need a larger image</string>
+    <string name="imagenPesada">Too heavy image</string>
 
 </resources>
