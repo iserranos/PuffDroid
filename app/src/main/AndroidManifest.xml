@@ -25,8 +25,15 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Oculta" />
-        <activity android:name=".Descubre" />
+        <activity
+            android:name=".Oculta"
+            android:label="@string/ocultar"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Descubre"
+            android:label="@string/descubrir"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

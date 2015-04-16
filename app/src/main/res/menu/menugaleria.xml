@@ -1,11 +1,10 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:compat="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Galeria -->
     <item
         android:id="@+id/ItemGaleria"
         android:icon="@drawable/ic_action_picture"
-        android:title="@string/opcion2"
-        compat:showAsAction="ifRoom" />
+        android:showAsAction="ifRoom"
+        android:title="@string/opcion2" />
 
 </menu>

@@ -240,6 +240,7 @@ public class Oculta extends Main implements View.OnClickListener {
                         maxTexto = (bitmap.getWidth() / 8) - 5;
                         if (bitmap.getRowBytes() * bitmap.getHeight() > 16588800) {
                             showAToast("Imagen demasiado pesada");
+                            mostrarAlerta();
                         } else if (maxTexto >= 16) {
                             ImagenOriginal.setImageBitmap(bitmap);
                             TextoAOcultar.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxTexto)});
@@ -274,7 +275,22 @@ public class Oculta extends Main implements View.OnClickListener {
                 break;
             case R.id.BotonGuardar:
                 if (bitmap != null) {
-                    storeImage(bitmap);
+
+                    final ProgressDialog pd = new ProgressDialog(this);
+                    pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    pd.setMessage(getString(R.string.cargando));
+                    pd.setTitle(getString(R.string.espere));
+                    pd.setIndeterminate(true);
+                    pd.setCancelable(false);
+                    pd.show();
+                    Thread mThread = new Thread() {
+                        @Override
+                        public void run() {
+                            storeImage(bitmap);
+                            pd.dismiss();
+                        }
+                    };
+                    mThread.start();
                     finish();
                 }
                 break;
@@ -350,27 +366,6 @@ public class Oculta extends Main implements View.OnClickListener {
             return;
         }
 
-        /*String pass2 = Pass2.getText().toString().trim();
-        String pass3 = Pass3.getText().toString().trim();
-        if ((pass2.equals("") || pass2.length() == 0) && (pass3.equals("") || pass3.length() == 0) && Pass2.getVisibility() == View.VISIBLE && Pass3.getVisibility() == View.VISIBLE) {
-            mostrarAlertaPass2y3();
-            if (!Pass2.getText().equals(Pass1.getText()) && !Pass3.getText().equals(Pass1.getText())) {
-                return;
-            }
-        } else {
-            if ((pass2.equals("") || pass2.length() == 0) && Pass2.getVisibility() == View.VISIBLE) {
-                mostrarAlertaPass2();
-                if (!Pass2.getText().equals(Pass1.getText())) {
-                    return;
-                }
-            }
-            if ((pass3.equals("") || pass3.length() == 0) && Pass3.getVisibility() == View.VISIBLE) {
-                mostrarAlertaPass3();
-                if (!Pass3.getText().equals(Pass1.getText())) {
-                    return;
-                }
-            }
-        }*/
         final ProgressDialog pd = new ProgressDialog(this);
         pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         pd.setMessage(getString(R.string.cargando));
@@ -390,10 +385,10 @@ public class Oculta extends Main implements View.OnClickListener {
                 pd.dismiss();
             }
         };
-        mThread.start();
-        ImagenOriginal.setImageBitmap(bitmap);
         BotonOcultar.setVisibility(View.GONE);
         BotonGuardar.setVisibility(View.VISIBLE);
+        mThread.start();
+        ImagenOriginal.setImageBitmap(bitmap);
         BotonGuardar.setOnClickListener(this);
     }
 

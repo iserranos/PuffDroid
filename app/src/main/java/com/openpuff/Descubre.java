@@ -62,6 +62,8 @@ public class Descubre extends Main implements View.OnClickListener {
             startActivityForResult(intent, 1);
         }
 
+        TextoOculto = (TextView) findViewById(R.id.TextoOculto);
+
         Pass1 = (EditText) findViewById(R.id.Pass1);
         Pass1.addTextChangedListener(controlPassAOcultar);
 
@@ -180,16 +182,20 @@ public class Descubre extends Main implements View.OnClickListener {
         Thread mThread = new Thread() {
             @Override
             public void run() {
-                String mensaje = descubrirMensaje(bitmap);
-                try {
-                    String mensajeFinal = seguridad.decrypt(mensaje, Pass1.getText().toString().trim());
-                    TextoOculto = (TextView) findViewById(R.id.TextoOculto);
-                    TextoOculto.setVisibility(View.VISIBLE);
-                    TextoOculto.setText(getString(R.string.textoOcultoEra) + mensajeFinal);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                pd.dismiss();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String mensaje = descubrirMensaje(bitmap);
+                        try {
+                            String mensajeFinal = seguridad.decrypt(mensaje, Pass1.getText().toString().trim());
+                            TextoOculto.setVisibility(View.VISIBLE);
+                            TextoOculto.setText(getString(R.string.textoOcultoEra) + mensajeFinal);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        pd.dismiss();
+                    }
+                });
             }
         };
         mThread.start();
