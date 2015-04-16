@@ -47,7 +47,7 @@ public class Oculta extends Main implements View.OnClickListener {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             if (s.length() == maxPass) {
-                showAToast(getString(R.string.noMasCaracteres));
+                showAToast(getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
             }
         }
 
@@ -73,7 +73,7 @@ public class Oculta extends Main implements View.OnClickListener {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             if (s.length() == maxTexto && maxTexto != 0) {
-                showAToast(getString(R.string.noMasCaracteres));
+                showAToast(getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
             }
         }
 
@@ -214,7 +214,6 @@ public class Oculta extends Main implements View.OnClickListener {
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
         int menuOpcion = R.menu.menugaleria;
         inflater.inflate(menuOpcion, menu);
@@ -226,11 +225,7 @@ public class Oculta extends Main implements View.OnClickListener {
         if (resCode == RESULT_OK) {
             switch (reqCode) {
                 case CAMARA:
-
-                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.setType("image/jpeg");
-                    startActivityForResult(intent, GALERIA);
-                    showAToast(getString(R.string.eligeFoto));
+                    irAGaleria(CAMARA);
                     break;
 
                 case GALERIA:
@@ -239,25 +234,25 @@ public class Oculta extends Main implements View.OnClickListener {
                         bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
                         maxTexto = (bitmap.getWidth() / 8) - 5;
                         if (bitmap.getRowBytes() * bitmap.getHeight() > 16588800) {
-                            showAToast("Imagen demasiado pesada");
-                            mostrarAlerta();
+                            showAToast(getString(R.string.imagenPesada), Toast.LENGTH_LONG);
+                            irAGaleria(GALERIA);
                         } else if (maxTexto >= 16) {
                             ImagenOriginal.setImageBitmap(bitmap);
                             TextoAOcultar.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxTexto)});
                         } else {
-                            showAToast(getString(R.string.imagenGrande));
+                            showAToast(getString(R.string.imagenGrande), Toast.LENGTH_LONG);
                         }
 
                     } catch (FileNotFoundException e) {
-                        showAToast(getString(R.string.fileNotFoundExcepcion));
+                        showAToast(getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_LONG);
                     } catch (IOException e) {
-                        showAToast(getString(R.string.ioException));
+                        showAToast(getString(R.string.ioException), Toast.LENGTH_LONG);
                     }
 
                     break;
             }
         } else {
-            showAToast(getString(R.string.necesitasImagen));
+            showAToast(getString(R.string.necesitasImagen), Toast.LENGTH_SHORT);
         }
     }
 
@@ -270,7 +265,7 @@ public class Oculta extends Main implements View.OnClickListener {
                 if (bitmap != null) {
                     recuperarDatos();
                 } else {
-                    showAToast(getString(R.string.necesitasImagen));
+                    showAToast(getString(R.string.necesitasImagen), Toast.LENGTH_SHORT);
                 }
                 break;
             case R.id.BotonGuardar:
@@ -327,10 +322,7 @@ public class Oculta extends Main implements View.OnClickListener {
             @Override
             public void onClick(@NonNull DialogInterface dialog, int which) {
 
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/jpeg");
-                startActivityForResult(intent, GALERIA);
-
+                irAGaleria(GALERIA);
                 dialog.cancel();
             }
         });
@@ -356,13 +348,13 @@ public class Oculta extends Main implements View.OnClickListener {
 
         String texto = TextoAOcultar.getText().toString().trim();
         if (texto.equals("0") || texto.length() == 0) {
-            showAToast(getString(R.string.textoNoVacio));
+            showAToast(getString(R.string.textoNoVacio), Toast.LENGTH_LONG);
             return;
         }
 
         String pass1 = Pass1.getText().toString().trim();
         if (pass1.equals("") || pass1.length() == 0) {
-            showAToast(getString(R.string.pass1NoVacia));
+            showAToast(getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
             return;
         }
 
@@ -443,7 +435,7 @@ public class Oculta extends Main implements View.OnClickListener {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         mediaScanIntent.setData(contentUri);
         sendBroadcast(mediaScanIntent);
-        showAToast(getString(R.string.imagenguardadaOK));
+        showAToast(getString(R.string.imagenguardadaOK), Toast.LENGTH_LONG);
     }
 
     @NonNull
@@ -479,14 +471,25 @@ public class Oculta extends Main implements View.OnClickListener {
         }
     }
 
-    void showAToast(String st) {
+    void showAToast(String st, int duracion) {
         try {
             toast.getView().isShown();
             toast.setText(st);
         } catch (Exception e) {
-            toast = Toast.makeText(getApplicationContext(), st, Toast.LENGTH_LONG);
+            toast = Toast.makeText(getApplicationContext(), st, duracion);
         }
         toast.show();
+    }
+
+    void irAGaleria(int opcion) {
+        if (opcion == CAMARA) {
+            showAToast(getString(R.string.eligeFoto), Toast.LENGTH_LONG);
+        } else {
+            showAToast(getString(R.string.necesitasImagen), Toast.LENGTH_SHORT);
+        }
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/jpeg");
+        startActivityForResult(intent, 1);
     }
 
 }

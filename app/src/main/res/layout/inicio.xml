@@ -1,26 +1,21 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/fondo">
+    style="@style/estiloLayoutInicio">
 
     <TableLayout
         android:id="@+id/InicioXML"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:layout_marginTop="50dp">
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="70dp"
-            android:layout_marginTop="50dp"
             android:gravity="center|center_horizontal">
 
             <TextView
                 android:id="@+id/TituloOpenPuff"
-                android:text="@string/app_name"
-                android:textColor="@color/letraTitulo"
-                android:textSize="70sp"
-                android:textStyle="bold" />
+                style="@style/estiloTituloInicio" />
 
         </TableRow>
 
@@ -28,50 +23,31 @@
 
             <ImageButton
                 android:id="@+id/ImagenOcultar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/fondo"
+                style="@style/estiloImagenInicio"
                 android:contentDescription="@string/ocultar"
                 android:src="@drawable/ocultar" />
 
             <ImageButton
                 android:id="@+id/ImagenDescubrir"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/fondo"
+                style="@style/estiloImagenInicio"
                 android:contentDescription="@string/descubrir"
                 android:src="@drawable/descubrir" />
 
         </TableRow>
 
         <TableRow
-            android:layout_marginBottom="70sp"
-            android:layout_marginTop="10sp"
+            android:layout_marginTop="10dp"
             android:gravity="center|center_horizontal">
 
             <TextView
                 android:id="@+id/TextOcultar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center|center_horizontal"
-                android:text="@string/ocultar"
-                android:textColor="@color/letraNormal"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+                style="@style/estiloTextoInicio"
+                android:text="@string/ocultar" />
 
             <TextView
                 android:id="@+id/TextDescubrir"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center|center_horizontal"
-                android:text="@string/descubrir"
-                android:textColor="@color/letraNormal"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+                style="@style/estiloTextoInicio"
+                android:text="@string/descubrir" />
 
         </TableRow>
 
