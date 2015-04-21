@@ -16,17 +16,6 @@
     <string name="ioException">Error</string>
     <string name="textoNoVacio">Necesitas escribir un texto para ocultarlo</string>
     <string name="pass1NoVacia">La primera contraseña no puede estar vacía</string>
-    <!--
-    <string name="pass2">Segunda contraseña</string>
-    <string name="pass3">Tercera contraseña</string>
-    <string name="algunError">Ha ocurrido un error</string>
-    <string name="pass2NoVacia">La segunda contraseña no puede estar vacía</string>
-    <string name="pass3NoVacia">La tercera contraseña no puede estar vacía</string>
-    <string name="tituloAlertaPass">Cuidado…</string>
-    <string name="mensajeAlertaPass2">El campo de la contraseña 2 pasará a ser el de la contraseña 1.\n¿Continuar?</string>
-    <string name="mensajeAlertaPass3">El campo de la contraseña 3 pasará a ser el de la contraseña 1.\n¿Continuar?</string>
-    <string name="mensajeAlertaPass2y3">Los campos de las contraseñas 2 y 3 pasarán a ser el de la contraseña 1.\n¿Continuar?</string>
-    -->
     <string name="imagenguardadaOK">Imagen guardada correctamente</string>
     <string name="textoOcultoEra">El texto oculto era:&#160;</string>
     <string name="imagenSeleccionada">Imagen seleccionada</string>

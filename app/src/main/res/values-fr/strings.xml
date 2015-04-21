@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OpenPuff</string>
+    <string name="opcion1">Caméra</string>
+    <string name="opcion2">Galerie</string>
+    <string name="botonOcultar">Cacher message</string>
+    <string name="ocultar">Cacher </string>
+    <string name="descubrir">Afficher</string>
+    <string name="botonGuardar">Garder l'image </string>
+    <string name="pass1">Mot de passe</string>
+    <string name="textoAOcultar">Écrivez ici le texte à cacher </string>
+    <string name="botonDescubrir">Afficher le message</string>
+    <string name="tituloAlerta">Choisir une option</string>
+    <string name="mensajeAlerta">Obtenir une image de:</string>
+    <string name="fileNotFoundExcepcion">Le fichier n'a pas pu être trouvé</string>
+    <string name="ioException">Erreur</string>
+    <string name="textoNoVacio">Vous devez écrire un texte pour cacher</string>
+    <string name="pass1NoVacia">Il faut remplir le premier mot de passe</string>
+    <string name="imagenguardadaOK">Image sauvegardée correctement</string>
+    <string name="textoOcultoEra">Le text caché était:&#160;</string>
+    <string name="necesitasImagen">Sélectionner image</string>
+    <string name="cancelar">Annuler</string>
+    <string name="aceptar">Accepter</string>
+
+</resources>

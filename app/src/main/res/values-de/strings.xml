@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OpenPuff</string>
+    <string name="opcion1">Kamera</string>
+    <string name="opcion2">Galerie</string>
+    <string name="botonOcultar">Verstecken botschaft</string>
+    <string name="ocultar">Verstecken</string>
+    <string name="descubrir">Aufdecken</string>
+    <string name="botonGuardar">Bild speichern</string>
+    <string name="pass1">Passwort</string>
+    <string name="textoAOcultar">Tippen den text zu verstecken</string>
+    <string name="botonDescubrir">Aufdecken botschaft</string>
+    <string name="tituloAlerta">Auswahlen option</string>
+    <string name="mensajeAlerta">Bild bekommen:</string>
+    <string name="fileNotFoundExcepcion">Datei nicht gefunden</string>
+    <string name="ioException">Fehler</string>
+    <string name="textoNoVacio">schreiben Sie ein Text zu verstecken</string>
+    <string name="pass1NoVacia">Erste passwort darf nicht leer sein</string>
+    <!--
+    <string name="pass2">Second password</string>
+    <string name="pass3">Third password</string>
+    <string name="algunError">An error has occurred</string>
+    <string name="pass2NoVacia">The second password can not be empty</string>
+    <string name="pass3NoVacia">The third password can not be empty</string>
+    <string name="tituloAlertaPass">Warning…</string>
+    <string name="mensajeAlertaPass2">The password field 2 becomes the password 1.\nContinue?</string>
+    <string name="mensajeAlertaPass3">The password field 3 becomes the password 1.\nContinue?</string>
+    <string name="mensajeAlertaPass2y3">Fields passwords 2 and 3 become the password 1.\nContinue?</string>
+    -->
+    <string name="imagenguardadaOK">Bild richtig gespeichert</string>
+    <string name="textoOcultoEra">Der versteckte text war:&#160;</string>
+    <string name="necesitasImagen">Wählen Sie ein Bild</string>
+    <string name="cancelar">Abbrechen</string>
+    <string name="aceptar">Akzeptieren</string>
+    <string name="imagenSeleccionada">Ausgewähltes bild</string>
+
+</resources>
