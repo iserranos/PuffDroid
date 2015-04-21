@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 public class Main extends Activity implements OnClickListener {
 
@@ -17,9 +18,13 @@ public class Main extends Activity implements OnClickListener {
 
         ImageButton imagenOcultar = (ImageButton) findViewById(R.id.ImagenOcultar);
         ImageButton imagenDescubrir = (ImageButton) findViewById(R.id.ImagenDescubrir);
+        TextView TextOcultar = (TextView) findViewById(R.id.TextOcultar);
+        TextView TextDescubrir = (TextView) findViewById(R.id.TextDescubrir);
 
         imagenOcultar.setOnClickListener(this);
         imagenDescubrir.setOnClickListener(this);
+        TextOcultar.setOnClickListener(this);
+        TextDescubrir.setOnClickListener(this);
     }
 
     @Override
@@ -27,18 +32,16 @@ public class Main extends Activity implements OnClickListener {
         Intent intent;
         switch (view.getId()) {
             case R.id.ImagenOcultar:
+            case R.id.TextOcultar:
                 intent = new Intent(this, Oculta.class);
                 startActivity(intent);
                 break;
 
             case R.id.ImagenDescubrir:
+            case R.id.TextDescubrir:
                 intent = new Intent(this, Descubre.class);
                 startActivity(intent);
                 break;
-
-            default:
-                break;
-
         }
     }
 }

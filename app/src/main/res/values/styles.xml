@@ -28,6 +28,7 @@
         <item name="android:textColor">@color/letraNormal</item>
         <item name="android:textSize">30sp</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:clickable">true</item>
     </style>
 
     <style name="estiloLayout">
@@ -39,10 +40,10 @@
     <style name="estiloImagen">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="layout_marginBottom">10dp</item>
-        <item name="layout_marginLeft">10dp</item>
-        <item name="layout_marginRight">10dp</item>
-        <item name="layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
     </style>
 
     <style name="estiloTextoOculto">
@@ -53,8 +54,8 @@
         <item name="android:textColorHint">@color/letraNormal</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="layout_marginTop">10dp</item>
-        <item name="layout_marginBottom">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
     </style>
 
     <style name="estiloContrasenya">
@@ -76,7 +77,7 @@
         <item name="android:textColor">@color/letraBoton</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="layout_marginTop">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
     </style>
 
 

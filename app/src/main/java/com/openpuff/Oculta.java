@@ -45,7 +45,7 @@ public class Oculta extends Main implements View.OnClickListener {
         }
 
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
             if (s.length() == maxPass) {
                 showAToast(getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
             }
@@ -71,7 +71,7 @@ public class Oculta extends Main implements View.OnClickListener {
         }
 
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
             if (s.length() == maxTexto && maxTexto != 0) {
                 showAToast(getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
             }
@@ -133,24 +133,10 @@ public class Oculta extends Main implements View.OnClickListener {
             savedInstanceState.putString("pass1", Pass1.getText().toString());
         }
 
-        /*if (Pass2.getText().toString().equals("")) {
-            savedInstanceState.putString("pass2", "");
-        } else {
-            savedInstanceState.putString("pass2", Pass2.getText().toString());
-        }
-
-        if (Pass3.getText().toString().equals("")) {
-            savedInstanceState.putString("pass3", "");
-        } else {
-            savedInstanceState.putString("pass3", Pass3.getText().toString());
-        }*/
-
     }
 
     public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        // Restore UI state from the savedInstanceState.
-        // This bundle has also been passed to onCreate.
         bitmap = savedInstanceState.getParcelable("bitmap");
         if (bitmap != null) {
             ImagenOriginal.setImageBitmap(bitmap);
@@ -165,24 +151,12 @@ public class Oculta extends Main implements View.OnClickListener {
         if (!pass1.equals("")) {
             Pass1.setText(pass1);
         }
-
-        /*String pass2 = savedInstanceState.getString("pass2");
-        if (!pass2.equals("")) {
-            Pass2.setText(pass2);
-        }
-
-        String pass3 = savedInstanceState.getString("pass3");
-        if (!pass3.equals("")) {
-            Pass3.setText(pass3);
-        }*/
     }
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         hideKeyboard();
         switch (item.getItemId()) {
-
             case android.R.id.home:
-
                 if (BotonOcultar.getVisibility() == View.GONE && BotonGuardar.getVisibility() == View.VISIBLE) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setMessage(getString(R.string.confirmación))
@@ -203,11 +177,9 @@ public class Oculta extends Main implements View.OnClickListener {
                     finish();
                 }
                 return true;
-            case R.id.ItemGaleria:
 
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/jpeg");
-                startActivityForResult(intent, GALERIA);
+            case R.id.ItemGaleria:
+                mostrarAlerta();
                 return true;
         }
         return super.onOptionsItemSelected(item);

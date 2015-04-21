@@ -131,7 +131,7 @@ public class Descubre extends Main implements View.OnClickListener {
     }
 
     @Override
-    protected void onActivityResult(int reqCode, int resCode, Intent data) {
+    protected void onActivityResult(int reqCode, int resCode, @Nullable Intent data) {
 
         if (resCode == RESULT_OK && data != null) {
             Uri selectedimg = data.getData();
@@ -196,7 +196,7 @@ public class Descubre extends Main implements View.OnClickListener {
         mThread.start();
     }
 
-    String descubrirMensaje(Bitmap bitmap) {
+    String descubrirMensaje(@NonNull Bitmap bitmap) {
         int tamanioI;
         StringBuilder binario;
         int color = 0;
