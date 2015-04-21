@@ -1,4 +1,4 @@
-package com.openpuff;
+package com.openpuff.android;
 
 import android.app.ProgressDialog;
 import android.content.Context;

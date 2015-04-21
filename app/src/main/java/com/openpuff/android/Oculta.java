@@ -1,4 +1,4 @@
-package com.openpuff;
+package com.openpuff.android;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
