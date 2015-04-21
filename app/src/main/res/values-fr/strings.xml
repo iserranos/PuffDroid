@@ -21,5 +21,13 @@
     <string name="necesitasImagen">Sélectionner image</string>
     <string name="cancelar">Annuler</string>
     <string name="aceptar">Accepter</string>
+    <string name="cargando">Chargement en cours</string>
+    <string name="confirmación">Image pas enregistré. Voulez-vous continuer?</string>
+    <string name="eligeFoto">Sélectionnez l\'image que vous venez de faire</string>
+    <string name="espere">Attendez, s\'il vous plaît</string>
+    <string name="imagenGrande">Vous avez besoin d\'une image plus grande</string>
+    <string name="imagenPesada">L\'image est trop lourde</string>
+    <string name="noMasCaracteres">Plus de caractères ne sont plus acceptés</string>
+    <string name="imagenSeleccionada">Image sélectionnée</string>
 
 </resources>
