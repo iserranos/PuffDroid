@@ -254,10 +254,10 @@ public class Oculta extends Main implements View.OnClickListener {
                         @Override
                         public void run() {
                             storeImage(bitmap);
-                            pd.dismiss();
                         }
                     };
                     mThread.start();
+                    pd.dismiss();
                     finish();
                 }
                 break;
