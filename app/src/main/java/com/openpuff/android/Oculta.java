@@ -258,6 +258,7 @@ public class Oculta extends Main implements View.OnClickListener {
                     };
                     mThread.start();
                     pd.dismiss();
+                    showAToast(getString(R.string.imagenguardadaOK), Toast.LENGTH_LONG);
                     finish();
                 }
                 break;
@@ -362,22 +363,22 @@ public class Oculta extends Main implements View.OnClickListener {
         StringBuilder binario;
         int color = 0;
         String cadenaNueva;
+        int i = 0, j = 0, contador = 0;
 
-        for (int i = 0; i != dato.length() && bitmap != null; i++, color = 0) {
-
-            color += bitmap.getPixel(0, i);
-
-            binario = stringToBinary(Integer.toString(color));
-
-            cadenaNueva = binario.substring(0, binario.length() - 1);
-
-            cadenaNueva += dato.charAt(i);
-
-            cadenaNueva = binaryToString(cadenaNueva);
-
-            color = Integer.parseInt(cadenaNueva);
-
-            bitmap.setPixel(0, i, color);
+        for (; contador != dato.length() && bitmap != null; i++, color = 0) {
+            try {
+                color += bitmap.getPixel(j, i);
+                binario = stringToBinary(Integer.toString(color));
+                cadenaNueva = binario.substring(0, binario.length() - 1);
+                cadenaNueva += dato.charAt(contador);
+                contador++;
+                cadenaNueva = binaryToString(cadenaNueva);
+                color = Integer.parseInt(cadenaNueva);
+                bitmap.setPixel(j, i, color);
+            } catch (Exception e) {
+                j++;
+                i = 0;
+            }
         }
     }
 
@@ -407,7 +408,6 @@ public class Oculta extends Main implements View.OnClickListener {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         mediaScanIntent.setData(contentUri);
         sendBroadcast(mediaScanIntent);
-        showAToast(getString(R.string.imagenguardadaOK), Toast.LENGTH_LONG);
     }
 
     @NonNull

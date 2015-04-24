@@ -35,7 +35,7 @@ class Seguridad {
         Security.addProvider(new org.spongycastle.jce.provider.BouncyCastleProvider());
     }
 
-    String encrypt(@NonNull String plaintext, @NonNull String pass) throws Exception {
+    String encrypt(@NonNull String plaintext, @NonNull String pass) {
         try {
             Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM, "BC");
             byte[] salt = generateSalt();
@@ -51,9 +51,10 @@ class Seguridad {
                     new String(Base64.encode(salt)), DELIMITER, new String(
                             Base64.encode(iv)), DELIMITER, new String(
                             Base64.encode(cipherText)));
-        } catch (Throwable e) {
-            throw new Exception("Error while encryption", e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return "";
     }
 
     @NonNull
@@ -74,9 +75,10 @@ class Seguridad {
             byte[] plaintext = cipher.doFinal(cipherBytes);
 
             return new String(plaintext, "UTF-8");
-        } catch (Throwable e) {
-            throw new Exception("Error while decryption", e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return "";
     }
 
     @NonNull

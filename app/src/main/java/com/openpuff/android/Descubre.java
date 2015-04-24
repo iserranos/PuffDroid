@@ -202,19 +202,16 @@ public class Descubre extends Main implements View.OnClickListener {
         int color = 0;
         String cadenaNueva;
         cadenaNueva = "";
-        int i;
+        int i = 0, j = 0;
         String caracter = "";
         String mensaje = "";
 
-        for (i = 0; i < bitmap.getWidth(); i++, color = 0) {
-
+        for (; i < bitmap.getWidth(); i++, color = 0) {
             color += bitmap.getPixel(0, i);
             binario = stringToBinary(Integer.toString(color));
             cadenaNueva += binario.charAt(binario.length() - 1);
-
             if ((i + 1) % 8 == 0) {
                 cadenaNueva = binaryToString(cadenaNueva);
-
                 if (cadenaNueva.charAt(cadenaNueva.length() - 1) == '-') {
                     break;
                 } else {
@@ -222,7 +219,6 @@ public class Descubre extends Main implements View.OnClickListener {
                     cadenaNueva = "";
                 }
             }
-
         }
 
         try {
@@ -233,20 +229,26 @@ public class Descubre extends Main implements View.OnClickListener {
 
         i++;
         color = 0;
+        int contador = i;
         cadenaNueva = "";
         int length = (int) (Math.log10(tamanioI) + 2);
         tamanioI += length;
         tamanioI *= 8;
-        for (; i < tamanioI; i++, color = 0) {
 
-            color += bitmap.getPixel(0, i);
-            binario = stringToBinary(Integer.toString(color));
-            cadenaNueva += binario.charAt(binario.length() - 1);
-
-            if ((i + 1) % 8 == 0) {
-                cadenaNueva = binaryToString(cadenaNueva);
-                mensaje += cadenaNueva;
-                cadenaNueva = "";
+        for (; contador < tamanioI; i++, color = 0) {
+            try {
+                color += bitmap.getPixel(j, i);
+                contador++;
+                binario = stringToBinary(Integer.toString(color));
+                cadenaNueva += binario.charAt(binario.length() - 1);
+                if ((i + 1) % 8 == 0) {
+                    cadenaNueva = binaryToString(cadenaNueva);
+                    mensaje += cadenaNueva;
+                    cadenaNueva = "";
+                }
+            } catch (Exception e) {
+                j++;
+                i = 0;
             }
         }
 
