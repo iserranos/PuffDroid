@@ -15,7 +15,7 @@
     <string name="fileNotFoundExcepcion">Imagen no encontrada</string>
     <string name="ioException">Error</string>
     <string name="textoNoVacio">Necesitas escribir un texto para ocultarlo</string>
-    <string name="pass1NoVacia">La primera contraseña no puede estar vacía</string>
+    <string name="pass1NoVacia">La contraseña no puede estar vacía</string>
     <string name="imagenguardadaOK">Imagen guardada correctamente</string>
     <string name="textoOcultoEra">El texto oculto era:&#160;</string>
     <string name="imagenSeleccionada">Imagen seleccionada</string>

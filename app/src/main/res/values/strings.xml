@@ -15,7 +15,7 @@
     <string name="fileNotFoundExcepcion">File not found</string>
     <string name="ioException">Error</string>
     <string name="textoNoVacio">Need to write text to hide</string>
-    <string name="pass1NoVacia">The first password can not be empty</string>
+    <string name="pass1NoVacia">The password can not be empty</string>
     <!--
     <string name="pass2">Second password</string>
     <string name="pass3">Third password</string>

@@ -38,10 +38,20 @@ public class Oculta extends Main implements View.OnClickListener {
 
     private static final int GALERIA = 1;
     private static final int CAMARA = 2;
-    private static final int maxPass = 8;
+    private static final int maxPass = 16;
+    private final Seguridad seguridad = new Seguridad();
+    private Toast toast;
+    private EditText TextoAOcultar;
+    private EditText Pass1;
+    private Button BotonOcultar;
     private final TextWatcher controlPassAOcultar = new TextWatcher() {
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        public void onTextChanged(@NonNull CharSequence s, int start, int before, int count) {
+            if (s.length() >= 8) {
+                BotonOcultar.setClickable(true);
+            } else {
+                BotonOcultar.setClickable(false);
+            }
         }
 
         @Override
@@ -55,11 +65,6 @@ public class Oculta extends Main implements View.OnClickListener {
         public void afterTextChanged(Editable s) {
         }
     };
-    private final Seguridad seguridad = new Seguridad();
-    private Toast toast;
-    private EditText TextoAOcultar;
-    private EditText Pass1;
-    private Button BotonOcultar;
     private Button BotonGuardar;
     private ImageView ImagenOriginal;
     @Nullable
@@ -68,6 +73,7 @@ public class Oculta extends Main implements View.OnClickListener {
     private final TextWatcher controlTextoAOcultar = new TextWatcher() {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
+
         }
 
         @Override
@@ -82,6 +88,7 @@ public class Oculta extends Main implements View.OnClickListener {
         }
     };
 
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -112,6 +119,7 @@ public class Oculta extends Main implements View.OnClickListener {
         toast = new Toast(this);
     }
 
+    @Override
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
@@ -135,6 +143,7 @@ public class Oculta extends Main implements View.OnClickListener {
 
     }
 
+    @Override
     public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         bitmap = savedInstanceState.getParcelable("bitmap");
@@ -153,6 +162,7 @@ public class Oculta extends Main implements View.OnClickListener {
         }
     }
 
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         hideKeyboard();
         switch (item.getItemId()) {
@@ -185,6 +195,7 @@ public class Oculta extends Main implements View.OnClickListener {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         int menuOpcion = R.menu.menugaleria;
@@ -192,6 +203,7 @@ public class Oculta extends Main implements View.OnClickListener {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
     protected void onActivityResult(int reqCode, int resCode, @NonNull Intent data) {
         super.onActivityResult(reqCode, resCode, data);
         if (resCode == RESULT_OK) {
@@ -228,6 +240,7 @@ public class Oculta extends Main implements View.OnClickListener {
         }
     }
 
+    @Override
     public void onClick(@NonNull View view) {
         super.onClick(view);
 
@@ -265,6 +278,7 @@ public class Oculta extends Main implements View.OnClickListener {
         }
     }
 
+    @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && BotonOcultar.getVisibility() == View.GONE && BotonGuardar.getVisibility() == View.VISIBLE) {
 
@@ -443,7 +457,7 @@ public class Oculta extends Main implements View.OnClickListener {
         }
     }
 
-    void showAToast(String st, int duracion) {
+    private void showAToast(String st, int duracion) {
         try {
             toast.getView().isShown();
             toast.setText(st);
@@ -453,7 +467,7 @@ public class Oculta extends Main implements View.OnClickListener {
         toast.show();
     }
 
-    void irAGaleria(int opcion) {
+    private void irAGaleria(int opcion) {
         if (opcion == CAMARA) {
             showAToast(getString(R.string.eligeFoto), Toast.LENGTH_LONG);
         } else {

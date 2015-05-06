@@ -23,6 +23,7 @@
         <Button
             android:id="@+id/BotonDescubrir"
             style="@style/estiloBotones"
+            android:clickable="true"
             android:text="@string/botonDescubrir" />
 
     </LinearLayout>

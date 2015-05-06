@@ -2,6 +2,7 @@ package com.openpuff.android;
 
 import android.support.annotation.NonNull;
 
+import org.spongycastle.jce.provider.BouncyCastleProvider;
 import org.spongycastle.util.encoders.Base64;
 
 import java.security.SecureRandom;
@@ -18,21 +19,15 @@ import javax.crypto.spec.SecretKeySpec;
 class Seguridad {
 
     private static final String KEY_DERIVATION_ALGORITHM = "PBKDF2WithHmacSHA1";
-
     private static final String CIPHER_ALGORITHM = "AES/CBC/PKCS5Padding";
-
     private static final String DELIMITER = "]";
-
     private static final int KEY_LENGTH = 256;
-
     private static final int ITERATION_COUNT = 1000;
-
     private static final int SALT_LENGTH = 8;
-
     private static final SecureRandom random = new SecureRandom();
 
     static {
-        Security.addProvider(new org.spongycastle.jce.provider.BouncyCastleProvider());
+        Security.addProvider(new BouncyCastleProvider());
     }
 
     String encrypt(@NonNull String plaintext, @NonNull String pass) {
@@ -58,7 +53,7 @@ class Seguridad {
     }
 
     @NonNull
-    String decrypt(@NonNull String ciphertext, @NonNull String password) throws Exception {
+    String decrypt(@NonNull String ciphertext, @NonNull String password) {
         String[] fields = ciphertext.split(DELIMITER);
         if (fields.length != 3) {
             throw new IllegalArgumentException("Invalid encrypted text format");

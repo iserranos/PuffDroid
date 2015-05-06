@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OpenPuff</string>
+    <string name="aceptar">Accettare </string>
+    <string name="botonDescubrir">Scopri il messaggio </string>
+    <string name="botonGuardar">Salva l\'immagine</string>
+    <string name="botonOcultar">Nascondi il messaggio </string>
+    <string name="cancelar">Cancella </string>
+    <string name="cargando">In carica </string>
+    <string name="confirmación">Immagine non salvata. Esci? </string>
+    <string name="descubrir">Scoprire </string>
+    <string name="eligeFoto">Scegli l\'immagine che hai appena fatto </string>
+    <string name="espere">Aspetta per favore </string>
+    <string name="fileNotFoundExcepcion">Imaggine non trovata </string>
+    <string name="imagenGrande">Hai bisogno di un\'immagine piú grande </string>
+    <string name="imagenPesada">Immagine troppo grande </string>
+    <string name="imagenSeleccionada">Immagine scelta </string>
+    <string name="imagenguardadaOK">Immagine  correttamente salvata </string>
+    <string name="ioException">Errore </string>
+    <string name="mensajeAlerta">Aggiungere un\'immagine:</string>
+    <string name="necesitasImagen">Scegli un\'imaggine </string>
+    <string name="noMasCaracteres">Non sono ammessi più caratteri </string>
+    <string name="ocultar">Nascondere </string>
+    <string name="opcion1">Camera </string>
+    <string name="opcion2">Galleria </string>
+    <string name="pass1">Password </string>
+    <string name="pass1NoVacia">Il campo password non può essere vuoto </string>
+    <string name="textoAOcultar">Testo da nascondere </string>
+    <string name="textoNoVacio">Scrivi un testo da nascondere </string>
+    <string name="textoOcultoEra">Il testo nascosto era:&#160;</string>
+    <string name="tituloAlerta">Clicca un\'opzione</string>
+</resources>

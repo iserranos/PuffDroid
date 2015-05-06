@@ -23,11 +23,13 @@
         <Button
             android:id="@+id/BotonOcultar"
             style="@style/estiloBotones"
+            android:clickable="false"
             android:text="@string/botonOcultar" />
 
         <Button
             android:id="@+id/BotonGuardar"
             style="@style/estiloBotones"
+            android:clickable="true"
             android:text="@string/botonGuardar"
             android:visibility="gone" />
 

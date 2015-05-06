@@ -28,6 +28,8 @@ import java.io.IOException;
 public class Descubre extends Main implements View.OnClickListener {
 
     private static final int maxPass = 8;
+    private final Seguridad seguridad = new Seguridad();
+    private Toast toast;
     private final TextWatcher controlPassAOcultar = new TextWatcher() {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -44,8 +46,6 @@ public class Descubre extends Main implements View.OnClickListener {
         public void afterTextChanged(Editable s) {
         }
     };
-    private final Seguridad seguridad = new Seguridad();
-    private Toast toast;
     private TextView TextoOculto;
     private EditText Pass1;
     private ImageView ImagenOriginal;
@@ -159,7 +159,7 @@ public class Descubre extends Main implements View.OnClickListener {
         }
     }
 
-    void recuperarDatos() {
+    private void recuperarDatos() {
 
         String pass1 = Pass1.getText().toString().trim();
         if (pass1.equals("") || pass1.length() == 0) {
@@ -196,7 +196,7 @@ public class Descubre extends Main implements View.OnClickListener {
         mThread.start();
     }
 
-    String descubrirMensaje(@NonNull Bitmap bitmap) {
+    private String descubrirMensaje(@NonNull Bitmap bitmap) {
         int tamanioI;
         StringBuilder binario;
         int color = 0;
@@ -256,7 +256,7 @@ public class Descubre extends Main implements View.OnClickListener {
     }
 
     @NonNull
-    String binaryToString(@NonNull String input) {
+    private String binaryToString(@NonNull String input) {
         String output = "";
         for (int i = 0; i <= input.length() - 8; i += 8) {
             int k = Integer.parseInt(input.substring(i, i + 8), 2);
@@ -266,7 +266,7 @@ public class Descubre extends Main implements View.OnClickListener {
     }
 
     @NonNull
-    StringBuilder stringToBinary(@NonNull String textoOculto) {
+    private StringBuilder stringToBinary(@NonNull String textoOculto) {
         byte[] bytes = textoOculto.getBytes();
         StringBuilder binary = new StringBuilder();
         for (byte b : bytes) {
@@ -287,7 +287,7 @@ public class Descubre extends Main implements View.OnClickListener {
         }
     }
 
-    void showAToast(String st, int duracion) {
+    private void showAToast(String st, int duracion) {
         try {
             toast.getView().isShown();
             toast.setText(st);
@@ -297,7 +297,7 @@ public class Descubre extends Main implements View.OnClickListener {
         toast.show();
     }
 
-    void irAGaleria() {
+    private void irAGaleria() {
         showAToast(getString(R.string.necesitasImagen), Toast.LENGTH_SHORT);
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/jpeg");
