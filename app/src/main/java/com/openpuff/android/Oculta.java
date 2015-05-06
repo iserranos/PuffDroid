@@ -131,7 +131,6 @@ public class Oculta extends Main implements View.OnClickListener {
         BotonOcultar.setOnClickListener(this);
         BotonOcultar.setClickable(false);
         BotonOcultar.setTextColor(Color.TRANSPARENT);
-        BotonGuardar.setOnClickListener(this);
 
         try {
             //noinspection ConstantConditions
@@ -176,6 +175,7 @@ public class Oculta extends Main implements View.OnClickListener {
     public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         hideKeyboard();
+
         bitmap = savedInstanceState.getParcelable("bitmap");
         if (bitmap != null) {
             ImagenOriginal.setImageBitmap(bitmap);
@@ -219,7 +219,25 @@ public class Oculta extends Main implements View.OnClickListener {
                 return true;
 
             case R.id.ItemGaleria:
-                mostrarAlerta();
+                if (BotonOcultar.getVisibility() == View.GONE && BotonGuardar.getVisibility() == View.VISIBLE) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage(getString(R.string.confirmación))
+                            .setCancelable(false)
+                            .setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    mostrarAlerta();
+                                }
+                            })
+                            .setNegativeButton(getString(R.string.cancelar), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+
+                                }
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                } else {
+                    mostrarAlerta();
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -237,6 +255,12 @@ public class Oculta extends Main implements View.OnClickListener {
     protected void onActivityResult(int reqCode, int resCode, @NonNull Intent data) {
         super.onActivityResult(reqCode, resCode, data);
         if (resCode == RESULT_OK) {
+
+            BotonOcultar.setClickable(false);
+            BotonOcultar.setVisibility(View.VISIBLE);
+            BotonOcultar.setOnClickListener(this);
+            BotonGuardar.setVisibility(View.GONE);
+
             switch (reqCode) {
                 case CAMARA:
                     irAGaleria(CAMARA);
@@ -266,7 +290,9 @@ public class Oculta extends Main implements View.OnClickListener {
                     break;
             }
         } else {
-            showAToast(getString(R.string.necesitasImagen), Toast.LENGTH_SHORT);
+            if (bitmap == null) {
+                showAToast(getString(R.string.necesitasImagen), Toast.LENGTH_SHORT);
+            }
         }
     }
 
@@ -395,6 +421,7 @@ public class Oculta extends Main implements View.OnClickListener {
         };
         BotonOcultar.setVisibility(View.GONE);
         BotonGuardar.setVisibility(View.VISIBLE);
+        BotonGuardar.setOnClickListener(this);
         mThread.start();
         ImagenOriginal.setImageBitmap(bitmap);
     }

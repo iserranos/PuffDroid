@@ -157,6 +157,7 @@ public class Descubre extends Main implements View.OnClickListener {
     protected void onActivityResult(int reqCode, int resCode, @Nullable Intent data) {
 
         if (resCode == RESULT_OK && data != null) {
+            TextoOculto.setVisibility(View.GONE);
             Uri selectedimg = data.getData();
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
@@ -204,19 +205,23 @@ public class Descubre extends Main implements View.OnClickListener {
                     @Override
                     public void run() {
                         String mensaje = descubrirMensaje(bitmap);
-                        try {
-                            String mensajeFinal = seguridad.decrypt(mensaje, Pass1.getText().toString().trim());
-                            TextoOculto.setVisibility(View.VISIBLE);
-                            TextoOculto.setText(getString(R.string.textoOcultoEra) + mensajeFinal);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        if (!mensaje.equals("")) {
+                            try {
+                                String mensajeFinal = seguridad.decrypt(mensaje, Pass1.getText().toString().trim());
+                                TextoOculto.setVisibility(View.VISIBLE);
+                                TextoOculto.setText(getString(R.string.textoOcultoEra) + mensajeFinal);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            showAToast(getString(R.string.ioException), Toast.LENGTH_LONG);
                         }
-                        pd.dismiss();
                     }
                 });
             }
         };
         mThread.start();
+        pd.dismiss();
     }
 
     private String descubrirMensaje(@NonNull Bitmap bitmap) {
@@ -310,12 +315,12 @@ public class Descubre extends Main implements View.OnClickListener {
         }
     }
 
-    private void showAToast(String st, int duracion) {
+    private void showAToast(String texto, int duracion) {
         try {
             toast.getView().isShown();
-            toast.setText(st);
+            toast.setText(texto);
         } catch (Exception e) {
-            toast = Toast.makeText(getApplicationContext(), st, duracion);
+            toast = Toast.makeText(getApplicationContext(), texto, duracion);
         }
         toast.show();
     }
