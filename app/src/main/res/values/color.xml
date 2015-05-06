@@ -5,4 +5,5 @@
     <item name="letraTitulo" type="color">#0A122A</item>
     <item name="letraNormal" type="color">#0A122A</item>
     <item name="letraBoton" type="color">#000</item>
+
 </resources>

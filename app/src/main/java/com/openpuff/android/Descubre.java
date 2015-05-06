@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -27,29 +28,50 @@ import java.io.IOException;
 
 public class Descubre extends Main implements View.OnClickListener {
 
-    private static final int maxPass = 8;
-    private final Seguridad seguridad = new Seguridad();
+    private static final int maxPass = 16;
+    @NonNull
+    private final Seguridad seguridad;
+    @NonNull
+    private final TextWatcher controlPassAOcultar;
     private Toast toast;
-    private final TextWatcher controlPassAOcultar = new TextWatcher() {
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-        }
-
-        @Override
-        public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
-            if (s.length() == maxPass) {
-                showAToast(getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
-            }
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-        }
-    };
     private TextView TextoOculto;
     private EditText Pass1;
     private ImageView ImagenOriginal;
     private Bitmap bitmap;
+    private Button BotonDescubrir;
+
+    public Descubre() {
+        seguridad = new Seguridad();
+        controlPassAOcultar = new TextWatcher() {
+            @Override
+            public void onTextChanged(@NonNull CharSequence s, int start, int before, int count) {
+                if (s.length() >= 8) {
+                    BotonDescubrir.setClickable(true);
+                    BotonDescubrir.setTextColor(getResources().getColor(R.color.letraBoton));
+                } else {
+                    BotonDescubrir.setClickable(false);
+                    BotonDescubrir.setTextColor(Color.TRANSPARENT);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
+                if (s.length() == maxPass) {
+                    showAToast(getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(@NonNull Editable s) {
+                String filtered_str = s.toString().trim();
+                if (filtered_str.matches(".*[^a-z^A-Z0-9].*")) {
+                    filtered_str = filtered_str.replaceAll("[^a-z^A-Z0-9]", "");
+                    s.clear();
+                    s.append(filtered_str);
+                }
+            }
+        };
+    }
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,8 +89,9 @@ public class Descubre extends Main implements View.OnClickListener {
 
         ImagenOriginal = (ImageView) findViewById(R.id.ImagenOriginal);
 
-        Button botonDescubrir = (Button) findViewById(R.id.BotonDescubrir);
-        botonDescubrir.setOnClickListener(this);
+        BotonDescubrir = (Button) findViewById(R.id.BotonDescubrir);
+        BotonDescubrir.setTextColor(Color.TRANSPARENT);
+        BotonDescubrir.setOnClickListener(this);
 
         try {
             //noinspection ConstantConditions

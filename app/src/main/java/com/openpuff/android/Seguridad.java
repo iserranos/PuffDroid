@@ -18,16 +18,27 @@ import javax.crypto.spec.SecretKeySpec;
 
 class Seguridad {
 
-    private static final String KEY_DERIVATION_ALGORITHM = "PBKDF2WithHmacSHA1";
-    private static final String CIPHER_ALGORITHM = "AES/CBC/PKCS5Padding";
-    private static final String DELIMITER = "]";
-    private static final int KEY_LENGTH = 256;
-    private static final int ITERATION_COUNT = 1000;
-    private static final int SALT_LENGTH = 8;
-    private static final SecureRandom random = new SecureRandom();
+    @NonNull
+    private static final String KEY_DERIVATION_ALGORITHM;
+    @NonNull
+    private static final String CIPHER_ALGORITHM;
+    @NonNull
+    private static final String DELIMITER;
+    private static final int KEY_LENGTH;
+    private static final int ITERATION_COUNT;
+    private static final int SALT_LENGTH;
+    @NonNull
+    private static final SecureRandom random;
 
     static {
         Security.addProvider(new BouncyCastleProvider());
+        KEY_DERIVATION_ALGORITHM = "PBKDF2WithHmacSHA1";
+        CIPHER_ALGORITHM = "AES/CBC/PKCS5Padding";
+        DELIMITER = "]";
+        KEY_LENGTH = 256;
+        ITERATION_COUNT = 1000;
+        SALT_LENGTH = 8;
+        random = new SecureRandom();
     }
 
     String encrypt(@NonNull String plaintext, @NonNull String pass) {

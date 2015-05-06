@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -39,64 +40,81 @@ public class Oculta extends Main implements View.OnClickListener {
     private static final int GALERIA = 1;
     private static final int CAMARA = 2;
     private static final int maxPass = 16;
-    private final Seguridad seguridad = new Seguridad();
+    @NonNull
+    private final Seguridad seguridad;
+    @NonNull
+    private final TextWatcher controlPassAOcultar;
+    @NonNull
+    private final TextWatcher controlTextoAOcultar;
     private Toast toast;
     private EditText TextoAOcultar;
     private EditText Pass1;
     private Button BotonOcultar;
-    private final TextWatcher controlPassAOcultar = new TextWatcher() {
-        @Override
-        public void onTextChanged(@NonNull CharSequence s, int start, int before, int count) {
-            if (s.length() >= 8) {
-                BotonOcultar.setClickable(true);
-            } else {
-                BotonOcultar.setClickable(false);
-            }
-        }
-
-        @Override
-        public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
-            if (s.length() == maxPass) {
-                showAToast(getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
-            }
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-        }
-    };
     private Button BotonGuardar;
     private ImageView ImagenOriginal;
     @Nullable
     private Bitmap bitmap = null;
     private int maxTexto = 0;
-    private final TextWatcher controlTextoAOcultar = new TextWatcher() {
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-        }
-
-        @Override
-        public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
-            if (s.length() == maxTexto && maxTexto != 0) {
-                showAToast(getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
+    public Oculta() {
+        seguridad = new Seguridad();
+        controlPassAOcultar = new TextWatcher() {
+            @Override
+            public void onTextChanged(@NonNull CharSequence s, int start, int before, int count) {
+                if (s.length() >= 8) {
+                    BotonOcultar.setClickable(true);
+                    BotonOcultar.setTextColor(getResources().getColor(R.color.letraBoton));
+                } else {
+                    BotonOcultar.setClickable(false);
+                    BotonOcultar.setTextColor(Color.TRANSPARENT);
+                }
             }
-        }
 
-        @Override
-        public void afterTextChanged(Editable s) {
-        }
-    };
+            @Override
+            public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
+                if (s.length() == maxPass) {
+                    showAToast(getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(@NonNull Editable s) {
+                String filtered_str = s.toString().trim();
+                if (filtered_str.matches(".*[^a-z^A-Z0-9].*")) {
+                    filtered_str = filtered_str.replaceAll("[^a-z^A-Z0-9]", "");
+                    s.clear();
+                    s.append(filtered_str);
+                }
+            }
+        };
+        controlTextoAOcultar = new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
+                if (s.length() == maxTexto && maxTexto != 0) {
+                    showAToast(getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(@NonNull Editable s) {
+                String filtered_str = s.toString();
+                if (filtered_str.matches(".*[^a-z^A-Z0-9áéíóúàèìòùâêîôûäëïöüÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÑñ +*=<>.,-;:_{}()/&%$·!?¿¡'@#|].*")) {
+                    filtered_str = filtered_str.replaceAll("[^a-z^A-Z0-9áéíóúàèìòùâêîôûäëïöüÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÑñ +*=<>.,-;:_{}()/&%$·!?¿¡'@#|]", "");
+                    s.clear();
+                    s.append(filtered_str);
+                }
+            }
+        };
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState == null) {
-            mostrarAlerta();
-        } else {
-            onRestoreInstanceState(savedInstanceState);
-        }
         setContentView(R.layout.oculta);
 
         BotonOcultar = (Button) findViewById(R.id.BotonOcultar);
@@ -111,12 +129,23 @@ public class Oculta extends Main implements View.OnClickListener {
         ImagenOriginal = (ImageView) findViewById(R.id.ImagenOriginal);
 
         BotonOcultar.setOnClickListener(this);
+        BotonOcultar.setClickable(false);
+        BotonOcultar.setTextColor(Color.TRANSPARENT);
+        BotonGuardar.setOnClickListener(this);
+
         try {
             //noinspection ConstantConditions
             getActionBar().setDisplayHomeAsUpEnabled(true);
         } catch (NullPointerException ignored) {
         }
         toast = new Toast(this);
+
+        if (savedInstanceState == null) {
+            mostrarAlerta();
+        } else {
+            onRestoreInstanceState(savedInstanceState);
+        }
+
     }
 
     @Override
@@ -146,6 +175,7 @@ public class Oculta extends Main implements View.OnClickListener {
     @Override
     public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        hideKeyboard();
         bitmap = savedInstanceState.getParcelable("bitmap");
         if (bitmap != null) {
             ImagenOriginal.setImageBitmap(bitmap);
@@ -324,7 +354,6 @@ public class Oculta extends Main implements View.OnClickListener {
                 dialog.cancel();
             }
         });
-
         alerta.show();
     }
 
@@ -368,7 +397,6 @@ public class Oculta extends Main implements View.OnClickListener {
         BotonGuardar.setVisibility(View.VISIBLE);
         mThread.start();
         ImagenOriginal.setImageBitmap(bitmap);
-        BotonGuardar.setOnClickListener(this);
     }
 
     private void ocultarMensaje(@NonNull String texto) {
