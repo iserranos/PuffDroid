@@ -18,9 +18,9 @@ import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -141,10 +141,8 @@ public class Oculta extends Main implements View.OnClickListener {
 
         if (savedInstanceState == null) {
             mostrarAlerta();
-        } else {
-            onRestoreInstanceState(savedInstanceState);
         }
-
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
     @Override
@@ -168,7 +166,6 @@ public class Oculta extends Main implements View.OnClickListener {
         } else {
             savedInstanceState.putString("pass1", Pass1.getText().toString());
         }
-
     }
 
     @Override
@@ -239,15 +236,26 @@ public class Oculta extends Main implements View.OnClickListener {
                     mostrarAlerta();
                 }
                 return true;
+
+            case R.id.ItemCompartir:
+                showAToast("hola", Toast.LENGTH_LONG);
+                if (BotonOcultar.getVisibility() == View.GONE && BotonGuardar.getVisibility() == View.VISIBLE && bitmap != null) {
+                    Intent shareIntent = new Intent();
+                    shareIntent.setAction(Intent.ACTION_SEND);
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, bitmap);
+                    shareIntent.setType("image/jpeg");
+                    startActivity(Intent.createChooser(shareIntent, getString(R.string.compartir)));
+                } else {
+                    showAToast("te jodes", 2);
+                }
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        int menuOpcion = R.menu.menugaleria;
-        inflater.inflate(menuOpcion, menu);
+        getMenuInflater().inflate(R.menu.menu_galeria_compartir, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -532,5 +540,16 @@ public class Oculta extends Main implements View.OnClickListener {
         intent.setType("image/jpeg");
         startActivityForResult(intent, 1);
     }
+
+    /*private void ocultarItem(int id) {
+        MenuItem item = menu.findItem(id);
+        item.setVisible(false);
+    }
+
+    private void mostrarItem(int id){
+        MenuItem item = menu.findItem(id);
+        //mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+        item.setVisible(true);
+    }*/
 
 }

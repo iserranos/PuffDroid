@@ -33,5 +33,6 @@
     <string name="cancelar">Abbrechen</string>
     <string name="aceptar">Akzeptieren</string>
     <string name="imagenSeleccionada">Ausgewähltes bild</string>
+    <string name="compartir">Teilen</string>
 
 </resources>

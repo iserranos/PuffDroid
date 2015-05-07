@@ -13,9 +13,9 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -99,6 +99,7 @@ public class Descubre extends Main implements View.OnClickListener {
         } catch (NullPointerException ignored) {
         }
         toast = new Toast(getApplicationContext());
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
@@ -146,10 +147,9 @@ public class Descubre extends Main implements View.OnClickListener {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        int menuOpcion = R.menu.menugaleria;
-        inflater.inflate(menuOpcion, menu);
+        getMenuInflater().inflate(R.menu.menu_galeria_compartir, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

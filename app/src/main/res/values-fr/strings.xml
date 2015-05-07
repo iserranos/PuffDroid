@@ -29,5 +29,6 @@
     <string name="imagenPesada">L\'image est trop lourde</string>
     <string name="noMasCaracteres">Plus de caractères ne sont plus acceptés</string>
     <string name="imagenSeleccionada">Image sélectionnée</string>
+    <string name="compartir">Partager</string>
 
 </resources>

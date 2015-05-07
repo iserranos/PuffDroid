@@ -29,4 +29,5 @@
     <string name="textoNoVacio">Scrivi un testo da nascondere </string>
     <string name="textoOcultoEra">Il testo nascosto era:&#160;</string>
     <string name="tituloAlerta">Clicca un\'opzione</string>
+    <string name="compartir">Condividere</string>
 </resources>
