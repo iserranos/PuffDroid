@@ -10,7 +10,7 @@
     <!-- Galeria -->
     <item
         android:id="@+id/ItemGaleria"
-        android:icon="@drawable/ic_action_picture"
+        android:icon="@drawable/ic_action_new_picture"
         android:showAsAction="ifRoom"
         android:title="@string/opcion2" />
 
