@@ -13,9 +13,7 @@
         <EditText
             android:id="@+id/TextoAOcultar"
             style="@style/estiloTextoOculto"
-            android:hint="@string/textoAOcultar"
-            android:nextFocusDown="@+id/Pass1"
-            android:singleLine="true" />
+            android:hint="@string/textoAOcultar" />
 
         <EditText
             android:id="@+id/Pass1"

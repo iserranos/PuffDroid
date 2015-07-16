@@ -171,7 +171,7 @@ public class Oculta extends Main implements View.OnClickListener {
     @Override
     public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        hideKeyboard();
+        //hideKeyboard();
 
         bitmap = savedInstanceState.getParcelable("bitmap");
         if (bitmap != null) {
@@ -179,19 +179,19 @@ public class Oculta extends Main implements View.OnClickListener {
         }
 
         String textoAOcultar = savedInstanceState.getString("textoAOcultar");
-        if (!textoAOcultar.equals("")) {
+        if (textoAOcultar != null && !textoAOcultar.equals("")) {
             TextoAOcultar.setText(textoAOcultar);
         }
 
         String pass1 = savedInstanceState.getString("pass1");
-        if (!pass1.equals("")) {
+        if (pass1 != null && !pass1.equals("")) {
             Pass1.setText(pass1);
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        hideKeyboard();
+        //hideKeyboard();
         switch (item.getItemId()) {
             case android.R.id.home:
                 if (BotonOcultar.getVisibility() == View.GONE && BotonGuardar.getVisibility() == View.VISIBLE) {
@@ -234,19 +234,6 @@ public class Oculta extends Main implements View.OnClickListener {
                     alert.show();
                 } else {
                     mostrarAlerta();
-                }
-                return true;
-
-            case R.id.ItemCompartir:
-                showAToast("hola", Toast.LENGTH_LONG);
-                if (BotonOcultar.getVisibility() == View.GONE && BotonGuardar.getVisibility() == View.VISIBLE && bitmap != null) {
-                    Intent shareIntent = new Intent();
-                    shareIntent.setAction(Intent.ACTION_SEND);
-                    shareIntent.putExtra(Intent.EXTRA_STREAM, bitmap);
-                    shareIntent.setType("image/jpeg");
-                    startActivity(Intent.createChooser(shareIntent, getString(R.string.compartir)));
-                } else {
-                    showAToast("te jodes", 2);
                 }
                 return true;
         }
@@ -308,7 +295,7 @@ public class Oculta extends Main implements View.OnClickListener {
     public void onClick(@NonNull View view) {
         super.onClick(view);
 
-        hideKeyboard();
+        //hideKeyboard();
         switch (view.getId()) {
             case R.id.BotonOcultar:
                 if (bitmap != null) {
@@ -475,10 +462,11 @@ public class Oculta extends Main implements View.OnClickListener {
 
         try {
             FileOutputStream fos = new FileOutputStream(mediaFile);
-            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
+            image.compress(Bitmap.CompressFormat.PNG, 100, fos);
             fos.flush();
             fos.close();
-        } catch (IOException ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         Uri contentUri = Uri.fromFile(mediaFile);
@@ -511,14 +499,14 @@ public class Oculta extends Main implements View.OnClickListener {
         return binary;
     }
 
-    private void hideKeyboard() {
+    /*private void hideKeyboard() {
         // Check if no view has focus:
         View view = this.getCurrentFocus();
         if (view != null) {
             InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
-    }
+    }*/
 
     private void showAToast(String st, int duracion) {
         try {
@@ -540,16 +528,5 @@ public class Oculta extends Main implements View.OnClickListener {
         intent.setType("image/jpeg");
         startActivityForResult(intent, 1);
     }
-
-    /*private void ocultarItem(int id) {
-        MenuItem item = menu.findItem(id);
-        item.setVisible(false);
-    }
-
-    private void mostrarItem(int id){
-        MenuItem item = menu.findItem(id);
-        //mShareActionProvider = (ShareActionProvider) item.getActionProvider();
-        item.setVisible(true);
-    }*/
 
 }

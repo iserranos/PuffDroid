@@ -127,7 +127,7 @@ public class Descubre extends Main implements View.OnClickListener {
         }
 
         String pass1 = savedInstanceState.getString("pass1");
-        if (!pass1.equals("")) {
+        if (pass1 != null && !pass1.equals("")) {
             Pass1.setText(pass1);
         }
     }
