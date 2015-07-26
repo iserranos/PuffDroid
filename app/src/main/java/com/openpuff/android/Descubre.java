@@ -33,7 +33,7 @@ public class Descubre extends Main implements View.OnClickListener {
     private final Seguridad seguridad;
     @NonNull
     private final TextWatcher controlPassAOcultar;
-    private Toast toast;
+    private final LSB lsb;
     private TextView TextoOculto;
     private EditText Pass1;
     private ImageView ImagenOriginal;
@@ -42,6 +42,7 @@ public class Descubre extends Main implements View.OnClickListener {
 
     public Descubre() {
         seguridad = new Seguridad();
+        lsb = new LSB();
         controlPassAOcultar = new TextWatcher() {
             @Override
             public void onTextChanged(@NonNull CharSequence s, int start, int before, int count) {
@@ -57,7 +58,7 @@ public class Descubre extends Main implements View.OnClickListener {
             @Override
             public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
                 if (s.length() == maxPass) {
-                    showAToast(getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
+                    lsb.showAToast(getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
                 }
             }
 
@@ -82,14 +83,14 @@ public class Descubre extends Main implements View.OnClickListener {
             irAGaleria();
         }
 
-        TextoOculto = (TextView) findViewById(R.id.TextoOculto);
+        TextoOculto = (TextView) findViewById(R.id.DescubreTextoPortador);
 
-        Pass1 = (EditText) findViewById(R.id.Pass1);
+        Pass1 = (EditText) findViewById(R.id.DescubrePass1);
         Pass1.addTextChangedListener(controlPassAOcultar);
 
-        ImagenOriginal = (ImageView) findViewById(R.id.ImagenOriginal);
+        ImagenOriginal = (ImageView) findViewById(R.id.DescubreImagenPortador);
 
-        BotonDescubrir = (Button) findViewById(R.id.BotonDescubrir);
+        BotonDescubrir = (Button) findViewById(R.id.DescubreBotonDescubrir);
         BotonDescubrir.setTextColor(Color.TRANSPARENT);
         BotonDescubrir.setOnClickListener(this);
 
@@ -98,7 +99,7 @@ public class Descubre extends Main implements View.OnClickListener {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         } catch (NullPointerException ignored) {
         }
-        toast = new Toast(getApplicationContext());
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
@@ -140,9 +141,9 @@ public class Descubre extends Main implements View.OnClickListener {
             case android.R.id.home:
                 finish();
                 return true;
-            case R.id.ItemGaleria:
+            /*case R.id.ItemGaleria:
                 irAGaleria();
-                return true;
+                return true;*/
         }
         return super.onOptionsItemSelected(item);
     }
@@ -163,9 +164,9 @@ public class Descubre extends Main implements View.OnClickListener {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
                 ImagenOriginal.setImageBitmap(bitmap);
             } catch (FileNotFoundException e) {
-                showAToast(getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_LONG);
+                lsb.showAToast(getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_LONG);
             } catch (IOException e) {
-                showAToast(getString(R.string.ioException), Toast.LENGTH_LONG);
+                lsb.showAToast(getString(R.string.ioException), Toast.LENGTH_LONG);
             }
         } else if (bitmap == null) {
             finish();
@@ -179,7 +180,7 @@ public class Descubre extends Main implements View.OnClickListener {
         if (bitmap != null && TextoOculto.getVisibility() == View.GONE) {
             recuperarDatos();
         } else if (bitmap == null) {
-            showAToast(getString(R.string.necesitasImagen), Toast.LENGTH_SHORT);
+            lsb.showAToast(getString(R.string.necesitasImagen), Toast.LENGTH_SHORT);
         }
     }
 
@@ -187,7 +188,7 @@ public class Descubre extends Main implements View.OnClickListener {
 
         String pass1 = Pass1.getText().toString().trim();
         if (pass1.equals("") || pass1.length() == 0) {
-            showAToast(getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
+            lsb.showAToast(getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
             return;
         }
 
@@ -214,7 +215,7 @@ public class Descubre extends Main implements View.OnClickListener {
                                 e.printStackTrace();
                             }
                         } else {
-                            showAToast(getString(R.string.ioException), Toast.LENGTH_LONG);
+                            lsb.showAToast(getString(R.string.ioException), Toast.LENGTH_LONG);
                         }
                     }
                 });
@@ -236,10 +237,10 @@ public class Descubre extends Main implements View.OnClickListener {
 
         for (; i < bitmap.getWidth(); i++, color = 0) {
             color += bitmap.getPixel(0, i);
-            binario = stringToBinary(Integer.toString(color));
+            binario = lsb.stringToBinary(Integer.toString(color));
             cadenaNueva += binario.charAt(binario.length() - 1);
             if ((i + 1) % 8 == 0) {
-                cadenaNueva = binaryToString(cadenaNueva);
+                cadenaNueva = lsb.binaryToString(cadenaNueva);
                 if (cadenaNueva.charAt(cadenaNueva.length() - 1) == '-') {
                     break;
                 } else {
@@ -267,10 +268,10 @@ public class Descubre extends Main implements View.OnClickListener {
             try {
                 color += bitmap.getPixel(j, i);
                 contador++;
-                binario = stringToBinary(Integer.toString(color));
+                binario = lsb.stringToBinary(Integer.toString(color));
                 cadenaNueva += binario.charAt(binario.length() - 1);
                 if ((i + 1) % 8 == 0) {
-                    cadenaNueva = binaryToString(cadenaNueva);
+                    cadenaNueva = lsb.binaryToString(cadenaNueva);
                     mensaje += cadenaNueva;
                     cadenaNueva = "";
                 }
@@ -279,32 +280,7 @@ public class Descubre extends Main implements View.OnClickListener {
                 i = 0;
             }
         }
-
         return mensaje;
-    }
-
-    @NonNull
-    private String binaryToString(@NonNull String input) {
-        String output = "";
-        for (int i = 0; i <= input.length() - 8; i += 8) {
-            int k = Integer.parseInt(input.substring(i, i + 8), 2);
-            output += (char) k;
-        }
-        return output;
-    }
-
-    @NonNull
-    private StringBuilder stringToBinary(@NonNull String textoOculto) {
-        byte[] bytes = textoOculto.getBytes();
-        StringBuilder binary = new StringBuilder();
-        for (byte b : bytes) {
-            int val = b;
-            for (int i = 0; i < 8; i++) {
-                binary.append((val & 128) == 0 ? 0 : 1);
-                val <<= 1;
-            }
-        }
-        return binary;
     }
 
     private void hideKeyboard() {
@@ -315,18 +291,8 @@ public class Descubre extends Main implements View.OnClickListener {
         }
     }
 
-    private void showAToast(String texto, int duracion) {
-        try {
-            toast.getView().isShown();
-            toast.setText(texto);
-        } catch (Exception e) {
-            toast = Toast.makeText(getApplicationContext(), texto, duracion);
-        }
-        toast.show();
-    }
-
     private void irAGaleria() {
-        showAToast(getString(R.string.necesitasImagen), Toast.LENGTH_SHORT);
+        lsb.showAToast(getString(R.string.necesitasImagen), Toast.LENGTH_SHORT);
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/jpeg");
         startActivityForResult(intent, 1);

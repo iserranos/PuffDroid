@@ -5,26 +5,56 @@
         android:id="@+id/DescubreXML"
         style="@style/estiloLayout">
 
+        <Button
+            android:id="@+id/DescubreBotonPortador"
+            style="@style/estiloBotones"
+            android:text="Elige el portador" />
+
         <ImageView
-            android:id="@+id/ImagenOriginal"
+            android:id="@+id/DescubreImagenPortador"
             style="@style/estiloImagen"
             android:contentDescription="@string/imagenSeleccionada" />
 
         <TextView
-            android:id="@+id/TextoOculto"
-            style="@style/estiloTextoOculto"
+            android:id="@+id/DescubreTextoPortador"
+            style="@style/estiloTexto"
             android:visibility="gone" />
 
+        <Button
+            android:id="@+id/DescubreBotonContrasenia"
+            style="@style/estiloBotones"
+            android:text="Añade una contraseña" />
+
         <EditText
-            android:id="@+id/Pass1"
+            android:id="@+id/DescubrePass1"
+            style="@style/estiloContrasenya"
+            android:hint="@string/pass1" />
+
+        <EditText
+            android:id="@+id/DescubrePass2"
+            style="@style/estiloContrasenya"
+            android:hint="@string/pass1" />
+
+        <EditText
+            android:id="@+id/DescubrePass3"
             style="@style/estiloContrasenya"
             android:hint="@string/pass1" />
 
         <Button
-            android:id="@+id/BotonDescubrir"
+            android:id="@+id/DescubreBotonDescubrir"
             style="@style/estiloBotones"
-            android:clickable="true"
-            android:text="@string/botonDescubrir" />
+            android:clickable="false"
+            android:text="@string/botonDescubrir"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/DescubreImagenMensaje"
+            style="@style/estiloImagen"
+            android:contentDescription="@string/imagenSeleccionada" />
+
+        <TextView
+            android:id="@+id/DescubreTextoOculto"
+            style="@style/estiloTexto" />
 
     </LinearLayout>
 

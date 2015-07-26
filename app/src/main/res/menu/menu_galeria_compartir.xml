@@ -1,17 +1,20 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu>
 
-    <!-- Compartir -->
+    <!-- Compartir
     <item
-        android:id="@+id/ItemCompartir"
+        an
+        droid:id="@+id/ItemCompartir"
         android:icon="@drawable/ic_action_share"
         android:showAsAction="ifRoom"
         android:title="@string/compartir" />
+        -->
 
-    <!-- Galeria -->
+    <!-- Galeria
     <item
         android:id="@+id/ItemGaleria"
         android:icon="@drawable/ic_action_new_picture"
         android:showAsAction="ifRoom"
         android:title="@string/opcion2" />
+        -->
 
 </menu>

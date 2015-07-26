@@ -5,31 +5,68 @@
         android:id="@+id/OcultaXML"
         style="@style/estiloLayout">
 
+        <Button
+            android:id="@+id/OcultaBotonPortador"
+            style="@style/estiloBotones"
+            android:clickable="true"
+            android:text="Elige el portador" />
+
         <ImageView
-            android:id="@+id/ImagenOriginal"
+            android:id="@+id/OcultaImagenPortador"
+            style="@style/estiloImagen"
+            android:contentDescription="@string/imagenSeleccionada" />
+
+        <TextView
+            android:id="@+id/OcultaTextoPortador"
+            style="@style/estiloTexto"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/OcultaBotonMensaje"
+            style="@style/estiloBotones"
+            android:clickable="true"
+            android:text="Elige el mensaje" />
+
+        <ImageView
+            android:id="@+id/OcultaImagenMensaje"
             style="@style/estiloImagen"
             android:contentDescription="@string/imagenSeleccionada" />
 
         <EditText
-            android:id="@+id/TextoAOcultar"
-            style="@style/estiloTextoOculto"
-            android:hint="@string/textoAOcultar"
-            android:nextFocusDown="@+id/Pass1"
-            android:singleLine="true" />
+            android:id="@+id/OcultaTextoMensaje"
+            style="@style/estiloTexto"
+            android:hint="@string/textoAOcultar" />
+
+        <Button
+            android:id="@+id/OcultaBotonContrasenia"
+            style="@style/estiloBotones"
+            android:clickable="true"
+            android:text="Añade una contraseña" />
 
         <EditText
-            android:id="@+id/Pass1"
+            android:id="@+id/OcultaPass1"
+            style="@style/estiloContrasenya"
+            android:hint="@string/pass1" />
+
+        <EditText
+            android:id="@+id/OcultaPass2"
+            style="@style/estiloContrasenya"
+            android:hint="@string/pass1" />
+
+        <EditText
+            android:id="@+id/OcultaPass3"
             style="@style/estiloContrasenya"
             android:hint="@string/pass1" />
 
         <Button
-            android:id="@+id/BotonOcultar"
+            android:id="@+id/OcultaBotonOcultar"
             style="@style/estiloBotones"
             android:clickable="false"
-            android:text="@string/botonOcultar" />
+            android:text="@string/botonOcultar"
+            android:visibility="gone" />
 
         <Button
-            android:id="@+id/BotonGuardar"
+            android:id="@+id/OcultaBotonGuardar"
             style="@style/estiloBotones"
             android:clickable="true"
             android:text="@string/botonGuardar"
