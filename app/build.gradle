@@ -31,7 +31,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.android.support:appcompat-v7:22.2.0'
     compile files('libs/core-1.51.0.0.jar')
     compile files('libs/prov-1.51.0.0.jar')
 }
