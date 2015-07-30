@@ -1,8 +1,11 @@
 package com.openpuff.android;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -12,10 +15,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,17 +29,35 @@ import java.io.IOException;
 
 public class Descubre extends Main implements View.OnClickListener {
 
+    private static final int OPCIONPORTADORIMAGEN = 1;
+    private static final int OPCIONPORTADORCANCION = 2;
+
     private static final int maxPass = 16;
     @NonNull
     private final Seguridad seguridad;
     @NonNull
     private final TextWatcher controlPassAOcultar;
     private final LSB lsb;
-    private TextView TextoOculto;
-    private EditText Pass1;
-    private ImageView ImagenOriginal;
-    private Bitmap bitmap;
-    private Button BotonDescubrir;
+    private Toast toast;
+    private ImageView imagenPortador;
+    private TextView textoPortador;
+    private Button botonPortador;
+    private EditText pass1;
+    private EditText pass2;
+    private EditText pass3;
+    private Button botonContrasenia;
+    private ImageView imagenMensaje;
+    private TextView textoMensaje;
+    private Button botonDescubrir;
+
+    private Bitmap bitmapPortador = null;
+    private String cancionPortador = null;
+    private Bitmap bitmapMensaje = null;
+    private String mensajeMensaje = null;
+    private String textoPass1 = null;
+    private String textoPass2 = null;
+    private String textoPass3 = null;
+    private int maxTexto = 0;
 
     public Descubre() {
         seguridad = new Seguridad();
@@ -47,11 +66,11 @@ public class Descubre extends Main implements View.OnClickListener {
             @Override
             public void onTextChanged(@NonNull CharSequence s, int start, int before, int count) {
                 if (s.length() >= 8) {
-                    BotonDescubrir.setClickable(true);
-                    BotonDescubrir.setTextColor(getResources().getColor(R.color.letraBoton));
+                    botonDescubrir.setClickable(true);
+                    botonDescubrir.setTextColor(getResources().getColor(R.color.letraBoton));
                 } else {
-                    BotonDescubrir.setClickable(false);
-                    BotonDescubrir.setTextColor(Color.TRANSPARENT);
+                    botonDescubrir.setClickable(false);
+                    botonDescubrir.setTextColor(Color.TRANSPARENT);
                 }
             }
 
@@ -79,20 +98,28 @@ public class Descubre extends Main implements View.OnClickListener {
 
         setContentView(R.layout.descubre);
 
-        if (savedInstanceState == null) {
-            irAGaleria();
-        }
+        imagenPortador = (ImageView) findViewById(R.id.DescubreImagenPortador);
+        textoPortador = (TextView) findViewById(R.id.DescubreTextoPortador);
+        botonPortador = (Button) findViewById(R.id.DescubreBotonPortador);
 
-        TextoOculto = (TextView) findViewById(R.id.DescubreTextoPortador);
+        pass1 = (EditText) findViewById(R.id.DescubrePass1);
+        pass2 = (EditText) findViewById(R.id.DescubrePass2);
+        pass3 = (EditText) findViewById(R.id.DescubrePass3);
 
-        Pass1 = (EditText) findViewById(R.id.DescubrePass1);
-        Pass1.addTextChangedListener(controlPassAOcultar);
+        pass1.addTextChangedListener(controlPassAOcultar);
+        pass2.addTextChangedListener(controlPassAOcultar);
+        pass3.addTextChangedListener(controlPassAOcultar);
 
-        ImagenOriginal = (ImageView) findViewById(R.id.DescubreImagenPortador);
+        botonContrasenia = (Button) findViewById(R.id.DescubreBotonContrasenia);
 
-        BotonDescubrir = (Button) findViewById(R.id.DescubreBotonDescubrir);
-        BotonDescubrir.setTextColor(Color.TRANSPARENT);
-        BotonDescubrir.setOnClickListener(this);
+        textoMensaje = (TextView) findViewById(R.id.DescubreTextoOculto);
+        imagenMensaje = (ImageView) findViewById(R.id.DescubreImagenMensaje);
+
+        botonDescubrir = (Button) findViewById(R.id.DescubreBotonDescubrir);
+        botonDescubrir.setTextColor(Color.TRANSPARENT);
+        botonDescubrir.setOnClickListener(this);
+        botonPortador.setOnClickListener(this);
+        botonContrasenia.setOnClickListener(this);
 
         try {
             //noinspection ConstantConditions
@@ -100,36 +127,152 @@ public class Descubre extends Main implements View.OnClickListener {
         } catch (NullPointerException ignored) {
         }
 
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        toast = new Toast(this);
+        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
-        if (bitmap == null) {
-            savedInstanceState.putParcelable("bitmap", null);
-        } else {
-            savedInstanceState.putParcelable("bitmap", bitmap);
+        if (bitmapPortador != null) {
+            savedInstanceState.putParcelable("bitmapPortador", bitmapPortador);
         }
 
-        if (Pass1.getText().toString().equals("")) {
-            savedInstanceState.putString("pass1", "");
+        if (cancionPortador != null) {
+            savedInstanceState.putString("cancionPortador", cancionPortador);
+        }
+
+        if (botonPortador.getText().equals("Elige el portador")) {
+            savedInstanceState.putBoolean("botonPortador", true);
         } else {
-            savedInstanceState.putString("pass1", Pass1.getText().toString());
+            savedInstanceState.putBoolean("botonPortador", false);
+        }
+
+        if (bitmapMensaje != null) {
+            savedInstanceState.putParcelable("bitmapMensaje", bitmapMensaje);
+        }
+
+        if (cancionPortador != null) {
+            savedInstanceState.putString("mensajeMensaje", mensajeMensaje);
+        }
+
+        if (botonContrasenia.getText().equals("Añade una contraseña")) {
+            savedInstanceState.putString("botonContrasenia", "Añade una contraseña");
+        } else {
+            savedInstanceState.putString("botonContrasenia", "Elimina una contraseña");
+        }
+
+        if (textoPass1 == null) {
+            savedInstanceState.putString("textoPass1", "");
+        } else {
+            savedInstanceState.putString("textoPass1", textoPass1);
+        }
+
+        if (textoPass2 == null) {
+            savedInstanceState.putString("textoPass2", "");
+        } else {
+            savedInstanceState.putString("textoPass2", textoPass2);
+        }
+
+        if (textoPass3 == null) {
+            savedInstanceState.putString("textoPass3", "");
+        } else {
+            savedInstanceState.putString("textoPass3", textoPass3);
+        }
+
+        if (pass1.getVisibility() == View.VISIBLE) {
+            savedInstanceState.putBoolean("pass1", true);
+        } else {
+            savedInstanceState.putBoolean("pass1", false);
+        }
+
+        if (pass2.getVisibility() == View.VISIBLE) {
+            savedInstanceState.putBoolean("pass2", true);
+        } else {
+            savedInstanceState.putBoolean("pass2", false);
+        }
+
+        if (pass3.getVisibility() == View.VISIBLE) {
+            savedInstanceState.putBoolean("pass3", true);
+        } else {
+            savedInstanceState.putBoolean("pass3", false);
+        }
+
+        if (botonDescubrir.getVisibility() == View.VISIBLE) {
+            savedInstanceState.putBoolean("botonDescubrir", true);
+        } else {
+            savedInstanceState.putBoolean("botonDescubrir", false);
         }
     }
 
     public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        bitmap = savedInstanceState.getParcelable("bitmap");
-        if (bitmap != null) {
-            ImagenOriginal.setImageBitmap(bitmap);
+        bitmapPortador = savedInstanceState.getParcelable("bitmapPortador");
+        if (bitmapPortador != null) {
+            imagenPortador.setImageBitmap(bitmapPortador);
+            imagenPortador.setVisibility(View.VISIBLE);
         }
 
-        String pass1 = savedInstanceState.getString("pass1");
-        if (pass1 != null && !pass1.equals("")) {
-            Pass1.setText(pass1);
+        cancionPortador = savedInstanceState.getString("cancionPortador");
+        if (cancionPortador != null) {
+            textoPortador.setText(cancionPortador);
+            textoPortador.setVisibility(View.VISIBLE);
+        }
+
+        boolean botonPortadorB = savedInstanceState.getBoolean("botonPortador");
+        if (botonPortadorB) {
+            botonPortador.setText("Cambia el portador");
+        }
+
+        bitmapMensaje = savedInstanceState.getParcelable("bitmapMensaje");
+        if (bitmapMensaje != null) {
+            imagenMensaje.setImageBitmap(bitmapMensaje);
+        }
+
+        mensajeMensaje = savedInstanceState.getString("mensajeMensaje");
+        if (mensajeMensaje != null) {
+            textoMensaje.setText(mensajeMensaje);
+        }
+
+        String botonContraseniaS = savedInstanceState.getString("botonContrasenia");
+        if (botonContraseniaS != null) {
+            botonContrasenia.setText(botonContraseniaS);
+        }
+
+        textoPass1 = savedInstanceState.getString("textoPass1");
+        if (!textoPass1.equals("")) {
+            pass1.setText(textoPass1);
+        }
+
+        textoPass2 = savedInstanceState.getString("textoPass2");
+        if (!textoPass2.equals("")) {
+            pass2.setText(textoPass2);
+        }
+
+        textoPass3 = savedInstanceState.getString("textoPass3");
+        if (!textoPass3.equals("")) {
+            pass3.setText(textoPass3);
+        }
+
+        boolean pass1B = savedInstanceState.getBoolean("pass1");
+        if (pass1B) {
+            pass1.setVisibility(View.VISIBLE);
+        }
+
+        boolean pass2B = savedInstanceState.getBoolean("pass2");
+        if (pass2B) {
+            pass2.setVisibility(View.VISIBLE);
+        }
+
+        boolean pass3B = savedInstanceState.getBoolean("pass3");
+        if (pass3B) {
+            pass3.setVisibility(View.VISIBLE);
+        }
+
+        boolean botonDescubrirB = savedInstanceState.getBoolean("botonDescubrir");
+        if (botonDescubrirB) {
+            botonDescubrir.setVisibility(View.VISIBLE);
         }
     }
 
@@ -141,35 +284,83 @@ public class Descubre extends Main implements View.OnClickListener {
             case android.R.id.home:
                 finish();
                 return true;
-            /*case R.id.ItemGaleria:
-                irAGaleria();
-                return true;*/
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_galeria_compartir, menu);
-        return super.onCreateOptionsMenu(menu);
+    protected void onActivityResult(int reqCode, int resCode, @Nullable Intent data) {
+        if (resCode == RESULT_OK && data != null) {
+            switch (reqCode) {
+                case OPCIONPORTADORIMAGEN:
+
+                    textoPortador.setText("");
+                    textoPortador.setVisibility(View.GONE);
+                    cancionPortador = null;
+                    botonPortador.setText("Cambia el portador");
+
+                    opcionPortadorImagen(data);
+
+                    break;
+                case OPCIONPORTADORCANCION:
+
+                    bitmapPortador = null;
+                    imagenPortador.setImageBitmap(null);
+                    imagenPortador.setVisibility(View.GONE);
+                    botonPortador.setText("Cambia el portador");
+
+                    opcionPortadorCancion(data);
+                    break;
+            }
+        } else if (bitmapPortador == null) {
+            finish();
+        }
     }
 
-    @Override
-    protected void onActivityResult(int reqCode, int resCode, @Nullable Intent data) {
-
-        if (resCode == RESULT_OK && data != null) {
-            TextoOculto.setVisibility(View.GONE);
-            Uri selectedimg = data.getData();
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
-                ImagenOriginal.setImageBitmap(bitmap);
-            } catch (FileNotFoundException e) {
-                lsb.showAToast(getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_LONG);
-            } catch (IOException e) {
-                lsb.showAToast(getString(R.string.ioException), Toast.LENGTH_LONG);
+    private void opcionPortadorImagen(Intent data) {
+        Uri selectedimg = data.getData();
+        try {
+            bitmapPortador = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
+            maxTexto = (bitmapPortador.getWidth() / 8) - 5;
+            if (bitmapPortador.getRowBytes() * bitmapPortador.getHeight() > 16588800) {
+                showAToast(getString(R.string.imagenPesada), Toast.LENGTH_LONG);
+            } else if (maxTexto >= 16) {
+                imagenPortador.setImageBitmap(bitmapPortador);
+                imagenPortador.setVisibility(View.VISIBLE);
+            } else {
+                showAToast(getString(R.string.imagenGrande), Toast.LENGTH_LONG);
             }
-        } else if (bitmap == null) {
-            finish();
+
+        } catch (FileNotFoundException e) {
+            showAToast(getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_LONG);
+        } catch (IOException e) {
+            showAToast(getString(R.string.ioException), Toast.LENGTH_LONG);
+        }
+    }
+
+    private void opcionPortadorCancion(Intent data) {
+        if ((data != null) && (data.getData() != null)) {
+            Uri cancion = data.getData();
+
+            String scheme = cancion.getScheme();
+            String title = "";
+            //String datos = "";
+
+            if (scheme.equals("content")) {
+                String[] proj = {MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DATA};
+                Cursor cursor = this.getContentResolver().query(cancion, proj, null, null, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    if (cursor.getColumnIndex(MediaStore.Audio.Media.TITLE) != -1) {
+                        title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
+                        //datos = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
+                    }
+                }
+            }
+
+            textoPortador.setText(title);
+            textoPortador.setVisibility(View.VISIBLE);
+            cancionPortador = cancion.getPath();
         }
     }
 
@@ -177,17 +368,87 @@ public class Descubre extends Main implements View.OnClickListener {
     public void onClick(@NonNull View view) {
         super.onClick(view);
         hideKeyboard();
-        if (bitmap != null && TextoOculto.getVisibility() == View.GONE) {
+
+        switch (view.getId()) {
+            case R.id.DescubreBotonPortador:
+                pulsarPortador();
+                break;
+            case R.id.DescubreBotonContrasenia:
+                pulsarContrasenia();
+                break;
+        }
+
+        /*if (bitmapPortador != null && textoMensaje.getVisibility() == View.GONE) {
             recuperarDatos();
-        } else if (bitmap == null) {
+        } else if (bitmapPortador == null) {
             lsb.showAToast(getString(R.string.necesitasImagen), Toast.LENGTH_SHORT);
+        }*/
+    }
+
+    private void pulsarPortador() {
+        AlertDialog.Builder alerta = new AlertDialog.Builder(this);
+        alerta.setTitle(getString(R.string.tituloAlerta));
+        alerta.setMessage("¿Qué quieres usar como portador?");
+        alerta.setPositiveButton("Canción", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(@NonNull DialogInterface dialog, int which) {
+
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.setType("audio/mpeg");
+                startActivityForResult(intent, OPCIONPORTADORCANCION);
+
+                dialog.cancel();
+            }
+        });
+        alerta.setNegativeButton("Imagen", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(@NonNull DialogInterface dialog, int which) {
+
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/jpeg");
+                startActivityForResult(intent, OPCIONPORTADORIMAGEN);
+
+                dialog.cancel();
+            }
+        });
+        alerta.show();
+    }
+
+    private void pulsarContrasenia() {
+
+        if (botonContrasenia.getText().equals("Añade una contraseña")) {
+            if (pass1.getVisibility() == View.VISIBLE) {
+                if (pass2.getVisibility() == View.VISIBLE) {
+                    pass3.setVisibility(View.VISIBLE);
+                    botonContrasenia.setText("Elimina una contraseña");
+                    return;
+                } else {
+                    pass2.setVisibility(View.VISIBLE);
+                }
+            } else {
+                pass1.setVisibility(View.VISIBLE);
+            }
+        }
+
+        if (botonContrasenia.getText().equals("Elimina una contraseña")) {
+            if (pass3.getVisibility() == View.GONE) {
+                if (pass2.getVisibility() == View.GONE) {
+                    pass1.setVisibility(View.GONE);
+                    botonContrasenia.setText("Añade una contraseña");
+                } else {
+                    pass2.setVisibility(View.GONE);
+                }
+            } else {
+                pass3.setVisibility(View.GONE);
+            }
         }
     }
 
     private void recuperarDatos() {
 
-        String pass1 = Pass1.getText().toString().trim();
-        if (pass1.equals("") || pass1.length() == 0) {
+        String textoPass1 = pass1.getText().toString().trim();
+        if (textoPass1.equals("") || textoPass1.length() == 0) {
             lsb.showAToast(getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
             return;
         }
@@ -205,12 +466,12 @@ public class Descubre extends Main implements View.OnClickListener {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        String mensaje = descubrirMensaje(bitmap);
+                        String mensaje = descubrirMensaje(bitmapPortador);
                         if (!mensaje.equals("")) {
                             try {
-                                String mensajeFinal = seguridad.decrypt(mensaje, Pass1.getText().toString().trim());
-                                TextoOculto.setVisibility(View.VISIBLE);
-                                TextoOculto.setText(getString(R.string.textoOcultoEra) + mensajeFinal);
+                                String mensajeFinal = seguridad.decrypt(mensaje, pass1.getText().toString().trim());
+                                textoMensaje.setVisibility(View.VISIBLE);
+                                textoMensaje.setText(getString(R.string.textoOcultoEra) + mensajeFinal);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -237,10 +498,10 @@ public class Descubre extends Main implements View.OnClickListener {
 
         for (; i < bitmap.getWidth(); i++, color = 0) {
             color += bitmap.getPixel(0, i);
-            binario = lsb.stringToBinary(Integer.toString(color));
+            binario = Util.stringToBinary(Integer.toString(color));
             cadenaNueva += binario.charAt(binario.length() - 1);
             if ((i + 1) % 8 == 0) {
-                cadenaNueva = lsb.binaryToString(cadenaNueva);
+                cadenaNueva = Util.binaryToString(cadenaNueva);
                 if (cadenaNueva.charAt(cadenaNueva.length() - 1) == '-') {
                     break;
                 } else {
@@ -268,10 +529,10 @@ public class Descubre extends Main implements View.OnClickListener {
             try {
                 color += bitmap.getPixel(j, i);
                 contador++;
-                binario = lsb.stringToBinary(Integer.toString(color));
+                binario = Util.stringToBinary(Integer.toString(color));
                 cadenaNueva += binario.charAt(binario.length() - 1);
                 if ((i + 1) % 8 == 0) {
-                    cadenaNueva = lsb.binaryToString(cadenaNueva);
+                    cadenaNueva = Util.binaryToString(cadenaNueva);
                     mensaje += cadenaNueva;
                     cadenaNueva = "";
                 }
@@ -291,11 +552,14 @@ public class Descubre extends Main implements View.OnClickListener {
         }
     }
 
-    private void irAGaleria() {
-        lsb.showAToast(getString(R.string.necesitasImagen), Toast.LENGTH_SHORT);
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/jpeg");
-        startActivityForResult(intent, 1);
+    private void showAToast(String st, int duracion) {
+        try {
+            toast.getView().isShown();
+            toast.setText(st);
+        } catch (Exception e) {
+            toast = Toast.makeText(getApplicationContext(), st, duracion);
+        }
+        toast.show();
     }
 
 }

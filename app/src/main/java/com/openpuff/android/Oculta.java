@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -206,6 +207,12 @@ public class Oculta extends Main implements View.OnClickListener {
             savedInstanceState.putBoolean("botonMensaje", false);
         }
 
+        if (botonContrasenia.getText().equals("Añade una contraseña")) {
+            savedInstanceState.putString("botonContrasenia", "Añade una contraseña");
+        } else {
+            savedInstanceState.putString("botonContrasenia", "Elimina una contraseña");
+        }
+
         if (textoPass1 == null) {
             savedInstanceState.putString("textoPass1", "");
         } else {
@@ -290,6 +297,11 @@ public class Oculta extends Main implements View.OnClickListener {
         boolean botonMensajeB = savedInstanceState.getBoolean("botonMensaje");
         if (botonMensajeB) {
             botonPortador.setText("Cambia el mensaje");
+        }
+
+        String botonContraseniaS = savedInstanceState.getString("botonContrasenia");
+        if (botonContraseniaS != null) {
+            botonContrasenia.setText(botonContraseniaS);
         }
 
         textoPass1 = savedInstanceState.getString("textoPass1");
@@ -424,7 +436,24 @@ public class Oculta extends Main implements View.OnClickListener {
     private void opcionPortadorCancion(Intent data) {
         if ((data != null) && (data.getData() != null)) {
             Uri cancion = data.getData();
-            textoPortador.setText(cancion.getPath());
+
+            String scheme = cancion.getScheme();
+            String title = "";
+            String datos = "";
+
+            if (scheme.equals("content")) {
+                String[] proj = {MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DATA};
+                Cursor cursor = this.getContentResolver().query(cancion, proj, null, null, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    if (cursor.getColumnIndex(MediaStore.Audio.Media.TITLE) != -1) {
+                        title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
+                        datos = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
+                    }
+                }
+            }
+
+            textoPortador.setText(title);
             textoPortador.setVisibility(View.VISIBLE);
             cancionPortador = cancion.getPath();
         }
@@ -595,7 +624,6 @@ public class Oculta extends Main implements View.OnClickListener {
                 pass3.setVisibility(View.GONE);
             }
         }
-
     }
 
     @Override
@@ -665,7 +693,7 @@ public class Oculta extends Main implements View.OnClickListener {
     }
 
     private void ocultarMensaje(@NonNull String texto) {
-        StringBuilder dato = lsb.stringToBinary(texto);
+        StringBuilder dato = Util.stringToBinary(texto);
 
         StringBuilder binario;
         int color = 0;
@@ -675,11 +703,11 @@ public class Oculta extends Main implements View.OnClickListener {
         for (; contador != dato.length() && bitmapPortador != null; i++, color = 0) {
             try {
                 color += bitmapPortador.getPixel(j, i);
-                binario = lsb.stringToBinary(Integer.toString(color));
+                binario = Util.stringToBinary(Integer.toString(color));
                 cadenaNueva = binario.substring(0, binario.length() - 1);
                 cadenaNueva += dato.charAt(contador);
                 contador++;
-                cadenaNueva = lsb.binaryToString(cadenaNueva);
+                cadenaNueva = Util.binaryToString(cadenaNueva);
                 color = Integer.parseInt(cadenaNueva);
                 bitmapPortador.setPixel(j, i, color);
             } catch (Exception e) {
