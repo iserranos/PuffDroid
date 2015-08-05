@@ -48,7 +48,6 @@ public class Oculta extends Main implements View.OnClickListener {
     private final TextWatcher controlTextoAOcultar;
     private final LSB lsb;
     private final Seguridad seguridad;
-    private Toast toast;
     private ImageView imagenPortador;
     private TextView textoPortador;
     private Button botonPortador;
@@ -89,7 +88,7 @@ public class Oculta extends Main implements View.OnClickListener {
             @Override
             public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
                 if (s.length() == maxPass) {
-                    showAToast(getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
+                    lsb.showAToast(getApplicationContext(), getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
                 }
             }
 
@@ -111,7 +110,7 @@ public class Oculta extends Main implements View.OnClickListener {
             @Override
             public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
                 if (s.length() == maxTexto && maxTexto != 0) {
-                    showAToast(getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
+                    lsb.showAToast(getApplicationContext(), getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
                 }
             }
 
@@ -170,7 +169,6 @@ public class Oculta extends Main implements View.OnClickListener {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         } catch (NullPointerException ignored) {
         }
-        toast = new Toast(this);
 
         //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
@@ -409,6 +407,7 @@ public class Oculta extends Main implements View.OnClickListener {
                     opcionMensajeImagen(data);
                     break;
             }
+            comprobarBotonOcultar();
         }
     }
 
@@ -418,18 +417,18 @@ public class Oculta extends Main implements View.OnClickListener {
             bitmapPortador = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
             maxTexto = (bitmapPortador.getWidth() / 8) - 5;
             if (bitmapPortador.getRowBytes() * bitmapPortador.getHeight() > 16588800) {
-                showAToast(getString(R.string.imagenPesada), Toast.LENGTH_LONG);
+                lsb.showAToast(getApplicationContext(), getString(R.string.imagenPesada), Toast.LENGTH_LONG);
             } else if (maxTexto >= 16) {
                 imagenPortador.setImageBitmap(bitmapPortador);
                 imagenPortador.setVisibility(View.VISIBLE);
             } else {
-                showAToast(getString(R.string.imagenGrande), Toast.LENGTH_LONG);
+                lsb.showAToast(getApplicationContext(), getString(R.string.imagenGrande), Toast.LENGTH_LONG);
             }
 
         } catch (FileNotFoundException e) {
-            showAToast(getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_LONG);
+            lsb.showAToast(getApplicationContext(), getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_LONG);
         } catch (IOException e) {
-            showAToast(getString(R.string.ioException), Toast.LENGTH_LONG);
+            lsb.showAToast(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_LONG);
         }
     }
 
@@ -439,7 +438,6 @@ public class Oculta extends Main implements View.OnClickListener {
 
             String scheme = cancion.getScheme();
             String title = "";
-            String datos = "";
 
             if (scheme.equals("content")) {
                 String[] proj = {MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DATA};
@@ -448,8 +446,8 @@ public class Oculta extends Main implements View.OnClickListener {
                     cursor.moveToFirst();
                     if (cursor.getColumnIndex(MediaStore.Audio.Media.TITLE) != -1) {
                         title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
-                        datos = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
                     }
+                    cursor.close();
                 }
             }
 
@@ -465,20 +463,32 @@ public class Oculta extends Main implements View.OnClickListener {
             bitmapMensaje = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
             maxTexto = (bitmapMensaje.getWidth() / 8) - 5;
             if (bitmapMensaje.getRowBytes() * bitmapMensaje.getHeight() > 16588800) {
-                showAToast(getString(R.string.imagenPesada), Toast.LENGTH_LONG);
+                lsb.showAToast(getApplicationContext(), getString(R.string.imagenPesada), Toast.LENGTH_LONG);
             } else if (maxTexto >= 16) {
                 imagenMensaje.setImageBitmap(bitmapMensaje);
                 imagenMensaje.setVisibility(View.VISIBLE);
                 //textoMensaje.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxTexto)});
             } else {
-                showAToast(getString(R.string.imagenGrande), Toast.LENGTH_LONG);
+                lsb.showAToast(getApplicationContext(), getString(R.string.imagenGrande), Toast.LENGTH_LONG);
             }
 
         } catch (FileNotFoundException e) {
-            showAToast(getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_LONG);
+            lsb.showAToast(getApplicationContext(), getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_LONG);
         } catch (IOException e) {
-            showAToast(getString(R.string.ioException), Toast.LENGTH_LONG);
+            lsb.showAToast(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_LONG);
         }
+    }
+
+    private void comprobarBotonOcultar() {
+        if ((bitmapPortador != null && imagenPortador.getVisibility() == View.VISIBLE) || (cancionPortador != null && textoPortador.getVisibility() == View.VISIBLE)) {
+            if ((bitmapMensaje != null && imagenMensaje.getVisibility() == View.VISIBLE) || (mensajeMensaje != null && textoMensaje.getVisibility() == View.VISIBLE)) {
+                if (pass1.getText().toString().trim().length() > 0 || !pass1.getText().toString().trim().equals("")) {
+                    botonOcultar.setVisibility(View.VISIBLE);
+                    return;
+                }
+            }
+        }
+        botonOcultar.setVisibility(View.GONE);
     }
 
     @Override
@@ -497,19 +507,13 @@ public class Oculta extends Main implements View.OnClickListener {
                 pulsarContrasenia();
                 break;
             case R.id.OcultaBotonOcultar:
-
-                break;
-            case R.id.OcultaBotonGuardar:
-
-                break;
-            /*case R.id.BotonOcultar:
                 if (bitmapPortador != null) {
                     recuperarDatos();
                 } else {
-                    showAToast(getString(R.string.necesitasImagen), Toast.LENGTH_SHORT);
+                    lsb.showAToast(getApplicationContext(), getString(R.string.necesitasImagen), Toast.LENGTH_SHORT);
                 }
                 break;
-            case R.id.BotonGuardar:
+            case R.id.OcultaBotonGuardar:
                 if (bitmapPortador != null) {
 
                     final ProgressDialog pd = new ProgressDialog(this);
@@ -527,10 +531,10 @@ public class Oculta extends Main implements View.OnClickListener {
                     };
                     mThread.start();
                     pd.dismiss();
-                    showAToast(getString(R.string.imagenguardadaOK), Toast.LENGTH_LONG);
+                    lsb.showAToast(getApplicationContext(), getString(R.string.imagenguardadaOK), Toast.LENGTH_LONG);
                     finish();
                 }
-                break;*/
+                break;
         }
     }
 
@@ -597,29 +601,20 @@ public class Oculta extends Main implements View.OnClickListener {
     }
 
     private void pulsarContrasenia() {
-
         if (botonContrasenia.getText().equals("Añade una contraseña")) {
-            if (pass1.getVisibility() == View.VISIBLE) {
-                if (pass2.getVisibility() == View.VISIBLE) {
-                    pass3.setVisibility(View.VISIBLE);
-                    botonContrasenia.setText("Elimina una contraseña");
-                    return;
-                } else {
-                    pass2.setVisibility(View.VISIBLE);
-                }
+            if (pass2.getVisibility() == View.VISIBLE) {
+                pass3.setVisibility(View.VISIBLE);
+                botonContrasenia.setText("Elimina una contraseña");
+                return;
             } else {
-                pass1.setVisibility(View.VISIBLE);
+                pass2.setVisibility(View.VISIBLE);
             }
         }
 
         if (botonContrasenia.getText().equals("Elimina una contraseña")) {
             if (pass3.getVisibility() == View.GONE) {
-                if (pass2.getVisibility() == View.GONE) {
-                    pass1.setVisibility(View.GONE);
-                    botonContrasenia.setText("Añade una contraseña");
-                } else {
-                    pass2.setVisibility(View.GONE);
-                }
+                pass2.setVisibility(View.GONE);
+                botonContrasenia.setText("Añade una contraseña");
             } else {
                 pass3.setVisibility(View.GONE);
             }
@@ -650,21 +645,54 @@ public class Oculta extends Main implements View.OnClickListener {
     }
 
     private void recuperarDatos() {
-        if (bitmapPortador != null) {
-            this.bitmapPortador = bitmapPortador.copy(bitmapPortador.getConfig(), true);
-        }
-
-        String texto = textoMensaje.getText().toString().trim();
-        if (texto.equals("0") || texto.length() == 0) {
-            showAToast(getString(R.string.textoNoVacio), Toast.LENGTH_LONG);
+        if (bitmapPortador != null || cancionPortador != null) {
+            if (bitmapPortador != null) {
+                this.bitmapPortador = bitmapPortador.copy(bitmapPortador.getConfig(), true);
+            }
+            if (cancionPortador != null) {
+                //obtener byte[] de cancion
+            }
+        } else {
+            lsb.showAToast(getApplicationContext(), "", Toast.LENGTH_LONG);
             return;
         }
 
-        String pass1 = this.pass1.getText().toString().trim();
-        if (pass1.equals("") || pass1.length() == 0) {
-            showAToast(getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
+        if (mensajeMensaje != null || bitmapMensaje != null) {
+            if (mensajeMensaje != null) {
+                //obtener byte[] de cancion
+            }
+            if (bitmapMensaje != null) {
+                this.bitmapMensaje = bitmapMensaje.copy(bitmapMensaje.getConfig(), true);
+            }
+        } else {
+            lsb.showAToast(getApplicationContext(), "", Toast.LENGTH_LONG);
             return;
         }
+
+        if (pass1.getVisibility() == View.VISIBLE) {
+            textoPass1 = pass1.getText().toString().trim();
+            if (textoPass1.equals("") || textoPass1.length() <= 0) {
+                lsb.showAToast(getApplicationContext(), getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
+                return;
+            }
+        }
+
+        if (pass2.getVisibility() == View.VISIBLE) {
+            textoPass2 = pass2.getText().toString().trim();
+            if (textoPass2.equals("") || textoPass2.length() <= 0) {
+                lsb.showAToast(getApplicationContext(), getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
+                return;
+            }
+        }
+
+        if (pass3.getVisibility() == View.VISIBLE) {
+            textoPass3 = pass3.getText().toString().trim();
+            if (textoPass3.equals("") || textoPass3.length() <= 0) {
+                lsb.showAToast(getApplicationContext(), getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
+                return;
+            }
+        }
+
 
         final ProgressDialog pd = new ProgressDialog(this);
         pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -678,7 +706,7 @@ public class Oculta extends Main implements View.OnClickListener {
             public void run() {
                 try {
                     String textoFinal = seguridad.encrypt(textoMensaje.getText().toString().trim(), Oculta.this.pass1.getText().toString().trim());
-                    ocultarMensaje(textoFinal.length() + "-" + textoFinal);
+                    lsb.ocultarMensaje(bitmapPortador, textoFinal.length() + "-" + textoFinal);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -690,31 +718,6 @@ public class Oculta extends Main implements View.OnClickListener {
         botonGuardar.setOnClickListener(this);
         mThread.start();
         imagenMensaje.setImageBitmap(bitmapPortador);
-    }
-
-    private void ocultarMensaje(@NonNull String texto) {
-        StringBuilder dato = Util.stringToBinary(texto);
-
-        StringBuilder binario;
-        int color = 0;
-        String cadenaNueva;
-        int i = 0, j = 0, contador = 0;
-
-        for (; contador != dato.length() && bitmapPortador != null; i++, color = 0) {
-            try {
-                color += bitmapPortador.getPixel(j, i);
-                binario = Util.stringToBinary(Integer.toString(color));
-                cadenaNueva = binario.substring(0, binario.length() - 1);
-                cadenaNueva += dato.charAt(contador);
-                contador++;
-                cadenaNueva = Util.binaryToString(cadenaNueva);
-                color = Integer.parseInt(cadenaNueva);
-                bitmapPortador.setPixel(j, i, color);
-            } catch (Exception e) {
-                j++;
-                i = 0;
-            }
-        }
     }
 
     private void storeImage(@NonNull Bitmap image) {
@@ -753,16 +756,4 @@ public class Oculta extends Main implements View.OnClickListener {
             inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
-
-    private void showAToast(String st, int duracion) {
-        try {
-            toast.getView().isShown();
-            toast.setText(st);
-        } catch (Exception e) {
-            toast = Toast.makeText(getApplicationContext(), st, duracion);
-        }
-        toast.show();
-    }
-
-
 }

@@ -38,7 +38,6 @@ public class Descubre extends Main implements View.OnClickListener {
     @NonNull
     private final TextWatcher controlPassAOcultar;
     private final LSB lsb;
-    private Toast toast;
     private ImageView imagenPortador;
     private TextView textoPortador;
     private Button botonPortador;
@@ -57,7 +56,6 @@ public class Descubre extends Main implements View.OnClickListener {
     private String textoPass1 = null;
     private String textoPass2 = null;
     private String textoPass3 = null;
-    private int maxTexto = 0;
 
     public Descubre() {
         seguridad = new Seguridad();
@@ -77,7 +75,7 @@ public class Descubre extends Main implements View.OnClickListener {
             @Override
             public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
                 if (s.length() == maxPass) {
-                    lsb.showAToast(getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
+                    lsb.showAToast(getApplicationContext(), getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
                 }
             }
 
@@ -127,7 +125,6 @@ public class Descubre extends Main implements View.OnClickListener {
         } catch (NullPointerException ignored) {
         }
 
-        toast = new Toast(this);
         //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
@@ -321,20 +318,20 @@ public class Descubre extends Main implements View.OnClickListener {
         Uri selectedimg = data.getData();
         try {
             bitmapPortador = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
-            maxTexto = (bitmapPortador.getWidth() / 8) - 5;
+            int maxTexto = (bitmapPortador.getWidth() / 8) - 5;
             if (bitmapPortador.getRowBytes() * bitmapPortador.getHeight() > 16588800) {
-                showAToast(getString(R.string.imagenPesada), Toast.LENGTH_LONG);
+                lsb.showAToast(getApplicationContext(), getString(R.string.imagenPesada), Toast.LENGTH_LONG);
             } else if (maxTexto >= 16) {
                 imagenPortador.setImageBitmap(bitmapPortador);
                 imagenPortador.setVisibility(View.VISIBLE);
             } else {
-                showAToast(getString(R.string.imagenGrande), Toast.LENGTH_LONG);
+                lsb.showAToast(getApplicationContext(), getString(R.string.imagenGrande), Toast.LENGTH_LONG);
             }
 
         } catch (FileNotFoundException e) {
-            showAToast(getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_LONG);
+            lsb.showAToast(getApplicationContext(), getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_LONG);
         } catch (IOException e) {
-            showAToast(getString(R.string.ioException), Toast.LENGTH_LONG);
+            lsb.showAToast(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_LONG);
         }
     }
 
@@ -355,6 +352,7 @@ public class Descubre extends Main implements View.OnClickListener {
                         title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
                         //datos = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
                     }
+                    cursor.close();
                 }
             }
 
@@ -416,29 +414,20 @@ public class Descubre extends Main implements View.OnClickListener {
     }
 
     private void pulsarContrasenia() {
-
         if (botonContrasenia.getText().equals("Añade una contraseña")) {
-            if (pass1.getVisibility() == View.VISIBLE) {
-                if (pass2.getVisibility() == View.VISIBLE) {
-                    pass3.setVisibility(View.VISIBLE);
-                    botonContrasenia.setText("Elimina una contraseña");
-                    return;
-                } else {
-                    pass2.setVisibility(View.VISIBLE);
-                }
+            if (pass2.getVisibility() == View.VISIBLE) {
+                pass3.setVisibility(View.VISIBLE);
+                botonContrasenia.setText("Elimina una contraseña");
+                return;
             } else {
-                pass1.setVisibility(View.VISIBLE);
+                pass2.setVisibility(View.VISIBLE);
             }
         }
 
         if (botonContrasenia.getText().equals("Elimina una contraseña")) {
             if (pass3.getVisibility() == View.GONE) {
-                if (pass2.getVisibility() == View.GONE) {
-                    pass1.setVisibility(View.GONE);
-                    botonContrasenia.setText("Añade una contraseña");
-                } else {
-                    pass2.setVisibility(View.GONE);
-                }
+                pass2.setVisibility(View.GONE);
+                botonContrasenia.setText("Añade una contraseña");
             } else {
                 pass3.setVisibility(View.GONE);
             }
@@ -449,7 +438,7 @@ public class Descubre extends Main implements View.OnClickListener {
 
         String textoPass1 = pass1.getText().toString().trim();
         if (textoPass1.equals("") || textoPass1.length() == 0) {
-            lsb.showAToast(getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
+            lsb.showAToast(getApplicationContext(), getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
             return;
         }
 
@@ -466,7 +455,7 @@ public class Descubre extends Main implements View.OnClickListener {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        String mensaje = descubrirMensaje(bitmapPortador);
+                        String mensaje = lsb.descubrirMensaje(bitmapPortador);
                         if (!mensaje.equals("")) {
                             try {
                                 String mensajeFinal = seguridad.decrypt(mensaje, pass1.getText().toString().trim());
@@ -476,7 +465,7 @@ public class Descubre extends Main implements View.OnClickListener {
                                 e.printStackTrace();
                             }
                         } else {
-                            lsb.showAToast(getString(R.string.ioException), Toast.LENGTH_LONG);
+                            lsb.showAToast(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_LONG);
                         }
                     }
                 });
@@ -486,64 +475,6 @@ public class Descubre extends Main implements View.OnClickListener {
         pd.dismiss();
     }
 
-    private String descubrirMensaje(@NonNull Bitmap bitmap) {
-        int tamanioI;
-        StringBuilder binario;
-        int color = 0;
-        String cadenaNueva;
-        cadenaNueva = "";
-        int i = 0, j = 0;
-        String caracter = "";
-        String mensaje = "";
-
-        for (; i < bitmap.getWidth(); i++, color = 0) {
-            color += bitmap.getPixel(0, i);
-            binario = Util.stringToBinary(Integer.toString(color));
-            cadenaNueva += binario.charAt(binario.length() - 1);
-            if ((i + 1) % 8 == 0) {
-                cadenaNueva = Util.binaryToString(cadenaNueva);
-                if (cadenaNueva.charAt(cadenaNueva.length() - 1) == '-') {
-                    break;
-                } else {
-                    caracter += cadenaNueva;
-                    cadenaNueva = "";
-                }
-            }
-        }
-
-        try {
-            tamanioI = Integer.parseInt(caracter);
-        } catch (NumberFormatException ignored) {
-            return "";
-        }
-
-        i++;
-        color = 0;
-        int contador = i;
-        cadenaNueva = "";
-        int length = (int) (Math.log10(tamanioI) + 2);
-        tamanioI += length;
-        tamanioI *= 8;
-
-        for (; contador < tamanioI; i++, color = 0) {
-            try {
-                color += bitmap.getPixel(j, i);
-                contador++;
-                binario = Util.stringToBinary(Integer.toString(color));
-                cadenaNueva += binario.charAt(binario.length() - 1);
-                if ((i + 1) % 8 == 0) {
-                    cadenaNueva = Util.binaryToString(cadenaNueva);
-                    mensaje += cadenaNueva;
-                    cadenaNueva = "";
-                }
-            } catch (Exception e) {
-                j++;
-                i = 0;
-            }
-        }
-        return mensaje;
-    }
-
     private void hideKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {
@@ -551,15 +482,4 @@ public class Descubre extends Main implements View.OnClickListener {
             inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
-
-    private void showAToast(String st, int duracion) {
-        try {
-            toast.getView().isShown();
-            toast.setText(st);
-        } catch (Exception e) {
-            toast = Toast.makeText(getApplicationContext(), st, duracion);
-        }
-        toast.show();
-    }
-
 }

@@ -28,7 +28,8 @@
         <EditText
             android:id="@+id/DescubrePass1"
             style="@style/estiloContrasenya"
-            android:hint="@string/pass1" />
+            android:hint="@string/pass1"
+            android:visibility="visible" />
 
         <EditText
             android:id="@+id/DescubrePass2"

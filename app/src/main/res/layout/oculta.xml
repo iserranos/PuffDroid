@@ -46,7 +46,8 @@
         <EditText
             android:id="@+id/OcultaPass1"
             style="@style/estiloContrasenya"
-            android:hint="@string/pass1" />
+            android:hint="@string/pass1"
+            android:visibility="visible" />
 
         <EditText
             android:id="@+id/OcultaPass2"
@@ -61,14 +62,12 @@
         <Button
             android:id="@+id/OcultaBotonOcultar"
             style="@style/estiloBotones"
-            android:clickable="false"
             android:text="@string/botonOcultar"
             android:visibility="gone" />
 
         <Button
             android:id="@+id/OcultaBotonGuardar"
             style="@style/estiloBotones"
-            android:clickable="true"
             android:text="@string/botonGuardar"
             android:visibility="gone" />
 
