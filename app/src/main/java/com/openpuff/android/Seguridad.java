@@ -41,11 +41,11 @@ class Seguridad {
         random = new SecureRandom();
     }
 
-    String encrypt(@NonNull String plaintext, @NonNull String pass) {
+    String encrypt(@NonNull String plaintext, @NonNull String pass1, String pass2, String pass3) {
         try {
             Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM, "BC");
             byte[] salt = generateSalt();
-            SecretKey key = getKey(salt, pass);
+            SecretKey key = getKey(salt, pass1 + pass2 + pass3);
 
             byte[] iv = generateIv(cipher.getBlockSize());
             IvParameterSpec ivParams = new IvParameterSpec(iv);
@@ -64,7 +64,7 @@ class Seguridad {
     }
 
     @NonNull
-    String decrypt(@NonNull String ciphertext, @NonNull String password) {
+    String decrypt(@NonNull String ciphertext, @NonNull String pass1, String pass2, String pass3) {
         String[] fields = ciphertext.split(DELIMITER);
         if (fields.length != 3) {
             throw new IllegalArgumentException("Invalid encrypted text format");
@@ -74,7 +74,7 @@ class Seguridad {
             byte[] iv = Base64.decode(fields[1]);
             byte[] cipherBytes = Base64.decode(fields[2]);
 
-            SecretKey key = getKey(salt, password);
+            SecretKey key = getKey(salt, pass1 + pass2 + pass3);
             Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM, "BC");
             IvParameterSpec ivParams = new IvParameterSpec(iv);
             cipher.init(Cipher.DECRYPT_MODE, key, ivParams);
@@ -88,7 +88,7 @@ class Seguridad {
     }
 
     @NonNull
-    private SecretKey getKey(byte[] salt, @NonNull String password)
+    private SecretKey getKey(@NonNull byte[] salt, @NonNull String password)
             throws Exception {
         try {
             KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt,

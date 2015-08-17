@@ -34,9 +34,8 @@ public class Descubre extends Main implements View.OnClickListener {
 
     private static final int maxPass = 16;
     @NonNull
-    private final Seguridad seguridad;
-    @NonNull
     private final TextWatcher controlPassAOcultar;
+    @NonNull
     private final LSB lsb;
     private ImageView imagenPortador;
     private TextView textoPortador;
@@ -49,16 +48,22 @@ public class Descubre extends Main implements View.OnClickListener {
     private TextView textoMensaje;
     private Button botonDescubrir;
 
+    @Nullable
     private Bitmap bitmapPortador = null;
+    @Nullable
     private String cancionPortador = null;
+    @Nullable
     private Bitmap bitmapMensaje = null;
+    @Nullable
     private String mensajeMensaje = null;
+    @Nullable
     private String textoPass1 = null;
+    @Nullable
     private String textoPass2 = null;
+    @Nullable
     private String textoPass3 = null;
 
     public Descubre() {
-        seguridad = new Seguridad();
         lsb = new LSB();
         controlPassAOcultar = new TextWatcher() {
             @Override
@@ -75,7 +80,7 @@ public class Descubre extends Main implements View.OnClickListener {
             @Override
             public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
                 if (s.length() == maxPass) {
-                    lsb.showAToast(getApplicationContext(), getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
+                    Util.showAToast(getApplicationContext(), getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
                 }
             }
 
@@ -238,17 +243,17 @@ public class Descubre extends Main implements View.OnClickListener {
         }
 
         textoPass1 = savedInstanceState.getString("textoPass1");
-        if (!textoPass1.equals("")) {
+        if (textoPass1 != null) {
             pass1.setText(textoPass1);
         }
 
         textoPass2 = savedInstanceState.getString("textoPass2");
-        if (!textoPass2.equals("")) {
+        if (textoPass2 != null) {
             pass2.setText(textoPass2);
         }
 
         textoPass3 = savedInstanceState.getString("textoPass3");
-        if (!textoPass3.equals("")) {
+        if (textoPass3 != null) {
             pass3.setText(textoPass3);
         }
 
@@ -275,7 +280,7 @@ public class Descubre extends Main implements View.OnClickListener {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        hideKeyboard();
+        Util.hideKeyboard(this.getCurrentFocus(), (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE));
 
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -314,28 +319,28 @@ public class Descubre extends Main implements View.OnClickListener {
         }
     }
 
-    private void opcionPortadorImagen(Intent data) {
+    private void opcionPortadorImagen(@NonNull Intent data) {
         Uri selectedimg = data.getData();
         try {
             bitmapPortador = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
             int maxTexto = (bitmapPortador.getWidth() / 8) - 5;
             if (bitmapPortador.getRowBytes() * bitmapPortador.getHeight() > 16588800) {
-                lsb.showAToast(getApplicationContext(), getString(R.string.imagenPesada), Toast.LENGTH_LONG);
+                Util.showAToast(getApplicationContext(), getString(R.string.imagenPesada), Toast.LENGTH_LONG);
             } else if (maxTexto >= 16) {
                 imagenPortador.setImageBitmap(bitmapPortador);
                 imagenPortador.setVisibility(View.VISIBLE);
             } else {
-                lsb.showAToast(getApplicationContext(), getString(R.string.imagenGrande), Toast.LENGTH_LONG);
+                Util.showAToast(getApplicationContext(), getString(R.string.imagenGrande), Toast.LENGTH_LONG);
             }
 
         } catch (FileNotFoundException e) {
-            lsb.showAToast(getApplicationContext(), getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_LONG);
+            Util.showAToast(getApplicationContext(), getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_LONG);
         } catch (IOException e) {
-            lsb.showAToast(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_LONG);
+            Util.showAToast(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_LONG);
         }
     }
 
-    private void opcionPortadorCancion(Intent data) {
+    private void opcionPortadorCancion(@Nullable Intent data) {
         if ((data != null) && (data.getData() != null)) {
             Uri cancion = data.getData();
 
@@ -365,7 +370,7 @@ public class Descubre extends Main implements View.OnClickListener {
     @Override
     public void onClick(@NonNull View view) {
         super.onClick(view);
-        hideKeyboard();
+        Util.hideKeyboard(this.getCurrentFocus(), (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE));
 
         switch (view.getId()) {
             case R.id.DescubreBotonPortador:
@@ -373,6 +378,9 @@ public class Descubre extends Main implements View.OnClickListener {
                 break;
             case R.id.DescubreBotonContrasenia:
                 pulsarContrasenia();
+                break;
+            case R.id.DescubreBotonDescubrir:
+                recuperarDatos();
                 break;
         }
 
@@ -436,11 +444,51 @@ public class Descubre extends Main implements View.OnClickListener {
 
     private void recuperarDatos() {
 
-        String textoPass1 = pass1.getText().toString().trim();
-        if (textoPass1.equals("") || textoPass1.length() == 0) {
-            lsb.showAToast(getApplicationContext(), getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
+        if (pass1.getVisibility() == View.VISIBLE) {
+            textoPass1 = pass1.getText().toString().trim();
+            if (textoPass1.length() < 0) {
+                Util.showAToast(getApplicationContext(), getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
+                return;
+            }
+        } else {
+            textoPass1 = "";
+        }
+
+        if (pass2.getVisibility() == View.VISIBLE) {
+            textoPass2 = pass2.getText().toString().trim();
+            if (textoPass2.length() < 0) {
+                Util.showAToast(getApplicationContext(), getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
+                return;
+            }
+        } else {
+            textoPass2 = "";
+        }
+
+        if (pass3.getVisibility() == View.VISIBLE) {
+            textoPass3 = pass3.getText().toString().trim();
+            if (textoPass3.length() < 0) {
+                Util.showAToast(getApplicationContext(), getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
+                return;
+            }
+        } else {
+            textoPass3 = "";
+        }
+
+        int portador = 0;
+
+        if (bitmapPortador != null || cancionPortador != null) {
+            if (bitmapPortador != null) {
+                this.bitmapPortador = bitmapPortador.copy(bitmapPortador.getConfig(), true);
+                portador = 1;
+            }
+            if (cancionPortador != null) {
+                portador = 2;
+            }
+        } else {
+            Util.showAToast(getApplicationContext(), "", Toast.LENGTH_LONG);
             return;
         }
+
 
         final ProgressDialog pd = new ProgressDialog(this);
         pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -449,37 +497,38 @@ public class Descubre extends Main implements View.OnClickListener {
         pd.setIndeterminate(true);
         pd.setCancelable(false);
         pd.show();
-        Thread mThread = new Thread() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
+
+        try {
+            if (portador == 1) {
+                Thread mThread = new Thread() {
                     @Override
                     public void run() {
-                        String mensaje = lsb.descubrirMensaje(bitmapPortador);
-                        if (!mensaje.equals("")) {
-                            try {
-                                String mensajeFinal = seguridad.decrypt(mensaje, pass1.getText().toString().trim());
-                                textoMensaje.setVisibility(View.VISIBLE);
-                                textoMensaje.setText(getString(R.string.textoOcultoEra) + mensajeFinal);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            lsb.showAToast(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_LONG);
+                        if (bitmapPortador != null) {
+                            mensajeMensaje = lsb.descubrirMensaje(bitmapPortador, textoPass1, textoPass2, textoPass3);
                         }
+                        textoMensaje.setVisibility(View.VISIBLE);
+                        textoMensaje.setText(getString(R.string.textoOcultoEra) + mensajeMensaje);
                     }
-                });
+                };
+                mThread.start();
+
             }
-        };
-        mThread.start();
+            if (portador == 2) {
+                Thread mThread = new Thread() {
+                    @Override
+                    public void run() {
+                        mensajeMensaje = lsb.descubrirMensaje(cancionPortador, textoPass1, textoPass2, textoPass3);
+                        textoMensaje.setVisibility(View.VISIBLE);
+                        textoMensaje.setText(getString(R.string.textoOcultoEra) + mensajeMensaje);
+                    }
+                };
+                mThread.start();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         pd.dismiss();
     }
 
-    private void hideKeyboard() {
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-    }
 }

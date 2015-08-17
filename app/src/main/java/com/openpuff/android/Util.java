@@ -1,11 +1,15 @@
 package com.openpuff.android;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
-/**
- * Created by INIGO on 29/07/2015.
- */
-public class Util {
+class Util {
+
+    private static Toast toast;
 
     @NonNull
     static String binaryToString(@NonNull String input) {
@@ -29,5 +33,22 @@ public class Util {
             }
         }
         return binary;
+    }
+
+    public static void showAToast(@NonNull Context context, String texto, int duracion) {
+        try {
+            toast.getView().isShown();
+            toast.setText(texto);
+        } catch (Exception e) {
+            toast = Toast.makeText(context, texto, duracion);
+        }
+        toast.show();
+    }
+
+    static void hideKeyboard(@Nullable View view, @NonNull InputMethodManager inputManager) {
+        // Check if no view has focus:
+        if (view != null) {
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }

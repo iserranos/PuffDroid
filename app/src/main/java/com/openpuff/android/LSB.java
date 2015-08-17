@@ -1,20 +1,42 @@
 package com.openpuff.android;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
-import android.widget.Toast;
+import android.support.annotation.Nullable;
+
+import java.io.ByteArrayOutputStream;
 
 class LSB {
 
-    private Toast toast;
+    @NonNull
+    private final Seguridad seguridad;
 
     public LSB() {
+        this.seguridad = new Seguridad();
     }
 
-    protected boolean ocultarMensaje(Bitmap bitmapPortador, @NonNull String texto) {
-        StringBuilder dato = Util.stringToBinary(texto);
+    @Nullable
+    Bitmap ocultarMensaje(Bitmap bitmapPortador, @NonNull String texto, @NonNull String pass1, @NonNull String pass2, @NonNull String pass3) {
+        String textoFinal = seguridad.encrypt(texto.trim(), pass1.trim(), pass2.trim(), pass3.trim());
+        StringBuilder dato = Util.stringToBinary(textoFinal.length() + "-" + textoFinal);
+        return ocultarEnBitmap(bitmapPortador, dato);
+    }
 
+    @Nullable
+    Bitmap ocultarMensaje(Bitmap bitmapPortador, @NonNull Bitmap bitmapMensaje, @NonNull String pass1, @NonNull String pass2, @NonNull String pass3) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmapMensaje.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        String texto = new String(byteArray);
+
+        String textoFinal = seguridad.encrypt(texto.trim(), pass1.trim(), pass2.trim(), pass3.trim());
+        StringBuilder dato = Util.stringToBinary(textoFinal.length() + "-" + textoFinal);
+
+        return ocultarEnBitmap(bitmapPortador, dato);
+    }
+
+    @Nullable
+    private Bitmap ocultarEnBitmap(@Nullable Bitmap bitmapPortador, @NonNull StringBuilder dato) {
         StringBuilder binario;
         int color = 0;
         String cadenaNueva;
@@ -33,13 +55,48 @@ class LSB {
             } catch (Exception e) {
                 j++;
                 i = 0;
-                //return false;
+                //return null;
             }
         }
-        return true;
+        return bitmapPortador;
     }
 
-    protected String descubrirMensaje(@NonNull Bitmap bitmap) {
+    String ocultarMensaje(String cancion, @NonNull String texto, @NonNull String pass1, @NonNull String pass2, @NonNull String pass3) {
+        String textoFinal = seguridad.encrypt(texto.trim(), pass1.trim(), pass2.trim(), pass3.trim());
+        StringBuilder dato = Util.stringToBinary(textoFinal.length() + "-" + textoFinal);
+
+        return ocultarEnCancion(cancion, dato);
+    }
+
+    String ocultarMensaje(String cancion, @NonNull Bitmap bitmapMensaje, @NonNull String pass1, @NonNull String pass2, @NonNull String pass3) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmapMensaje.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        String texto = new String(byteArray);
+
+        String textoFinal = seguridad.encrypt(texto.trim(), pass1.trim(), pass2.trim(), pass3.trim());
+        StringBuilder dato = Util.stringToBinary(textoFinal.length() + "-" + textoFinal);
+
+        return ocultarEnCancion(cancion, dato);
+    }
+
+    private String ocultarEnCancion(String cancion, StringBuilder mensaje) {
+        return cancion;
+    }
+
+    @NonNull
+    String descubrirMensaje(@NonNull Bitmap bitmap, @NonNull String pass1, @NonNull String pass2, @NonNull String pass3) {
+        String texto = descubrirDeBitmap(bitmap);
+        return seguridad.decrypt(texto.trim(), pass1.trim(), pass2.trim(), pass3.trim());
+    }
+
+    @NonNull
+    public String descubrirMensaje(String cancion, @NonNull String pass1, @NonNull String pass2, @NonNull String pass3) {
+        String texto = descubrirDeCancion(cancion);
+        return seguridad.decrypt(texto.trim(), pass1.trim(), pass2.trim(), pass3.trim());
+    }
+
+    private String descubrirDeBitmap(@NonNull Bitmap bitmap) {
         int tamanioI;
         StringBuilder binario;
         int color = 0;
@@ -97,15 +154,8 @@ class LSB {
         return mensaje;
     }
 
-
-    void showAToast(Context context, String texto, int duracion) {
-        try {
-            toast.getView().isShown();
-            toast.setText(texto);
-        } catch (Exception e) {
-            toast = Toast.makeText(context, texto, duracion);
-        }
-        toast.show();
+    private String descubrirDeCancion(String cancion) {
+        return cancion;
     }
 
 }

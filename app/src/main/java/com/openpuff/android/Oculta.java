@@ -46,8 +46,8 @@ public class Oculta extends Main implements View.OnClickListener {
     private final TextWatcher controlPassAOcultar;
     @NonNull
     private final TextWatcher controlTextoAOcultar;
+    @NonNull
     private final LSB lsb;
-    private final Seguridad seguridad;
     private ImageView imagenPortador;
     private TextView textoPortador;
     private Button botonPortador;
@@ -62,16 +62,21 @@ public class Oculta extends Main implements View.OnClickListener {
     private Button botonGuardar;
     @Nullable
     private Bitmap bitmapPortador = null;
+    @Nullable
     private String cancionPortador = null;
+    @Nullable
     private Bitmap bitmapMensaje = null;
+    @Nullable
     private String mensajeMensaje = null;
+    @Nullable
     private String textoPass1 = null;
+    @Nullable
     private String textoPass2 = null;
+    @Nullable
     private String textoPass3 = null;
     private int maxTexto = 0;
 
     public Oculta() {
-        seguridad = new Seguridad();
         lsb = new LSB();
         controlPassAOcultar = new TextWatcher() {
             @Override
@@ -87,9 +92,8 @@ public class Oculta extends Main implements View.OnClickListener {
 
             @Override
             public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
-                if (s.length() == maxPass) {
-                    lsb.showAToast(getApplicationContext(), getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
-                }
+                if (s.length() == maxPass)
+                    Util.showAToast(getApplicationContext(), getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
             }
 
             @Override
@@ -110,7 +114,7 @@ public class Oculta extends Main implements View.OnClickListener {
             @Override
             public void beforeTextChanged(@NonNull CharSequence s, int start, int count, int after) {
                 if (s.length() == maxTexto && maxTexto != 0) {
-                    lsb.showAToast(getApplicationContext(), getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
+                    Util.showAToast(getApplicationContext(), getString(R.string.noMasCaracteres), Toast.LENGTH_SHORT);
                 }
             }
 
@@ -141,6 +145,7 @@ public class Oculta extends Main implements View.OnClickListener {
         botonMensaje = (Button) findViewById(R.id.OcultaBotonMensaje);
 
         textoMensaje.addTextChangedListener(controlTextoAOcultar);
+        //textoMensaje.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxTexto)});
 
         pass1 = (EditText) findViewById(R.id.OcultaPass1);
         pass2 = (EditText) findViewById(R.id.OcultaPass2);
@@ -263,7 +268,7 @@ public class Oculta extends Main implements View.OnClickListener {
     @Override
     public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        hideKeyboard();
+        Util.hideKeyboard(this.getCurrentFocus(), (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE));
 
         bitmapPortador = savedInstanceState.getParcelable("bitmapPortador");
         if (bitmapPortador != null) {
@@ -303,17 +308,17 @@ public class Oculta extends Main implements View.OnClickListener {
         }
 
         textoPass1 = savedInstanceState.getString("textoPass1");
-        if (!textoPass1.equals("")) {
+        if (textoPass1 != null) {
             pass1.setText(textoPass1);
         }
 
         textoPass2 = savedInstanceState.getString("textoPass2");
-        if (!textoPass2.equals("")) {
+        if (textoPass2 != null) {
             pass2.setText(textoPass2);
         }
 
         textoPass3 = savedInstanceState.getString("textoPass3");
-        if (!textoPass3.equals("")) {
+        if (textoPass3 != null) {
             pass3.setText(textoPass3);
         }
 
@@ -345,7 +350,7 @@ public class Oculta extends Main implements View.OnClickListener {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        hideKeyboard();
+        Util.hideKeyboard(this.getCurrentFocus(), (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE));
         switch (item.getItemId()) {
             case android.R.id.home:
                 if (botonOcultar.getVisibility() == View.GONE && botonGuardar.getVisibility() == View.VISIBLE) {
@@ -411,28 +416,27 @@ public class Oculta extends Main implements View.OnClickListener {
         }
     }
 
-    private void opcionPortadorImagen(Intent data) {
+    private void opcionPortadorImagen(@NonNull Intent data) {
         Uri selectedimg = data.getData();
         try {
             bitmapPortador = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
-            maxTexto = (bitmapPortador.getWidth() / 8) - 5;
             if (bitmapPortador.getRowBytes() * bitmapPortador.getHeight() > 16588800) {
-                lsb.showAToast(getApplicationContext(), getString(R.string.imagenPesada), Toast.LENGTH_LONG);
+                Util.showAToast(getApplicationContext(), getString(R.string.imagenPesada), Toast.LENGTH_LONG);
             } else if (maxTexto >= 16) {
                 imagenPortador.setImageBitmap(bitmapPortador);
                 imagenPortador.setVisibility(View.VISIBLE);
             } else {
-                lsb.showAToast(getApplicationContext(), getString(R.string.imagenGrande), Toast.LENGTH_LONG);
+                Util.showAToast(getApplicationContext(), getString(R.string.imagenGrande), Toast.LENGTH_LONG);
             }
 
         } catch (FileNotFoundException e) {
-            lsb.showAToast(getApplicationContext(), getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_LONG);
+            Util.showAToast(getApplicationContext(), getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_LONG);
         } catch (IOException e) {
-            lsb.showAToast(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_LONG);
+            Util.showAToast(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_LONG);
         }
     }
 
-    private void opcionPortadorCancion(Intent data) {
+    private void opcionPortadorCancion(@Nullable Intent data) {
         if ((data != null) && (data.getData() != null)) {
             Uri cancion = data.getData();
 
@@ -457,25 +461,23 @@ public class Oculta extends Main implements View.OnClickListener {
         }
     }
 
-    private void opcionMensajeImagen(Intent data) {
+    private void opcionMensajeImagen(@NonNull Intent data) {
         Uri selectedimg = data.getData();
         try {
             bitmapMensaje = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg);
-            maxTexto = (bitmapMensaje.getWidth() / 8) - 5;
             if (bitmapMensaje.getRowBytes() * bitmapMensaje.getHeight() > 16588800) {
-                lsb.showAToast(getApplicationContext(), getString(R.string.imagenPesada), Toast.LENGTH_LONG);
+                Util.showAToast(getApplicationContext(), getString(R.string.imagenPesada), Toast.LENGTH_LONG);
             } else if (maxTexto >= 16) {
                 imagenMensaje.setImageBitmap(bitmapMensaje);
                 imagenMensaje.setVisibility(View.VISIBLE);
-                //textoMensaje.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxTexto)});
             } else {
-                lsb.showAToast(getApplicationContext(), getString(R.string.imagenGrande), Toast.LENGTH_LONG);
+                Util.showAToast(getApplicationContext(), getString(R.string.imagenGrande), Toast.LENGTH_LONG);
             }
 
         } catch (FileNotFoundException e) {
-            lsb.showAToast(getApplicationContext(), getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_LONG);
+            Util.showAToast(getApplicationContext(), getString(R.string.fileNotFoundExcepcion), Toast.LENGTH_LONG);
         } catch (IOException e) {
-            lsb.showAToast(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_LONG);
+            Util.showAToast(getApplicationContext(), getString(R.string.ioException), Toast.LENGTH_LONG);
         }
     }
 
@@ -495,7 +497,7 @@ public class Oculta extends Main implements View.OnClickListener {
     public void onClick(@NonNull View view) {
         super.onClick(view);
 
-        hideKeyboard();
+        Util.hideKeyboard(this.getCurrentFocus(), (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE));
         switch (view.getId()) {
             case R.id.OcultaBotonPortador:
                 pulsarPortador();
@@ -507,33 +509,10 @@ public class Oculta extends Main implements View.OnClickListener {
                 pulsarContrasenia();
                 break;
             case R.id.OcultaBotonOcultar:
-                if (bitmapPortador != null) {
-                    recuperarDatos();
-                } else {
-                    lsb.showAToast(getApplicationContext(), getString(R.string.necesitasImagen), Toast.LENGTH_SHORT);
-                }
+                recuperarDatos();
                 break;
             case R.id.OcultaBotonGuardar:
-                if (bitmapPortador != null) {
-
-                    final ProgressDialog pd = new ProgressDialog(this);
-                    pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    pd.setMessage(getString(R.string.cargando));
-                    pd.setTitle(getString(R.string.espere));
-                    pd.setIndeterminate(true);
-                    pd.setCancelable(false);
-                    pd.show();
-                    Thread mThread = new Thread() {
-                        @Override
-                        public void run() {
-                            storeImage(bitmapPortador);
-                        }
-                    };
-                    mThread.start();
-                    pd.dismiss();
-                    lsb.showAToast(getApplicationContext(), getString(R.string.imagenguardadaOK), Toast.LENGTH_LONG);
-                    finish();
-                }
+                storeImage();
                 break;
         }
     }
@@ -645,54 +624,147 @@ public class Oculta extends Main implements View.OnClickListener {
     }
 
     private void recuperarDatos() {
-        if (bitmapPortador != null || cancionPortador != null) {
-            if (bitmapPortador != null) {
-                this.bitmapPortador = bitmapPortador.copy(bitmapPortador.getConfig(), true);
-            }
-            if (cancionPortador != null) {
-                //obtener byte[] de cancion
-            }
-        } else {
-            lsb.showAToast(getApplicationContext(), "", Toast.LENGTH_LONG);
-            return;
-        }
-
-        if (mensajeMensaje != null || bitmapMensaje != null) {
-            if (mensajeMensaje != null) {
-                //obtener byte[] de cancion
-            }
-            if (bitmapMensaje != null) {
-                this.bitmapMensaje = bitmapMensaje.copy(bitmapMensaje.getConfig(), true);
-            }
-        } else {
-            lsb.showAToast(getApplicationContext(), "", Toast.LENGTH_LONG);
-            return;
-        }
 
         if (pass1.getVisibility() == View.VISIBLE) {
             textoPass1 = pass1.getText().toString().trim();
-            if (textoPass1.equals("") || textoPass1.length() <= 0) {
-                lsb.showAToast(getApplicationContext(), getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
+            if (textoPass1.length() < 0) {
+                Util.showAToast(getApplicationContext(), getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
                 return;
             }
+        } else {
+            textoPass1 = "";
         }
 
         if (pass2.getVisibility() == View.VISIBLE) {
             textoPass2 = pass2.getText().toString().trim();
-            if (textoPass2.equals("") || textoPass2.length() <= 0) {
-                lsb.showAToast(getApplicationContext(), getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
+            if (textoPass2.length() < 0) {
+                Util.showAToast(getApplicationContext(), getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
                 return;
             }
+        } else {
+            textoPass2 = "";
         }
 
         if (pass3.getVisibility() == View.VISIBLE) {
             textoPass3 = pass3.getText().toString().trim();
-            if (textoPass3.equals("") || textoPass3.length() <= 0) {
-                lsb.showAToast(getApplicationContext(), getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
+            if (textoPass3.length() < 0) {
+                Util.showAToast(getApplicationContext(), getString(R.string.pass1NoVacia), Toast.LENGTH_LONG);
                 return;
             }
+        } else {
+            textoPass3 = "";
         }
 
+        int portador = 0;
+        int mensaje = 0;
+
+        if (bitmapPortador != null || cancionPortador != null) {
+            if (bitmapPortador != null) {
+                this.bitmapPortador = bitmapPortador.copy(bitmapPortador.getConfig(), true);
+                portador = 1;
+            }
+            if (cancionPortador != null) {
+                portador = 2;
+            }
+        } else {
+            Util.showAToast(getApplicationContext(), "", Toast.LENGTH_LONG);
+            return;
+        }
+
+        if (!textoMensaje.getText().toString().trim().equals("") || bitmapMensaje != null) {
+            if (!textoMensaje.getText().toString().trim().equals("")) {
+                mensajeMensaje = textoMensaje.getText().toString().trim();
+                mensaje = 1;
+            }
+            if (bitmapMensaje != null) {
+                this.bitmapMensaje = bitmapMensaje.copy(bitmapMensaje.getConfig(), true);
+                mensaje = 2;
+            }
+        } else {
+            Util.showAToast(getApplicationContext(), "", Toast.LENGTH_LONG);
+            return;
+        }
+
+        try {
+            if (portador == 1 && mensaje == 1) {
+                lsb.ocultarMensaje(bitmapPortador, mensajeMensaje, textoPass1, textoPass2, textoPass3);
+            }
+            if (portador == 1 && mensaje == 2) {
+                lsb.ocultarMensaje(bitmapPortador, bitmapMensaje, textoPass1, textoPass2, textoPass3);
+            }
+            if (portador == 2 && mensaje == 1) {
+                lsb.ocultarMensaje(cancionPortador, mensajeMensaje, textoPass1, textoPass2, textoPass3);
+            }
+            if (portador == 2 && mensaje == 2) {
+                lsb.ocultarMensaje(cancionPortador, bitmapMensaje, textoPass1, textoPass2, textoPass3);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        final ProgressDialog pd = new ProgressDialog(this);
+        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pd.setMessage(getString(R.string.cargando));
+        pd.setTitle(getString(R.string.espere));
+        pd.setIndeterminate(true);
+        pd.setCancelable(false);
+        pd.show();
+
+        try {
+            if (portador == 1) {
+                if (mensaje == 1) {
+                    Thread mThread = new Thread() {
+                        @Override
+                        public void run() {
+                            bitmapPortador = lsb.ocultarMensaje(bitmapPortador, mensajeMensaje, textoPass1, textoPass2, textoPass3);
+                        }
+                    };
+                    mThread.start();
+                }
+                if (mensaje == 2) {
+                    Thread mThread = new Thread() {
+                        @Override
+                        public void run() {
+                            bitmapPortador = lsb.ocultarMensaje(bitmapPortador, bitmapMensaje, textoPass1, textoPass2, textoPass3);
+                        }
+                    };
+                    mThread.start();
+                }
+                imagenMensaje.setImageBitmap(bitmapPortador);
+            }
+
+            if (portador == 2) {
+                if (mensaje == 1) {
+                    Thread mThread = new Thread() {
+                        @Override
+                        public void run() {
+                            cancionPortador = lsb.ocultarMensaje(cancionPortador, mensajeMensaje, textoPass1, textoPass2, textoPass3);
+                        }
+                    };
+                    mThread.start();
+                }
+                if (mensaje == 2) {
+                    Thread mThread = new Thread() {
+                        @Override
+                        public void run() {
+                            cancionPortador = lsb.ocultarMensaje(cancionPortador, bitmapMensaje, textoPass1, textoPass2, textoPass3);
+                        }
+                    };
+                    mThread.start();
+                }
+                textoPortador.setText(cancionPortador);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        pd.dismiss();
+
+        botonOcultar.setVisibility(View.GONE);
+        botonGuardar.setVisibility(View.VISIBLE);
+        botonGuardar.setOnClickListener(this);
+    }
+
+    private void storeImage() {
 
         final ProgressDialog pd = new ProgressDialog(this);
         pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -704,56 +776,41 @@ public class Oculta extends Main implements View.OnClickListener {
         Thread mThread = new Thread() {
             @Override
             public void run() {
-                try {
-                    String textoFinal = seguridad.encrypt(textoMensaje.getText().toString().trim(), Oculta.this.pass1.getText().toString().trim());
-                    lsb.ocultarMensaje(bitmapPortador, textoFinal.length() + "-" + textoFinal);
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+                File mediaStorageDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "OpenPuff");
+
+                if (!mediaStorageDir.exists()) {
+                    if (!mediaStorageDir.mkdirs()) {
+                        return;
+                    }
                 }
-                pd.dismiss();
+
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+                File mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                        "IMG_" + timeStamp + ".jpg");
+
+                try {
+                    FileOutputStream fos = new FileOutputStream(mediaFile);
+                    if (bitmapPortador != null) {
+                        bitmapPortador.compress(Bitmap.CompressFormat.PNG, 90, fos);
+                    }
+                    fos.flush();
+                    fos.close();
+                } catch (IOException ignored) {
+                }
+
+                Uri contentUri = Uri.fromFile(mediaFile);
+                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                mediaScanIntent.setData(contentUri);
+                sendBroadcast(mediaScanIntent);
+
             }
         };
-        botonOcultar.setVisibility(View.GONE);
-        botonGuardar.setVisibility(View.VISIBLE);
-        botonGuardar.setOnClickListener(this);
         mThread.start();
-        imagenMensaje.setImageBitmap(bitmapPortador);
-    }
+        pd.dismiss();
+        Util.showAToast(getApplicationContext(), getString(R.string.imagenguardadaOK), Toast.LENGTH_LONG);
+        finish();
 
-    private void storeImage(@NonNull Bitmap image) {
 
-        File mediaStorageDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "OpenPuff");
-
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                return;
-            }
-        }
-
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        File mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                "IMG_" + timeStamp + ".jpg");
-
-        try {
-            FileOutputStream fos = new FileOutputStream(mediaFile);
-            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
-            fos.flush();
-            fos.close();
-        } catch (IOException ignored) {
-        }
-
-        Uri contentUri = Uri.fromFile(mediaFile);
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        mediaScanIntent.setData(contentUri);
-        sendBroadcast(mediaScanIntent);
-    }
-
-    private void hideKeyboard() {
-        // Check if no view has focus:
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
     }
 }
