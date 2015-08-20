@@ -15,10 +15,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name">
         <activity
-            android:name=".Main"
+            android:name=".vistas.Main"
             android:label="@string/app_name"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -26,16 +26,16 @@
         </activity>
 
         <activity
-            android:name=".Oculta"
-            android:windowSoftInputMode="adjustPan"
+            android:name=".vistas.Oculta"
             android:label="@string/ocultar"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".Descubre"
-            android:windowSoftInputMode="adjustResize"
+            android:name=".vistas.Descubre"
             android:label="@string/descubrir"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

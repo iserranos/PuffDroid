@@ -1,4 +1,4 @@
-package com.openpuff.android;
+package com.openpuff.android.vistas;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.openpuff.android.R;
 
 public class Main extends Activity implements OnClickListener {
 

@@ -44,14 +44,7 @@
         <Button
             android:id="@+id/DescubreBotonDescubrir"
             style="@style/estiloBotones"
-            android:clickable="false"
-            android:text="@string/botonDescubrir"
-            android:visibility="gone" />
-
-        <ImageView
-            android:id="@+id/DescubreImagenMensaje"
-            style="@style/estiloImagen"
-            android:contentDescription="@string/imagenSeleccionada" />
+            android:text="@string/botonDescubrir" />
 
         <TextView
             android:id="@+id/DescubreTextoOculto"

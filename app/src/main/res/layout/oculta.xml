@@ -62,14 +62,7 @@
         <Button
             android:id="@+id/OcultaBotonOcultar"
             style="@style/estiloBotones"
-            android:text="@string/botonOcultar"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/OcultaBotonGuardar"
-            style="@style/estiloBotones"
-            android:text="@string/botonGuardar"
-            android:visibility="gone" />
+            android:text="@string/botonOcultar" />
 
     </LinearLayout>
 
