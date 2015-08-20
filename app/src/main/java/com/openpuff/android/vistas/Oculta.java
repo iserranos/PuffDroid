@@ -1,8 +1,7 @@
-package com.openpuff.android;
+package com.openpuff.android.vistas;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -26,6 +25,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.openpuff.android.R;
+import com.openpuff.android.estego.LSB;
+import com.openpuff.android.utils.Util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -268,7 +271,7 @@ public class Oculta extends Main implements View.OnClickListener {
     @Override
     public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        Util.hideKeyboard(this.getCurrentFocus(), (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE));
+        Util.hideKeyboard(this.getCurrentFocus(), (InputMethodManager) this.getSystemService(INPUT_METHOD_SERVICE));
 
         bitmapPortador = savedInstanceState.getParcelable("bitmapPortador");
         if (bitmapPortador != null) {
@@ -350,7 +353,7 @@ public class Oculta extends Main implements View.OnClickListener {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Util.hideKeyboard(this.getCurrentFocus(), (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE));
+        Util.hideKeyboard(this.getCurrentFocus(), (InputMethodManager) this.getSystemService(INPUT_METHOD_SERVICE));
         switch (item.getItemId()) {
             case android.R.id.home:
                 if (botonOcultar.getVisibility() == View.GONE && botonGuardar.getVisibility() == View.VISIBLE) {
@@ -497,7 +500,7 @@ public class Oculta extends Main implements View.OnClickListener {
     public void onClick(@NonNull View view) {
         super.onClick(view);
 
-        Util.hideKeyboard(this.getCurrentFocus(), (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE));
+        Util.hideKeyboard(this.getCurrentFocus(), (InputMethodManager) this.getSystemService(INPUT_METHOD_SERVICE));
         switch (view.getId()) {
             case R.id.OcultaBotonPortador:
                 pulsarPortador();

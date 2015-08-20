@@ -1,4 +1,4 @@
-package com.openpuff.android;
+package com.openpuff.android.estego;
 
 import android.support.annotation.NonNull;
 

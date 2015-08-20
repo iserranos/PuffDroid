@@ -1,4 +1,4 @@
-package com.openpuff.android;
+package com.openpuff.android.vistas;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -23,6 +23,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.openpuff.android.R;
+import com.openpuff.android.estego.LSB;
+import com.openpuff.android.utils.Util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
