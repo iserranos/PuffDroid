@@ -21,7 +21,7 @@ import java.util.Locale;
 
 public class Imagen {
 
-    private static final String PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/OpenPuff";
+    private static final String PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/PuffDroid";
     private Bitmap bitmapMensaje;
     private Bitmap bitmapPortador;
     private String firma;

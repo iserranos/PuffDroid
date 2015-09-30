@@ -92,7 +92,7 @@ a trimmed down version that most wav files adhere to.
 
 */
 
-    private static final String PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/OpenPuff/";
+    private static final String PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/PuffDroid/";
     private String cancion;
     private long myChunkSize;
     private long mySubChunk1Size;

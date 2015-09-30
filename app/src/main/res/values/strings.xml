@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">OpenPuff</string>
+    <string name="app_name" translatable="false">PuffDroid</string>
     <string name="opcion1">Camera</string>
     <string name="opcion2">Gallery</string>
     <string name="botonOcultar">Hide message</string>

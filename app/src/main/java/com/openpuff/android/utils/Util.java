@@ -7,7 +7,6 @@ import android.widget.Toast;
 
 public class Util {
 
-
     public static String stringToBinary(String input) {
         byte[] bytes = input.getBytes();
         StringBuilder binary = new StringBuilder();
